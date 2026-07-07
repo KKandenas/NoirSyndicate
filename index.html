@@ -6,17 +6,17 @@
     <title>The Noir Syndicate - Control Room</title>
     <style>
         :root {
-            --bg-color: #080808;
-            --card-bg: #141414;
-            --text-color: #f5f5f5;
-            --text-muted: #777;
+            --bg-color: #050505;
+            --card-bg: #121212;
+            --text-color: #e5e5e5;
+            --text-muted: #666;
             --border-color: #222;
             
-            /* Fyra unika gängfärger */
-            --spades-color: #3a86ff;   
-            --hearts-color: #ff006e;   
-            --clovers-color: #38b000;  
-            --diamonds-color: #ffbe0b; 
+            /* Fyra unika gängfärger anpassade för 20-talstema */
+            --spades-color: #2b6cb0;   
+            --hearts-color: #c53030;   
+            --clovers-color: #2f855a;  
+            --diamonds-color: #ecc94b; 
         }
 
         * {
@@ -40,16 +40,16 @@
             gap: 15px;
         }
 
-        /* VÄLKOMSTSIDA (SPLASH SCREEN) */
+        /* VÄLKOMSTSIDA (SPLASH SCREEN) - CHICAGO 1920-TAL */
         .welcome-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-color: #0a0a0a;
-            /* TIPS: Ersätt url-en nedan med din egen bildlänk när du har laddat upp den */
-            background-image: linear-gradient(to bottom, rgba(8, 8, 8, 0.85), #080808), url('https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=1200');
+            background-color: #050505;
+            /* Ny tidsenlig bild: Dimmig vintage-gata / tegelvägg i Chicago-stil */
+            background-image: linear-gradient(to bottom, rgba(5, 5, 5, 0.7), rgba(0, 0, 0, 0.95)), url('https://images.unsplash.com/photo-1605806115941-897bf1390494?q=80&w=1200');
             background-size: cover;
             background-position: center;
             display: flex;
@@ -68,29 +68,31 @@
         }
 
         .welcome-title {
-            font-size: 42px;
-            letter-spacing: 4px;
+            font-size: 46px;
+            letter-spacing: 8px;
             color: #fff;
-            text-shadow: 0 0 20px rgba(58, 134, 255, 0.6);
-            margin-bottom: 5px;
+            /* Rökig, varm skuggeffekt istället för modern neon */
+            text-shadow: 0 0 30px rgba(0, 0, 0, 0.9), 0 0 15px rgba(255, 255, 255, 0.2);
+            margin-bottom: 8px;
             font-weight: 900;
         }
 
         .welcome-subtitle {
-            font-size: 14px;
-            color: var(--text-muted);
+            font-size: 13px;
+            color: #999;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 40px;
+            letter-spacing: 5px;
+            margin-bottom: 45px;
+            font-style: italic;
         }
 
         .welcome-card {
-            background: rgba(20, 20, 20, 0.9);
-            border: 1px solid #222;
-            padding: 25px;
-            border-radius: 12px;
-            max-width: 400px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+            background: rgba(10, 10, 10, 0.93);
+            border: 1px solid #1f1f1f;
+            padding: 30px;
+            border-radius: 6px; /* Lite skarpare, mer klassiskt snitt */
+            max-width: 420px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.95);
         }
 
         .orientation-notice {
@@ -98,43 +100,47 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
-            color: #ffbe0b;
-            font-size: 13px;
+            color: #ecc94b;
+            font-size: 12px;
             font-weight: bold;
-            margin-bottom: 20px;
-            background: rgba(255, 190, 11, 0.05);
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid rgba(255, 190, 11, 0.1);
+            margin-bottom: 25px;
+            background: rgba(236, 201, 75, 0.05);
+            padding: 12px;
+            border-radius: 4px;
+            border: 1px solid rgba(236, 201, 75, 0.15);
+            line-height: 1.4;
         }
 
         .btn-start {
-            background: var(--spades-color);
+            background: linear-gradient(135deg, #2b6cb0, #1a497d);
             color: white;
             font-size: 16px;
-            padding: 14px 40px;
-            border-radius: 8px;
+            padding: 16px 40px;
+            border-radius: 4px;
             border: none;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(58, 134, 255, 0.4);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
             width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.2s;
         }
         .btn-start:active {
             transform: scale(0.98);
-            background: #2a6fde;
+            filter: brightness(0.9);
         }
 
         /* Spelarhörn */
         .player-corner {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
+            border-radius: 8px;
             padding: 12px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.6);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.7);
             position: relative;
         }
 
@@ -143,6 +149,7 @@
             position: absolute;
             top: 0; left: 0; width: 100%; height: 4px;
             background-color: var(--gang-color);
+            border-radius: 8px 8px 0 0;
         }
 
         #p1 { --gang-color: var(--spades-color); grid-area: 1 / 1; }
@@ -154,7 +161,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #222;
+            border-bottom: 1px solid #1a1a1a;
             padding-bottom: 4px;
         }
 
@@ -168,14 +175,14 @@
 
         .deck-suit {
             font-size: 9px;
-            background: #1c1c1c;
+            background: #151515;
             padding: 2px 6px;
             border-radius: 4px;
             font-weight: bold;
             text-transform: uppercase;
         }
-        .suit-black { color: #888; border: 1px solid #333; }
-        .suit-red { color: #ff4d4d; border: 1px solid #4a1111; }
+        .suit-black { color: #777; border: 1px solid #252525; }
+        .suit-red { color: #e53e3e; border: 1px solid #3b1010; }
 
         .stats-grid {
             display: grid;
@@ -185,9 +192,9 @@
         }
 
         .stat-box {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.04);
-            border-radius: 6px;
+            background: rgba(255,255,255,0.01);
+            border: 1px solid rgba(255,255,255,0.03);
+            border-radius: 4px;
             padding: 6px 2px;
             text-align: center;
         }
@@ -212,24 +219,24 @@
         }
 
         button {
-            background: #222;
+            background: #1a1a1a;
             color: white;
-            border: 1px solid #333;
-            border-radius: 6px;
+            border: 1px solid #262626;
+            border-radius: 4px;
             padding: 8px 4px;
             font-size: 11px;
             font-weight: bold;
             cursor: pointer;
             transition: background 0.1s;
         }
-        button:active { background: #333; }
+        button:active { background: #262626; }
 
-        .btn-success { background: #133324; color: #40a070; border-color: #1a4430; }
-        .btn-success:active { background: #1a4430; }
-        .btn-danger { background: #4a0e17; color: #e65c65; border-color: #61131f; }
-        .btn-danger:active { background: #61131f; }
-        .btn-pay { background: #2d2510; color: #e6b800; border-color: #3d3216; grid-column: span 2; }
-        .btn-pay:active { background: #3d3216; }
+        .btn-success { background: #12281e; color: #38a169; border-color: #1a3a2a; }
+        .btn-success:active { background: #1a3a2a; }
+        .btn-danger { background: #3c161a; color: #e53e3e; border-color: #521e24; }
+        .btn-danger:active { background: #521e24; }
+        .btn-pay { background: #28210f; color: #ecc94b; border-color: #382e15; grid-column: span 2; }
+        .btn-pay:active { background: #382e15; }
 
         /* Centerkonsol */
         .center-console {
@@ -238,9 +245,9 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: rgba(255,255,255,0.01);
-            border-left: 1px solid rgba(255,255,255,0.03);
-            border-right: 1px solid rgba(255,255,255,0.03);
+            background: rgba(255,255,255,0.005);
+            border-left: 1px solid rgba(255,255,255,0.02);
+            border-right: 1px solid rgba(255,255,255,0.02);
             padding: 20px;
             gap: 25px;
         }
@@ -248,28 +255,28 @@
         #dice-container {
             width: 110px;
             height: 110px;
-            background: #ffffff;
-            color: #000000;
-            border-radius: 20px;
+            background: #e2e8f0;
+            color: #1a202c;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 48px;
             font-weight: bold;
-            box-shadow: 0 0 30px rgba(255,255,255,0.1);
+            box-shadow: 0 0 25px rgba(0,0,0,0.5);
             cursor: pointer;
             transition: transform 0.1s;
         }
         #dice-container:active { transform: scale(0.95); }
 
-        .side-bar-left { grid-area: 2 / 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #222; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; font-weight: bold; }
-        .side-bar-right { grid-area: 2 / 3; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #222; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; font-weight: bold; }
+        .side-bar-left { grid-area: 2 / 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #1f1f1f; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; }
+        .side-bar-right { grid-area: 2 / 3; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #1f1f1f; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; }
 
         /* Overlays & Popups */
         .overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
+            background: rgba(0,0,0,0.9);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -281,28 +288,28 @@
         .overlay.active { opacity: 1; pointer-events: auto; }
 
         .popup {
-            background: #111;
-            border: 2px solid #333;
-            border-radius: 12px;
+            background: #0f0f0f;
+            border: 1px solid #262626;
+            border-radius: 6px;
             padding: 25px;
             max-width: 450px;
             width: 90%;
             text-align: center;
         }
 
-        .popup-large { max-width: 750px; height: 85vh; overflow-y: auto; text-align: left; padding: 35px; border-color: #3a86ff; }
-        .popup-large h2 { color: #3a86ff; text-transform: uppercase; margin: 20px 0 8px 0; font-size: 18px; border-bottom: 1px solid #222; padding-bottom: 4px;}
-        .popup-large p, .popup-large li { color: #bbb; font-size: 13px; line-height: 1.6; margin-bottom: 8px; }
+        .popup-large { max-width: 750px; height: 85vh; overflow-y: auto; text-align: left; padding: 35px; border-color: #2b6cb0; }
+        .popup-large h2 { color: #2b6cb0; text-transform: uppercase; margin: 20px 0 8px 0; font-size: 18px; border-bottom: 1px solid #1a1a1a; padding-bottom: 4px;}
+        .popup-large p, .popup-large li { color: #a0aec0; font-size: 13px; line-height: 1.6; margin-bottom: 8px; }
         .popup-large ul { padding-left: 15px; }
 
-        .popup-dice-badge { background: #222; color: #fff; display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: bold; margin-bottom: 10px; }
-        .popup-title { color: #ff4d4d; font-size: 22px; text-transform: uppercase; margin-bottom: 10px; }
-        .popup-desc { font-size: 14px; line-height: 1.5; color: #ccc; margin-bottom: 20px; }
-        .popup-btn { background: #3a86ff; color: white; font-size: 14px; padding: 12px; border-radius: 6px; width: 100%; font-weight: bold; border: none; }
+        .popup-dice-badge { background: #1a1a1a; color: #fff; display: inline-block; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; margin-bottom: 10px; }
+        .popup-title { color: #e53e3e; font-size: 22px; text-transform: uppercase; margin-bottom: 10px; }
+        .popup-desc { font-size: 14px; line-height: 1.5; color: #cbd5e0; margin-bottom: 20px; }
+        .popup-btn { background: #2b6cb0; color: white; font-size: 14px; padding: 12px; border-radius: 4px; width: 100%; font-weight: bold; border: none; }
 
         .pay-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; text-align: left; }
         .pay-grid label { display: block; font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
-        .pay-grid select, .pay-grid input { width: 100%; background: #1c1c1c; border: 1px solid #333; color: white; padding: 8px; border-radius: 6px; font-size: 14px; }
+        .pay-grid select, .pay-grid input { width: 100%; background: #151515; border: 1px solid #262626; color: white; padding: 8px; border-radius: 4px; font-size: 14px; }
         
         .police-selector-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 15px; }
         .police-btn { text-align: left; padding: 12px; font-size: 13px; }
@@ -313,12 +320,12 @@
     <!-- VÄLKOMSTSIDA / SPLASH SCREEN -->
     <div class="welcome-screen" id="welcome-screen">
         <div class="welcome-title">THE NOIR SYNDICATE</div>
-        <div class="welcome-subtitle">Control Room Hub v1.9</div>
+        <div class="welcome-subtitle">Fyra syndikat. En stad. Inga vittnen.</div>
         <div class="welcome-card">
             <div class="orientation-notice">
-                🔄 <span>VÄND PÅ SKÄRMEN! Detta spel fungerar bäst och är optimerat för liggande läge (Landscape).</span>
+                🔄 <span>OBS: Detta digitala kontrollrum kräver liggande läge (Landscape) för optimal spelupplevelse på plattan.</span>
             </div>
-            <button class="btn-start" onclick="startGame()">Öppna Kontrollrummet</button>
+            <button class="btn-start" onclick="startGame()">Inta position & starta spelet</button>
         </div>
     </div>
 
@@ -361,14 +368,14 @@
     </div>
 
     <div class="side-bar-left">THE NOIR SYNDICATE</div>
-    <div class="side-bar-right">BOARD HUB v1.9</div>
+    <div class="side-bar-right">BOARD HUB v1.11</div>
 
     <!-- CENTERKONSOL -->
     <div class="center-console">
         <div id="dice-container" onclick="rollDice()">1</div>
         <div style="display:flex; flex-direction:column; gap:10px; width: 100%; max-width: 180px;">
-            <button onclick="openRulesModal()" style="background:#111; border:1px solid #222; font-size:12px; padding:8px 0; color:#aaa;">📜 Kompletta Regler</button>
-            <button onclick="resetGame()" style="background:#111; border:1px solid #222; font-size:12px; padding:8px 0; color:#666;">Nollställ Spel</button>
+            <button onclick="openRulesModal()" style="background:#0f0f0f; border:1px solid #1a1a1a; font-size:12px; padding:8px 0; color:#8a99ad;">📜 Kompletta Regler</button>
+            <button onclick="resetGame()" style="background:#0f0f0f; border:1px solid #1a1a1a; font-size:12px; padding:8px 0; color:#4a5568;">Nollställ Spel</button>
         </div>
     </div>
 
@@ -414,16 +421,16 @@
     <div class="overlay" id="event-overlay"><div class="popup"><div class="popup-dice-badge" id="event-dice-badge"></div><div class="popup-title" id="event-title"></div><div class="popup-desc" id="event-desc"></div><button class="popup-btn" onclick="closePopup()">Uppfattat</button></div></div>
     
     <!-- BETALA MODAL -->
-    <div class="overlay" id="pay-overlay"><div class="popup" style="border-color:#e6b800;"><div class="popup-title" style="color:#e6b800;" id="pay-title">Skicka pengar</div><div class="pay-grid"><div><label for="pay-target">Mottagare</label><select id="pay-target"></select></div><div><label for="pay-amount">Belopp ($)</label><input type="number" id="pay-amount" value="10" min="1"></div></div><div style="display:flex; gap:10px;"><button onclick="executePayment()" class="btn-success" style="padding:10px; width:50%;">Bekräfta</button><button onclick="closePayModal()" style="background:#222; padding:10px; width:50%;">Avbryt</button></div></div></div>
+    <div class="overlay" id="pay-overlay"><div class="popup" style="border-color:#ecc94b;"><div class="popup-title" style="color:#ecc94b;" id="pay-title">Skicka pengar</div><div class="pay-grid"><div><label for="pay-target">Mottagare</label><select id="pay-target"></select></div><div><label for="pay-amount">Belopp ($)</label><input type="number" id="pay-amount" value="10" min="1"></div></div><div style="display:flex; gap:10px;"><button onclick="executePayment()" class="btn-success" style="padding:10px; width:50%;">Bekräfta</button><button onclick="closePayModal()" style="background:#1a1a1a; padding:10px; width:50%;">Avbryt</button></div></div></div>
 
     <!-- POLIS GRIPANDE MODAL -->
-    <div class="overlay" id="police-overlay"><div class="popup" style="border-color:#e65c65;"><div class="popup-title" style="color:#e65c65;">Vem gjorde gripandet?</div><p style="font-size:13px; color:#aaa; margin-bottom:10px;">Smuggelpengarna på fickan tillfaller den polisens gängbank.</p><div class="police-selector-grid" id="police-targets"></div><button onclick="closePoliceModal()" style="background:#222; padding:10px; width:100%; margin-top:10px;">Avbryt</button></div></div>
+    <div class="overlay" id="police-overlay"><div class="popup" style="border-color:#e53e3e;"><div class="popup-title" style="color:#e53e3e;">Vem gjorde gripandet?</div><p style="font-size:13px; color:#a0aec0; margin-bottom:10px;">Smuggelpengarna på fickan tillfaller den polisens gängbank.</p><div class="police-selector-grid" id="police-targets"></div><button onclick="closePoliceModal()" style="background:#1a1a1a; padding:10px; width:100%; margin-top:10px;">Avbryt</button></div></div>
 
     <!-- REGLER POPUP -->
     <div class="overlay" id="rules-overlay">
         <div class="popup popup-large">
-            <h1 style="color:#3a86ff; text-align:center; font-size:26px; letter-spacing:2px; margin-bottom:5px;">THE NOIR SYNDICATE</h1>
-            <p style="text-align:center; color:#888; font-style:italic; margin-bottom:20px;">Officiellt Spelkoncept - Fyra fristående gäng (Alla mot alla)</p>
+            <h1 style="color:#2b6cb0; text-align:center; font-size:26px; letter-spacing:2px; margin-bottom:5px;">THE NOIR SYNDICATE</h1>
+            <p style="text-align:center; color:#666; font-style:italic; margin-bottom:20px;">Officiellt Spelkoncept - Fyra fristående gäng (Alla mot alla)</p>
             
             <h2>🕵️‍♂️ Översikt & Handling</h2>
             <p>Fyra rivaliserande syndikat kämpar om makten på gatorna. Din uppgift som gängledare är att smuggla kapital från din Boss (Kungarna) och säkra pengarna i ditt högkvarter (Essen) – allt medan polisen (Knektarna) patrullerar i skuggorna. Spelet spelas som en stenhård uppgörelse där alla kämpar mot alla.</p>
@@ -444,7 +451,7 @@
                 <li><strong>♣ Iron Clovers</strong> (Svart färg/svit)</li>
                 <li><strong>♥ Crimson Hearts</strong> (Röd färg/svit)</li>
                 <li><strong>♦ Diamond Syndicate</strong> (Röd färg/svit)</li>
-                <li><strong>Betalningsregel:</strong> När du landar på ett uppvänt kort som matchar din <em>egen</em> gängfärg/svit är det helt gratis. Landar du däremot på ett kort som tillhör något av de andra tre rivaliserande gängen, måste du omedelbart betala kortets värde (t.ex. en 5:a = $5) till den aktuella spelaren via appen.</li>
+                <li><strong>Betalningsregel:</strong> När du landar på ett uppvänt kort som matchar din <em>egen</em> gängfärg/svit är det helt gratis. Landar du däremot på ett kort som tillhör något av de andra tre rivaliserande gängen, must du omedelbart betala kortets värde (t.ex. en 5:a = $5) till den aktuella spelaren via appen.</li>
                 <li><strong>Damerna (Barerna):</strong> Alla gäng går in gratis på Damerna, men man tvingas <strong>stå över nästa omgång</strong>.</li>
             </ul>
 
@@ -452,7 +459,7 @@
             <ul>
                 <li>Man slår tärningen på iPaden och flyttar det exakta antalet steg (endast horisontellt och vertikalt, <strong>inga diagonala steg</strong>).</li>
                 <li>Du får inte gå tillbaka till samma ruta under samma drag.</li>
-                <li>När du landar på allt dolt kort vänds det upp permanent.</li>
+                <li>När du landar på ett dolt kort vänds det upp permanent.</li>
             </ul>
 
             <h2>🚨 Polisen (Knektarna) & Fängelset</h2>
@@ -468,7 +475,7 @@
                 <li><strong>Startkapital:</strong> Varje spelare har $20 på fickan och $300 i sin Bank (hos sin Boss).</li>
                 <li><strong>Smuggling:</strong> När du besöker din Boss plockar du ut $100 till fickan. Ditt mål är att ta dig till ditt eget Ess och trycka på "Säkra Ess".</li>
                 <li><strong>Konkurs:</strong> Om dina fickpengar tar slut på grund av motståndaravgifter går du i personlig konkurs. Du nollställs omedelbart till $20 och flyttas direkt tillbaka till ditt eget Ess (Huvudkvarter).</li>
-                <li><strong>Vinst:</strong> Först till <strong>$200 säkrade i sitt Ess</strong> vinner spelet!</li>
+                <li><strong>Vinst:</strong> Först till <strong>$200 säkrade i subdivisionen/sitt Ess</strong> vinner spelet!</li>
             </ul>
 
             <button class="popup-btn" onclick="closeRulesModal()" style="margin-top:15px;">Tillbaka till spelet</button>
