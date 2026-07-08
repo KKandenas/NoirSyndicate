@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>The Noir Syndicate - Control Room</title>
+    <title>The Noir Syndicate</title>
     <link rel="apple-touch-icon" href="gangsters.png">
     <style>
         :root {
@@ -162,8 +162,8 @@
             justify-content: space-between;
             box-shadow: 0 12px 40px rgba(0,0,0,0.6);
             position: relative;
-            backdrop-filter: blur(12px) brightness(85%);
-            -webkit-backdrop-filter: blur(12px) brightness(85%);
+            backdrop-filter: blur(1px) brightness(85%);
+            -webkit-backdrop-filter: blur(1px) brightness(85%);
         }
 
         .player-corner::before {
@@ -375,7 +375,7 @@
         }
 
         body.mode-iphone .dice-wrapper {
-            margin-top: 70px; /* Sänker ner tärningen något från skärmens ovankant */
+            margin-top: 80px; /* Sänker ner tärningen något från skärmens ovankant */
         }
 
         body.mode-iphone .player-corner {
@@ -453,7 +453,7 @@
             <div class="gang-actions">
                 <button onclick="takeLoad(4)" class="btn-success">💰 Hämta $100</button>
                 <button onclick="secureCash(4)" class="btn-secure">👑 Säkra Ess</button>
-                <button onclick="arrestPlayer(4)" class="btn-danger">🚨 Gripgisslan</button>
+                <button onclick="arrestPlayer(4)" class="btn-danger">🚨 Haffad</button>
                 <button onclick="openPayModal(4)" class="btn-pay">💸 Överför pengar ➔</button>
             </div>
         </div>
@@ -489,7 +489,7 @@
             <div class="gang-actions">
                 <button onclick="takeLoad(3)" class="btn-success">💰 Hämta $100</button>
                 <button onclick="secureCash(3)" class="btn-secure">👑 Säkra Ess</button>
-                <button onclick="arrestPlayer(3)" class="btn-danger">🚨 Gripgisslan</button>
+                <button onclick="arrestPlayer(3)" class="btn-danger">🚨 Haffad</button>
                 <button onclick="openPayModal(3)" class="btn-pay">💸 Överför pengar ➔</button>
             </div>
         </div>
@@ -507,7 +507,7 @@
             <div class="gang-actions">
                 <button onclick="takeLoad(2)" class="btn-success">💰 Hämta $100</button>
                 <button onclick="secureCash(2)" class="btn-secure">👑 Säkra Ess</button>
-                <button onclick="arrestPlayer(2)" class="btn-danger">🚨 Gripgisslan</button>
+                <button onclick="arrestPlayer(2)" class="btn-danger">🚨 Haffad</button>
                 <button onclick="openPayModal(2)" class="btn-pay">💸 Överför pengar ➔</button>
             </div>
         </div>
@@ -569,7 +569,7 @@
             <ul>
                 <li>Klicka på <strong>🚨 Gripgisslan</strong> under det drabbade gänget.</li>
                 <li>Välj vilket gäng som äger polisen som utförde gripandet.</li>
-                <li>Alla offrets fickpengar över grundbeloppet ($20) beslagtas och sätts direkt in i det gripande gängets **Bank**! Offrets pjäs skickas omedelbart tillbaka till häktet (motståndarens Boss-ruta).</li>
+                <li>Alla offrets fickpengar över grundbeloppet ($20) beslagtas och sätts direkt in i det gripande gängets **Bank**! Offrets pjäs skickas omedelbart tillbaka till häktet (motståndarens Boss-ruta).För att fly från häktet behöver man slå en fyra eller högre.</li>
             </ul>
 
             <button class="popup-btn" onclick="closeRulesModal()">Stäng och återgå till spelet</button>
