@@ -55,7 +55,7 @@
         button:active { transform: scale(0.98); }
         .btn-secondary { background: #222; border: 1px solid #333; color: #aaa; }
         .btn-success { background: #15803d; }
-        .btn-action { background: #b45309; margin-top: 5px; } /* Orange för aktioner */
+        .btn-action { background: #b45309; margin-top: 5px; }
 
         .room-code-display {
             font-size: 32px; font-weight: 900; letter-spacing: 5px; color: #ecc94b;
@@ -66,7 +66,7 @@
         .player-item { padding: 8px 5px; border-bottom: 1px solid #222; font-size: 13px; display: flex; justify-content: space-between; }
 
         /* ==========================================
-           KARTA DESIGN WITH PORT & POLICE
+           KARTA DESIGN
            ========================================== */
         .map-viewport {
             width: 100%;
@@ -97,7 +97,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            padding: 4px 2px;
+            padding: 6px 2px;
             font-size: 9px;
             font-weight: bold;
             position: relative;
@@ -108,9 +108,8 @@
         .tile-street-black { border-left: 3px solid #333; }
         .tile-street-red { border-left: 3px solid #dc2626; }
         
-        /* Nya specialzoner */
-        .tile-port { border: 2px solid #0284c7; background: #0c4a6e; color: #bae6fd; } /* Blå hamn */
-        .tile-police { border: 2px solid #e11d48; background: #4c0519; color: #ffe4e6; animation: pulse 2s infinite; } /* Pulserande röd polis */
+        .tile-port { border: 2px solid #0284c7; background: #0c4a6e; color: #bae6fd; }
+        .tile-police { border: 2px solid #e11d48; background: #4c0519; color: #ffe4e6; animation: pulse 2s infinite; }
 
         @keyframes pulse {
             0% { opacity: 0.9; }
@@ -118,24 +117,54 @@
             100% { opacity: 0.9; }
         }
 
-        .tile-title { text-transform: uppercase; font-size: 7.5px; letter-spacing: 0.3px; text-align: center; line-height: 1.1; }
+        .tile-title { text-transform: uppercase; font-size: 7.5px; letter-spacing: 0.3px; text-align: center; line-height: 1.1; z-index: 2; }
         
-        .secret-badge {
-            font-size: 9px;
-            padding: 1px 3px;
-            border-radius: 3px;
+        /* REJÄLT STÖRRE DOLDA MARKERINGAR */
+        .secret-overlay {
+            position: absolute;
+            top: 2px; left: 2px; right: 2px; bottom: 2px;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
             font-weight: 900;
-            margin: 1px 0;
+            z-index: 1;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
         }
-        .badge-club { background: #7c3aed; color: white; }
-        .badge-stash { background: #16a34a; color: white; }
+        .overlay-club { background: rgba(124, 58, 237, 0.4); border: 2px solid #7c3aed; color: #ddd; }
+        .overlay-stash { background: rgba(22, 163, 74, 0.4); border: 2px solid #16a34a; color: #ddd; }
+        .overlay-text { font-size: 8px; text-transform: uppercase; margin-top: 1px; opacity: 0.9; }
 
-        .presence-container { display: flex; gap: 2px; flex-wrap: wrap; justify-content: center; }
+        /* MYCKET STÖRRE MARKÖRER MED SYMBOLER */
+        .presence-container { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; width: 100%; z-index: 3; }
+        
         .player-token {
-            width: 15px; height: 15px; border-radius: 50%; background: #ecc94b;
-            border: 1px solid #fff; font-size: 8px; color: #000;
-            display: flex; align-items: center; justify-content: center; font-weight: 900;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 11px;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            border: 2px solid #fff;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.6);
+            line-height: 1;
         }
+        .token-symbol { font-size: 9px; margin-bottom: -1px; }
+
+        /* Färgteman för gängen */
+        .token-spades { background: #2563eb; border-color: #60a5fa; }   /* Blå Spader */
+        .token-hearts { background: #dc2626; border-color: #fca5a5; }   /* Röd Hjärter */
+        .token-clovers { background: #16a34a; border-color: #4ade80; }  /* Grön Klöver */
+        .token-diamonds { background: #d97706; border-color: #fcd34d; } /* Gul/Orange Ruter */
+
+        .zoom-controls { display: flex; gap: 10px; justify-content: center; }
+        .zoom-controls button { width: 60px; padding: 5px; font-size: 12px; }
 
         /* INVENTARIE HUD */
         .hud-grid {
@@ -183,9 +212,10 @@
         }
     </style>
 
+    <!-- Firebase SDK via CDN -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, set, onValue, update, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBJMAUFQYCpvbXl3T1fyEb1dZRFqXbPFQ8",
@@ -205,11 +235,17 @@
         let isLeader = false;
         let currentZoom = 0.68;
 
-        // Stadskarta med HAMN på kanten [2,0] och POLIS i mitten [2,2]
+        const allSyndicates = [
+            { id: "spades", name: "♠ Nightspades", startX: 0, startY: 0 },
+            { id: "hearts", name: "♥ Crimson Hearts", startX: 4, startY: 0 },
+            { id: "clovers", name: "♣ Iron Clovers", startX: 0, startY: 4 },
+            { id: "diamonds", name: "♦ Diamond Syndicate", startX: 4, startY: 4 }
+        ];
+
         const cityMapData = [
             { x: 0, y: 0, type: "hq-black", name: "Obsidian Vault" },
             { x: 1, y: 0, type: "street-black", name: "Shadow Alley" },
-            { x: 2, y: 0, type: "port", name: "The Grand Port ⚓" }, // HAMNEN PÅ KANTEN
+            { x: 2, y: 0, type: "port", name: "The Grand Port ⚓" },
             { x: 3, y: 0, type: "street-red", name: "Neon Bazaar" },
             { x: 4, y: 0, type: "hq-red", name: "Crimson Lounge" },
 
@@ -221,7 +257,7 @@
 
             { x: 0, y: 2, type: "street-black", name: "Smugglers Wharf" },
             { x: 1, y: 2, type: "street-black", name: "Blind Alley" },
-            { x: 2, y: 2, type: "police", name: "POLICE STATION 🚨" }, // POLISEN I MITTEN
+            { x: 2, y: 2, type: "police", name: "POLICE STATION 🚨" },
             { x: 3, y: 2, type: "street-red", name: "Viper Club" },
             { x: 4, y: 2, type: "street-red", name: "Blood Street" },
 
@@ -271,31 +307,53 @@
         window.onExecuteJoin = function() {
             const codeInput = document.getElementById("join-code-input").value.toUpperCase().trim();
             const nameInput = document.getElementById("join-name-input").value.trim();
-            const syndicateInput = document.getElementById("join-syndicate-select").value;
 
-            if (!codeInput || !nameInput) return alert("Fyll i allt!");
+            if (!codeInput || !nameInput) return alert("Fyll i ditt namn och rumskod!");
 
-            onValue(ref(db, 'rooms/' + codeInput), (snapshot) => {
-                if (snapshot.exists()) {
-                    currentRoomCode = codeInput;
-                    myPlayerId = "player_" + Date.now();
-                    isLeader = false;
+            // Hämta rummet för att kolla vilka gäng som är upptagna
+            get(ref(db, `rooms/${codeInput}`)).then((snapshot) => {
+                if (!snapshot.exists()) return alert("Rummet finns inte!");
 
-                    let startX = syndicateInput.includes("Crimson") || syndicateInput.includes("Diamond") ? 4 : 0;
-                    let startY = syndicateInput.includes("Diamond") || syndicateInput.includes("Clovers") ? 4 : 0;
-
-                    set(ref(db, `rooms/${codeInput}/players/${myPlayerId}`), {
-                        name: nameInput, syndicate: syndicateInput, x: startX, y: startY, booze: 0, cash: 0, bank: 0, isLeader: false
-                    });
-
-                    document.getElementById("display-code").innerText = codeInput;
-                    document.getElementById("start-game-btn").style.display = "none";
-                    showScreen("lobby-screen");
-                    listenToRoom(codeInput);
-                } else {
-                    alert("Rummet finns inte!");
+                const roomData = snapshot.val();
+                const occupiedSyndicates = [];
+                
+                if (roomData.players) {
+                    for (let pId in roomData.players) {
+                        occupiedSyndicates.push(roomData.players[pId].syndicate);
+                    }
                 }
-            }, { onlyOnce: true });
+
+                // Filtrera fram helt lediga gäng
+                let available = allSyndicates.filter(s => !occupiedSyndicates.includes(s.name));
+                
+                // Om alla 4 är upptagna (fler än 4 spelare), tillåt dubbletter
+                if (available.length === 0) {
+                    available = allSyndicates;
+                }
+
+                // Slumpa ett av de lediga gängen
+                const chosenSyndicate = available[Math.floor(Math.random() * available.length)];
+
+                currentRoomCode = codeInput;
+                myPlayerId = "player_" + Date.now();
+                isLeader = false;
+
+                set(ref(db, `rooms/${codeInput}/players/${myPlayerId}`), {
+                    name: nameInput,
+                    syndicate: chosenSyndicate.name,
+                    x: chosenSyndicate.startX,
+                    y: chosenSyndicate.startY,
+                    booze: 0,
+                    cash: 0,
+                    bank: 0,
+                    isLeader: false
+                });
+
+                document.getElementById("display-code").innerText = codeInput;
+                document.getElementById("start-game-btn").style.display = "none";
+                showScreen("lobby-screen");
+                listenToRoom(codeInput);
+            });
         };
 
         function listenToRoom(code) {
@@ -320,13 +378,11 @@
                     
                     const me = data.players[myPlayerId];
                     if (me) {
-                        // Uppdatera gränssnittets HUD i realtid
-                        document.getElementById("hud-gang").innerText = me.syndicate.split(" ")[1];
+                        document.getElementById("hud-gang").innerText = me.syndicate;
                         document.getElementById("hud-booze").innerText = `📦 Sprit: ${me.booze} st`;
                         document.getElementById("hud-cash").innerText = `💵 Fickan: $${me.cash}`;
                         document.getElementById("hud-bank").innerText = `🏦 Säkrat: $${me.bank}`;
 
-                        // Styra om "Hämta sprit"-knappen ska synas (Bara vid hamnen [2,0])
                         const actionBtn = document.getElementById("action-btn");
                         if (me.x === 2 && me.y === 0) {
                             actionBtn.style.display = "block";
@@ -335,21 +391,18 @@
                             actionBtn.style.display = "none";
                         }
 
-                        // AUTOMATISKA INTERAKTIONER (Svartklubb & Gömma)
                         if (data.secrets && data.secrets[myPlayerId]) {
                             const mySec = data.secrets[myPlayerId];
                             
-                            // Står på sin egen svartklubb med sprit? Sälj automatiskt!
                             if (me.x === mySec.club.x && me.y === mySec.club.y && me.booze > 0) {
                                 let cashEarned = me.booze * 500;
-                                alert(`🍸 Välkommen till din Svartklubb! Du sålde ${me.booze} lökiga spritflaskor och fick $${cashEarned}!`);
+                                alert(`🍸 Välkommen till din Svartklubb! Du sålde ${me.booze} st spritflaskor och fick $${cashEarned}!`);
                                 update(ref(db, `rooms/${currentRoomCode}/players/${myPlayerId}`), {
                                     booze: 0,
                                     cash: me.cash + cashEarned
                                 });
                             }
 
-                            // Står på sin egen gömma med cash? Säkra dem till banken!
                             if (me.x === mySec.stash.x && me.y === mySec.stash.y && me.cash > 0) {
                                 alert(`💰 Gömma besökt! Du tryggade $${me.cash} i väggen.`);
                                 update(ref(db, `rooms/${currentRoomCode}/players/${myPlayerId}`), {
@@ -375,10 +428,18 @@
                 if (secrets && secrets[myPlayerId]) {
                     const mySecrets = secrets[myPlayerId];
                     if (mySecrets.club && mySecrets.club.x === tile.x && mySecrets.club.y === tile.y) {
-                        secretHTML = `<div class="secret-badge badge-club">🍸 Klubb</div>`;
+                        secretHTML = `
+                            <div class="secret-overlay overlay-club">
+                                <span>🍸</span>
+                                <span class="overlay-text">Klubb</span>
+                            </div>`;
                     }
                     if (mySecrets.stash && mySecrets.stash.x === tile.x && mySecrets.stash.y === tile.y) {
-                        secretHTML = `<div class="secret-badge badge-stash">💰 Gömma</div>`;
+                        secretHTML = `
+                            <div class="secret-overlay overlay-stash">
+                                <span>💰</span>
+                                <span class="overlay-text">Gömma</span>
+                            </div>`;
                     }
                 }
 
@@ -387,7 +448,17 @@
                     for (let id in players) {
                         const p = players[id];
                         if (p.x === tile.x && p.y === tile.y) {
-                            presenceHTML += `<div class="player-token">${p.name.charAt(0).toUpperCase()}</div>`;
+                            let tokenClass = "token-spades";
+                            let symbol = "♠";
+                            if (p.syndicate.includes("Crimson")) { tokenClass = "token-hearts"; symbol = "♥"; }
+                            if (p.syndicate.includes("Clovers")) { tokenClass = "token-clovers"; symbol = "♣"; }
+                            if (p.syndicate.includes("Diamond")) { tokenClass = "token-diamonds"; symbol = "♦"; }
+
+                            presenceHTML += `
+                                <div class="player-token ${tokenClass}">
+                                    <span class="token-symbol">${symbol}</span>
+                                    <span>${p.name.charAt(0).toUpperCase()}</span>
+                                </div>`;
                         }
                     }
                 }
@@ -408,7 +479,6 @@
                 const players = snapshot.val();
                 const secretsData = {};
                 const getRandomStreetTile = () => {
-                    // Tillåt inte utplacering på hörn, hamn (2,0) eller polis (2,2)
                     const validTiles = cityMapData.filter(t => t.type.includes("street") && !(t.x === 2 && t.y === 0) && !(t.x === 2 && t.y === 2));
                     return validTiles[Math.floor(Math.random() * validTiles.length)];
                 };
@@ -430,7 +500,6 @@
                 let newX = Math.max(0, Math.min(4, currentPos.x + dx));
                 let newY = Math.max(0, Math.min(4, currentPos.y + dy));
 
-                // SNUBBLAT IN PÅ POLISSTATIONEN?
                 let updatedBooze = currentPos.booze;
                 if (newX === 2 && newY === 2) {
                     if (updatedBooze > 0) {
@@ -447,11 +516,10 @@
             }, { onlyOnce: true });
         };
 
-        // TRAFIKERA HAMNEN: KLICKAT PÅ HÄMTA SPRIT
         window.triggerTileAction = function() {
             onValue(ref(db, `rooms/${currentRoomCode}/players/${myPlayerId}`), (snapshot) => {
                 const me = snapshot.val();
-                if (me.x === 2 && me.y === 0) { // Dubbelkoll att man är i hamnen
+                if (me.x === 2 && me.y === 0) {
                     update(ref(db, `rooms/${currentRoomCode}/players/${myPlayerId}`), {
                         booze: me.booze + 1
                     });
@@ -467,35 +535,34 @@
 
     <div class="container">
         <h1>NOIR SYNDICATE</h1>
-        <div class="subtitle">City Boundaries</div>
+        <div class="subtitle">Underworld Matrix</div>
 
+        <!-- STARTSKÄRM -->
         <div class="screen active" id="start-screen">
             <button onclick="onCreateRoom()">💼 Skapa nytt spelrum</button>
             <button onclick="onJoinSetup()" class="btn-secondary">📱 Gå med i rum</button>
         </div>
 
+        <!-- ANSLUT -->
         <div class="screen" id="join-screen">
             <input type="text" id="join-code-input" placeholder="RUMSKOD" maxlength="4" style="text-transform: uppercase;">
-            <input type="text" id="join-name-input" placeholder="Ditt namn" maxlength="12">
-            <select id="join-syndicate-select">
-                <option value="♠ Nightspades">♠ Nightspades (HQ Uppe-Vänster)</option>
-                <option value="♥ Crimson Hearts">♥ Crimson Hearts (HQ Uppe-Höger)</option>
-                <option value="♣ Iron Clovers">♣ Iron Clovers (HQ Nere-Vänster)</option>
-                <option value="♦ Diamond Syndicate">♦ Diamond Syndicate (HQ Nere-Höger)</option>
-            </select>
-            <button onclick="onExecuteJoin()" class="btn-success">Anslut till rummet</button>
+            <input type="text" id="join-name-input" placeholder="Ditt gangster-namn" maxlength="12">
+            <button onclick="onExecuteJoin()" class="btn-success">Gå med & Slumpa gäng 🎲</button>
             <button onclick="onGoBack()" class="btn-secondary">Tillbaka</button>
         </div>
 
+        <!-- LOBBY -->
         <div class="screen" id="lobby-screen">
             <div class="room-code-display" id="display-code">----</div>
             <div class="player-list" id="player-list-box"></div>
             <button id="start-game-btn" onclick="onStartGame()" class="btn-success" style="margin-top: 10px; display: none;">STARTA SPELET 🚀</button>
         </div>
 
+        <!-- SPELSKÄRM -->
         <div class="screen" id="game-screen">
+            <!-- HUD -->
             <div class="hud-grid">
-                <div class="hud-item" style="border-left-color: #ecc94b;">👑 <span id="hud-gang">...</span></div>
+                <div class="hud-item" style="border-left-color: #ecc94b; font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><span id="hud-gang">...</span></div>
                 <div class="hud-item hud-booze" id="hud-booze">📦 Sprit: 0</div>
                 <div class="hud-item hud-cash" id="hud-cash">💵 Fickan: $0</div>
             </div>
@@ -503,6 +570,7 @@
                 <div class="hud-item hud-cash" id="hud-bank" style="grid-column: span 3; background: #132316; font-weight: bold;">🏦 Säkrat i Gömman: $0</div>
             </div>
             
+            <!-- KARTA -->
             <div class="map-viewport">
                 <div class="map-container" id="map-board"></div>
             </div>
@@ -512,6 +580,7 @@
                 <button onclick="adjustZoom(0.05)">🔍 [ + ]</button>
             </div>
 
+            <!-- KONTROLLER OCH INTERAKTION -->
             <div class="control-panel">
                 <div class="dpad-container">
                     <div></div><button class="dpad-btn" onclick="movePlayer(0, -1)">▲</button><div></div>
