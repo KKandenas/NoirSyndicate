@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Noir Syndicate — Digital</title>
+    <title>Noir Syndicate — Underworld Engine</title>
     <style>
         * {
             box-sizing: border-box;
@@ -28,7 +28,7 @@
 
         .container {
             width: 100%;
-            max-width: 420px;
+            max-width: 430px;
             background: #121212;
             border: 1px solid #222;
             padding: 15px;
@@ -37,192 +37,152 @@
             text-align: center;
         }
 
-        h1 {
-            font-size: 22px;
-            letter-spacing: 4px;
-            margin-bottom: 3px;
-            color: #fff;
-            font-weight: 900;
-        }
-
-        .subtitle {
-            font-size: 10px;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-bottom: 20px;
-        }
-
-        .screen {
-            display: none;
-        }
-
-        .screen.active {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+        h1 { font-size: 22px; letter-spacing: 4px; margin-bottom: 3px; color: #fff; font-weight: 900; }
+        .subtitle { font-size: 10px; color: #666; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 15px; }
+        .screen { display: none; }
+        .screen.active { display: flex; flex-direction: column; gap: 12px; }
 
         input, select {
-            width: 100%;
-            background: #1a1a1a;
-            border: 1px solid #333;
-            color: #fff;
-            padding: 12px;
-            border-radius: 6px;
-            font-size: 16px;
-            text-align: center;
+            width: 100%; background: #1a1a1a; border: 1px solid #333;
+            color: #fff; padding: 12px; border-radius: 6px; font-size: 16px; text-align: center;
         }
 
         button {
-            width: 100%;
-            background: #1e3a8a;
-            color: white;
-            border: none;
-            padding: 14px;
-            font-size: 14px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            width: 100%; background: #1e3a8a; color: white; border: none;
+            padding: 14px; font-size: 14px; font-weight: bold; border-radius: 6px;
+            cursor: pointer; text-transform: uppercase; letter-spacing: 1px;
         }
-
         button:active { transform: scale(0.98); }
         .btn-secondary { background: #222; border: 1px solid #333; color: #aaa; }
         .btn-success { background: #15803d; }
+        .btn-action { background: #b45309; margin-top: 5px; } /* Orange för aktioner */
 
         .room-code-display {
-            font-size: 32px;
-            font-weight: 900;
-            letter-spacing: 5px;
-            color: #ecc94b;
-            margin: 10px 0;
-            background: #1a1a1a;
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px dashed #ecc94b;
+            font-size: 32px; font-weight: 900; letter-spacing: 5px; color: #ecc94b;
+            margin: 10px 0; background: #1a1a1a; padding: 10px; border-radius: 6px; border: 1px dashed #ecc94b;
         }
 
-        .player-list {
-            text-align: left;
-            background: #161616;
-            border-radius: 6px;
-            padding: 10px;
-            border: 1px solid #222;
-        }
-
-        .player-item {
-            padding: 8px 5px;
-            border-bottom: 1px solid #222;
-            font-size: 13px;
-            display: flex;
-            justify-content: space-between;
-        }
+        .player-list { text-align: left; background: #161616; border-radius: 6px; padding: 10px; border: 1px solid #222; }
+        .player-item { padding: 8px 5px; border-bottom: 1px solid #222; font-size: 13px; display: flex; justify-content: space-between; }
 
         /* ==========================================
-           ZOOMBAR KARTA DESIGN
+           KARTA DESIGN WITH PORT & POLICE
            ========================================== */
         .map-viewport {
             width: 100%;
-            height: 320px;
+            height: 330px;
             background: #0d0d0d;
             border: 2px solid #222;
             border-radius: 8px;
-            overflow: auto; /* Tillåter skroll på mobiler */
-            position: relative;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.9);
+            overflow: auto;
         }
 
         .map-container {
-            width: 500px; /* Fixerad storlek på "staden" så vi kan zooma */
-            height: 500px;
+            width: 560px;
+            height: 560px;
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-template-rows: repeat(4, 1fr);
-            gap: 6px;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            gap: 5px;
             padding: 10px;
             transform-origin: top left;
             transition: transform 0.2s ease-out;
         }
 
         .map-tile {
-            background: #161616;
-            border: 1px solid #333;
-            border-radius: 6px;
+            background: #141414;
+            border: 1px solid #222;
+            border-radius: 4px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 4px;
-            font-size: 10px;
-            font-weight: bold;
-            text-align: center;
-            position: relative;
-            color: #ccc;
-        }
-
-        /* Färgteman för distrikt */
-        .tile-hq-black { border: 2px solid #555; background: #222; color: #fff; box-shadow: inset 0 0 10px rgba(255,255,255,0.1); }
-        .tile-hq-red { border: 2px solid #991b1b; background: #450a0a; color: #fca5a5; box-shadow: inset 0 0 10px rgba(239,68,68,0.2); }
-        .tile-street-black { border-left: 4px solid #444; background: #181818; }
-        .tile-street-red { border-left: 4px solid #ef4444; background: #221010; }
-
-        .tile-title {
+            justify-content: space-between;
+            padding: 4px 2px;
             font-size: 9px;
-            text-transform: uppercase;
-            margin-bottom: 4px;
-            line-height: 1.1;
+            font-weight: bold;
+            position: relative;
         }
 
-        /* Spelarpjäser på kartan */
-        .presence-container {
-            display: flex;
-            gap: 3px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 4px;
+        .tile-hq-black { border: 2px solid #555; background: #1f1f1f; color: #fff; }
+        .tile-hq-red { border: 2px solid #991b1b; background: #3f0c0c; color: #fca5a5; }
+        .tile-street-black { border-left: 3px solid #333; }
+        .tile-street-red { border-left: 3px solid #dc2626; }
+        
+        /* Nya specialzoner */
+        .tile-port { border: 2px solid #0284c7; background: #0c4a6e; color: #bae6fd; } /* Blå hamn */
+        .tile-police { border: 2px solid #e11d48; background: #4c0519; color: #ffe4e6; animation: pulse 2s infinite; } /* Pulserande röd polis */
+
+        @keyframes pulse {
+            0% { opacity: 0.9; }
+            50% { opacity: 0.6; }
+            100% { opacity: 0.9; }
         }
 
+        .tile-title { text-transform: uppercase; font-size: 7.5px; letter-spacing: 0.3px; text-align: center; line-height: 1.1; }
+        
+        .secret-badge {
+            font-size: 9px;
+            padding: 1px 3px;
+            border-radius: 3px;
+            font-weight: 900;
+            margin: 1px 0;
+        }
+        .badge-club { background: #7c3aed; color: white; }
+        .badge-stash { background: #16a34a; color: white; }
+
+        .presence-container { display: flex; gap: 2px; flex-wrap: wrap; justify-content: center; }
         .player-token {
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: #ecc94b;
-            border: 1px solid #fff;
-            font-size: 8px;
-            color: #000;
+            width: 15px; height: 15px; border-radius: 50%; background: #ecc94b;
+            border: 1px solid #fff; font-size: 8px; color: #000;
+            display: flex; align-items: center; justify-content: center; font-weight: 900;
+        }
+
+        /* INVENTARIE HUD */
+        .hud-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            background: #161616;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            border: 1px solid #222;
+            text-align: left;
+        }
+        .hud-item { background: #1f1f1f; padding: 4px 6px; border-radius: 4px; border-left: 3px solid #555; }
+        .hud-cash { border-left-color: #16a34a; }
+        .hud-booze { border-left-color: #7c3aed; }
+
+        /* CONTROLS AREA */
+        .control-panel {
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-weight: 900;
-        }
-
-        /* Zoomkontroller */
-        .zoom-controls {
-            display: flex;
             justify-content: space-between;
             gap: 10px;
-            margin-top: 8px;
-        }
-        .zoom-controls button {
-            padding: 8px;
-            font-size: 16px;
-            background: #222;
-            border: 1px solid #444;
+            margin-top: 5px;
         }
 
-        .hud {
-            background: #161616;
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 13px;
-            text-align: left;
-            border: 1px solid #222;
+        .dpad-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 4px;
+            width: 130px;
+        }
+        .dpad-btn {
+            background: #222; border: 1px solid #333; color: #fff;
+            padding: 10px 0; font-size: 14px; border-radius: 6px; font-weight: bold;
+        }
+        .dpad-btn:active { background: #444; }
+
+        .action-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
         }
     </style>
 
-    <!-- Firebase SDK via CDN -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -243,30 +203,39 @@
         let currentRoomCode = null;
         let myPlayerId = null;
         let isLeader = false;
-        let currentZoom = 0.8; // Startzoom för att passa mobilen skapligt
+        let currentZoom = 0.68;
 
-        // Den fasta staden (4x4 kartmatris)
+        // Stadskarta med HAMN på kanten [2,0] och POLIS i mitten [2,2]
         const cityMapData = [
-            // Rad 0
-            { x: 0, y: 0, type: "hq-black", name: "Obsidian Vault", code: "OV" },
-            { x: 1, y: 0, type: "street-black", name: "Shadow Alley", code: "SA" },
-            { x: 2, y: 0, type: "street-red", name: "Neon Bazaar", code: "NB" },
-            { x: 3, y: 0, type: "hq-red", name: "Crimson Lounge", code: "CL" },
-            // Rad 1
-            { x: 0, y: 1, type: "street-black", name: "Ink District", code: "ID" },
-            { x: 1, y: 1, type: "street-black", name: "Safehouse Noir", code: "SN" },
-            { x: 2, y: 1, type: "street-red", name: "Ruby Bank", code: "RB" },
-            { x: 3, y: 1, type: "street-red", name: "Scarlet Gate", code: "SG" },
-            // Rad 2
-            { x: 0, y: 2, type: "street-black", name: "Charcoal Docks", code: "CD" },
-            { x: 1, y: 2, type: "street-black", name: "Smugglers Cove", code: "SC" },
-            { x: 2, y: 2, type: "street-red", name: "Viper Club", code: "VC" },
-            { x: 3, y: 2, type: "street-red", name: "Blood Street", code: "BS" },
-            // Rad 3
-            { x: 0, y: 3, type: "hq-black", name: "Onyx Pier", code: "OP" },
-            { x: 1, y: 3, type: "street-black", name: "Dusk Slums", code: "DS" },
-            { x: 2, y: 3, type: "street-red", name: "Velvet Hotel", code: "VH" },
-            { x: 3, y: 3, type: "hq-red", name: "Bloodstone Casino", code: "BC" }
+            { x: 0, y: 0, type: "hq-black", name: "Obsidian Vault" },
+            { x: 1, y: 0, type: "street-black", name: "Shadow Alley" },
+            { x: 2, y: 0, type: "port", name: "The Grand Port ⚓" }, // HAMNEN PÅ KANTEN
+            { x: 3, y: 0, type: "street-red", name: "Neon Bazaar" },
+            { x: 4, y: 0, type: "hq-red", name: "Crimson Lounge" },
+
+            { x: 0, y: 1, type: "street-black", name: "Charcoal Docks" },
+            { x: 1, y: 1, type: "street-black", name: "Safehouse Noir" },
+            { x: 2, y: 1, type: "street-black", name: "Foggy Lane" },
+            { x: 3, y: 1, type: "street-red", name: "Ruby Bank" },
+            { x: 4, y: 1, type: "street-red", name: "Scarlet Gate" },
+
+            { x: 0, y: 2, type: "street-black", name: "Smugglers Wharf" },
+            { x: 1, y: 2, type: "street-black", name: "Blind Alley" },
+            { x: 2, y: 2, type: "police", name: "POLICE STATION 🚨" }, // POLISEN I MITTEN
+            { x: 3, y: 2, type: "street-red", name: "Viper Club" },
+            { x: 4, y: 2, type: "street-red", name: "Blood Street" },
+
+            { x: 0, y: 3, type: "street-black", name: "Dusk Slums" },
+            { x: 1, y: 3, type: "street-black", name: "Rust Yards" },
+            { x: 2, y: 3, type: "street-red", name: "Velvet Hotel" },
+            { x: 3, y: 3, type: "street-red", name: "Roulette Ave" },
+            { x: 4, y: 3, type: "street-red", name: "Red Light Hub" },
+
+            { x: 0, y: 4, type: "hq-black", name: "Onyx Pier" },
+            { x: 1, y: 4, type: "street-black", name: "The Iron Grid" },
+            { x: 2, y: 4, type: "street-red", name: "Marble Square" },
+            { x: 3, y: 4, type: "street-red", name: "Dice Alley" },
+            { x: 4, y: 4, type: "hq-red", name: "Bloodstone Casino" }
         ];
 
         function showScreen(screenId) {
@@ -274,9 +243,8 @@
             document.getElementById(screenId).classList.add('active');
         }
 
-        // Zoom-knapparnas funktioner
         window.adjustZoom = function(amount) {
-            currentZoom = Math.max(0.5, Math.min(1.5, currentZoom + amount));
+            currentZoom = Math.max(0.4, Math.min(1.3, currentZoom + amount));
             document.getElementById("map-board").style.transform = `scale(${currentZoom})`;
         };
 
@@ -287,15 +255,9 @@
             myPlayerId = "player_" + Date.now();
             isLeader = true;
 
-            set(ref(db, 'rooms/' + code), {
-                status: "lobby",
-                createdAt: Date.now()
-            }).then(() => {
+            set(ref(db, 'rooms/' + code), { status: "lobby", createdAt: Date.now() }).then(() => {
                 set(ref(db, `rooms/${code}/players/${myPlayerId}`), {
-                    name: "Boss (Host)",
-                    syndicate: "♠ Nightspades",
-                    x: 0, y: 0, // Startposition
-                    isLeader: true
+                    name: "Boss", syndicate: "♠ Nightspades", x: 0, y: 0, booze: 0, cash: 0, bank: 0, isLeader: true
                 });
                 document.getElementById("display-code").innerText = code;
                 document.getElementById("start-game-btn").style.display = "block";
@@ -319,15 +281,11 @@
                     myPlayerId = "player_" + Date.now();
                     isLeader = false;
 
-                    // Slumpa start-HQ baserat på val
-                    let startX = syndicateInput.includes("Crimson") || syndicateInput.includes("Diamond") ? 3 : 0;
-                    let startY = syndicateInput.includes("Diamond") || syndicateInput.includes("Clovers") ? 3 : 0;
+                    let startX = syndicateInput.includes("Crimson") || syndicateInput.includes("Diamond") ? 4 : 0;
+                    let startY = syndicateInput.includes("Diamond") || syndicateInput.includes("Clovers") ? 4 : 0;
 
                     set(ref(db, `rooms/${codeInput}/players/${myPlayerId}`), {
-                        name: nameInput,
-                        syndicate: syndicateInput,
-                        x: startX, y: startY,
-                        isLeader: false
+                        name: nameInput, syndicate: syndicateInput, x: startX, y: startY, booze: 0, cash: 0, bank: 0, isLeader: false
                     });
 
                     document.getElementById("display-code").innerText = codeInput;
@@ -345,7 +303,6 @@
                 const data = snapshot.val();
                 if (!data) return;
 
-                // 1. Lobbylistan
                 const listEl = document.getElementById("player-list-box");
                 if (listEl) {
                     listEl.innerHTML = "";
@@ -357,58 +314,149 @@
                     }
                 }
 
-                // 2. Om spelet har startat -> Rendera kartan
                 if (data.status === "playing") {
                     showScreen("game-screen");
-                    renderCityMap(data.players);
+                    renderCityMap(data.players, data.secrets);
                     
-                    // Uppdatera en liten personlig HUD på skärmen
                     const me = data.players[myPlayerId];
                     if (me) {
-                        document.getElementById("hud-info").innerHTML = `<b>Syndikat:</b> ${me.syndicate}<br><b>Position:</b> X:${me.x}, Y:${me.y}`;
+                        // Uppdatera gränssnittets HUD i realtid
+                        document.getElementById("hud-gang").innerText = me.syndicate.split(" ")[1];
+                        document.getElementById("hud-booze").innerText = `📦 Sprit: ${me.booze} st`;
+                        document.getElementById("hud-cash").innerText = `💵 Fickan: $${me.cash}`;
+                        document.getElementById("hud-bank").innerText = `🏦 Säkrat: $${me.bank}`;
+
+                        // Styra om "Hämta sprit"-knappen ska synas (Bara vid hamnen [2,0])
+                        const actionBtn = document.getElementById("action-btn");
+                        if (me.x === 2 && me.y === 0) {
+                            actionBtn.style.display = "block";
+                            actionBtn.innerText = "⚓ Hämta gratis Sprit";
+                        } else {
+                            actionBtn.style.display = "none";
+                        }
+
+                        // AUTOMATISKA INTERAKTIONER (Svartklubb & Gömma)
+                        if (data.secrets && data.secrets[myPlayerId]) {
+                            const mySec = data.secrets[myPlayerId];
+                            
+                            // Står på sin egen svartklubb med sprit? Sälj automatiskt!
+                            if (me.x === mySec.club.x && me.y === mySec.club.y && me.booze > 0) {
+                                let cashEarned = me.booze * 500;
+                                alert(`🍸 Välkommen till din Svartklubb! Du sålde ${me.booze} lökiga spritflaskor och fick $${cashEarned}!`);
+                                update(ref(db, `rooms/${currentRoomCode}/players/${myPlayerId}`), {
+                                    booze: 0,
+                                    cash: me.cash + cashEarned
+                                });
+                            }
+
+                            // Står på sin egen gömma med cash? Säkra dem till banken!
+                            if (me.x === mySec.stash.x && me.y === mySec.stash.y && me.cash > 0) {
+                                alert(`💰 Gömma besökt! Du tryggade $${me.cash} i väggen.`);
+                                update(ref(db, `rooms/${currentRoomCode}/players/${myPlayerId}`), {
+                                    cash: 0,
+                                    bank: me.bank + me.cash
+                                });
+                            }
+                        }
                     }
                 }
             });
         }
 
-        // Bygg och rita upp kartan utifrån spelarnas positioner i Firebase
-        function renderCityMap(players) {
+        function renderCityMap(players, secrets) {
             const boardEl = document.getElementById("map-board");
-            boardEl.innerHTML = ""; // Rensa gamla gubbar
+            boardEl.innerHTML = "";
 
             cityMapData.forEach(tile => {
                 const tileDiv = document.createElement("div");
                 tileDiv.className = `map-tile tile-${tile.type}`;
                 
-                // Hitta om det står några spelare på den här rutan just nu
+                let secretHTML = "";
+                if (secrets && secrets[myPlayerId]) {
+                    const mySecrets = secrets[myPlayerId];
+                    if (mySecrets.club && mySecrets.club.x === tile.x && mySecrets.club.y === tile.y) {
+                        secretHTML = `<div class="secret-badge badge-club">🍸 Klubb</div>`;
+                    }
+                    if (mySecrets.stash && mySecrets.stash.x === tile.x && mySecrets.stash.y === tile.y) {
+                        secretHTML = `<div class="secret-badge badge-stash">💰 Gömma</div>`;
+                    }
+                }
+
                 let presenceHTML = "";
                 if (players) {
                     for (let id in players) {
                         const p = players[id];
                         if (p.x === tile.x && p.y === tile.y) {
-                            // Ta första bokstaven i spelarens namn som pjäs-text
-                            const initial = p.name.charAt(0).toUpperCase();
-                            presenceHTML += `<div class="player-token" title="${p.name}">${initial}</div>`;
+                            presenceHTML += `<div class="player-token">${p.name.charAt(0).toUpperCase()}</div>`;
                         }
                     }
                 }
 
                 tileDiv.innerHTML = `
                     <div class="tile-title">${tile.name}</div>
-                    <div style="color: #555; font-size: 8px;">[${tile.x},${tile.y}]</div>
+                    ${secretHTML}
                     <div class="presence-container">${presenceHTML}</div>
                 `;
-                
                 boardEl.appendChild(tileDiv);
             });
-            
-            // Verkställ nuvarande zoom-skala
             boardEl.style.transform = `scale(${currentZoom})`;
         }
 
         window.onStartGame = function() {
             if (!isLeader) return;
-            update(ref(db, 'rooms/' + currentRoomCode), { status: "playing" });
+            onValue(ref(db, `rooms/${currentRoomCode}/players`), (snapshot) => {
+                const players = snapshot.val();
+                const secretsData = {};
+                const getRandomStreetTile = () => {
+                    // Tillåt inte utplacering på hörn, hamn (2,0) eller polis (2,2)
+                    const validTiles = cityMapData.filter(t => t.type.includes("street") && !(t.x === 2 && t.y === 0) && !(t.x === 2 && t.y === 2));
+                    return validTiles[Math.floor(Math.random() * validTiles.length)];
+                };
+
+                for (let pId in players) {
+                    let clubTile = getRandomStreetTile(); let stashTile = getRandomStreetTile();
+                    while(clubTile.x === stashTile.x && clubTile.y === stashTile.y) stashTile = getRandomStreetTile();
+                    secretsData[pId] = { club: { x: clubTile.x, y: clubTile.y }, stash: { x: stashTile.x, y: stashTile.y } };
+                }
+                update(ref(db, 'rooms/' + currentRoomCode), { status: "playing", secrets: secretsData });
+            }, { onlyOnce: true });
+        };
+
+        window.movePlayer = function(dx, dy) {
+            onValue(ref(db, `rooms/${currentRoomCode}/players/${myPlayerId}`), (snapshot) => {
+                const currentPos = snapshot.val();
+                if (!currentPos) return;
+
+                let newX = Math.max(0, Math.min(4, currentPos.x + dx));
+                let newY = Math.max(0, Math.min(4, currentPos.y + dy));
+
+                // SNUBBLAT IN PÅ POLISSTATIONEN?
+                let updatedBooze = currentPos.booze;
+                if (newX === 2 && newY === 2) {
+                    if (updatedBooze > 0) {
+                        alert("🚨 PÅDRAG! Polisen stormade dig vid stationen och beslagtog all din sprit!");
+                        updatedBooze = 0;
+                    } else {
+                        alert("🚨 Du smyger nervöst förbi Polisstationen... Inget olagligt på dig denna gång.");
+                    }
+                }
+
+                update(ref(db, `rooms/${currentRoomCode}/players/${myPlayerId}`), {
+                    x: newX, y: newY, booze: updatedBooze
+                });
+            }, { onlyOnce: true });
+        };
+
+        // TRAFIKERA HAMNEN: KLICKAT PÅ HÄMTA SPRIT
+        window.triggerTileAction = function() {
+            onValue(ref(db, `rooms/${currentRoomCode}/players/${myPlayerId}`), (snapshot) => {
+                const me = snapshot.val();
+                if (me.x === 2 && me.y === 0) { // Dubbelkoll att man är i hamnen
+                    update(ref(db, `rooms/${currentRoomCode}/players/${myPlayerId}`), {
+                        booze: me.booze + 1
+                    });
+                }
+            }, { onlyOnce: true });
         };
 
         window.onGoBack = function() { showScreen("start-screen"); };
@@ -419,50 +467,61 @@
 
     <div class="container">
         <h1>NOIR SYNDICATE</h1>
-        <div class="subtitle">Digital Core</div>
+        <div class="subtitle">City Boundaries</div>
 
-        <!-- SKÄRM 1: START -->
         <div class="screen active" id="start-screen">
             <button onclick="onCreateRoom()">💼 Skapa nytt spelrum</button>
             <button onclick="onJoinSetup()" class="btn-secondary">📱 Gå med i rum</button>
         </div>
 
-        <!-- SKÄRM 2: ANSLUT -->
         <div class="screen" id="join-screen">
             <input type="text" id="join-code-input" placeholder="RUMSKOD" maxlength="4" style="text-transform: uppercase;">
-            <input type="text" id="join-name-input" placeholder="Ditt gangster-namn" maxlength="12">
+            <input type="text" id="join-name-input" placeholder="Ditt namn" maxlength="12">
             <select id="join-syndicate-select">
-                <option value="♠ Nightspades">♠ Nightspades (Svart, HQ Top-Vänster)</option>
-                <option value="♥ Crimson Hearts">♥ Crimson Hearts (Röd, HQ Top-Höger)</option>
-                <option value="♣ Iron Clovers">♣ Iron Clovers (Svart, HQ Botten-Vänster)</option>
-                <option value="♦ Diamond Syndicate">♦ Diamond Syndicate (Röd, HQ Botten-Höger)</option>
+                <option value="♠ Nightspades">♠ Nightspades (HQ Uppe-Vänster)</option>
+                <option value="♥ Crimson Hearts">♥ Crimson Hearts (HQ Uppe-Höger)</option>
+                <option value="♣ Iron Clovers">♣ Iron Clovers (HQ Nere-Vänster)</option>
+                <option value="♦ Diamond Syndicate">♦ Diamond Syndicate (HQ Nere-Höger)</option>
             </select>
             <button onclick="onExecuteJoin()" class="btn-success">Anslut till rummet</button>
             <button onclick="onGoBack()" class="btn-secondary">Tillbaka</button>
         </div>
 
-        <!-- SKÄRM 3: LOBBY -->
         <div class="screen" id="lobby-screen">
-            <p style="font-size: 12px; color: #888;">Rumskod:</p>
             <div class="room-code-display" id="display-code">----</div>
             <div class="player-list" id="player-list-box"></div>
             <button id="start-game-btn" onclick="onStartGame()" class="btn-success" style="margin-top: 10px; display: none;">STARTA SPELET 🚀</button>
         </div>
 
-        <!-- SKÄRM 4: SPELSKÄRM MED ZOOMBAR MINIKARTA -->
         <div class="screen" id="game-screen">
-            <div class="hud" id="hud-info">Laddar spelinfo...</div>
+            <div class="hud-grid">
+                <div class="hud-item" style="border-left-color: #ecc94b;">👑 <span id="hud-gang">...</span></div>
+                <div class="hud-item hud-booze" id="hud-booze">📦 Sprit: 0</div>
+                <div class="hud-item hud-cash" id="hud-cash">💵 Fickan: $0</div>
+            </div>
+            <div class="hud-grid" style="margin-top: -7px;">
+                <div class="hud-item hud-cash" id="hud-bank" style="grid-column: span 3; background: #132316; font-weight: bold;">🏦 Säkrat i Gömman: $0</div>
+            </div>
             
             <div class="map-viewport">
-                <div class="map-container" id="map-board">
-                    <!-- Kartrutor och spelarpjäser genereras här automatiskt -->
-                </div>
+                <div class="map-container" id="map-board"></div>
             </div>
 
-            <!-- Kontroller för att zooma kartan enkelt på mobilen -->
             <div class="zoom-controls">
-                <button onclick="adjustZoom(-0.1)">🔍 Minska karta [ - ]</button>
-                <button onclick="adjustZoom(0.1)">🔍 Förstora karta [ + ]</button>
+                <button onclick="adjustZoom(-0.05)">🔍 [ - ]</button>
+                <button onclick="adjustZoom(0.05)">🔍 [ + ]</button>
+            </div>
+
+            <div class="control-panel">
+                <div class="dpad-container">
+                    <div></div><button class="dpad-btn" onclick="movePlayer(0, -1)">▲</button><div></div>
+                    <button class="dpad-btn" onclick="movePlayer(-1, 0)">◀</button><div style="background: #1a1a1a;"></div><button class="dpad-btn" onclick="movePlayer(1, 0)">▶</button>
+                    <div></div><button class="dpad-btn" onclick="movePlayer(0, 1)">▼</button><div></div>
+                </div>
+                
+                <div class="action-container">
+                    <button id="action-btn" onclick="triggerTileAction()" class="btn-action" style="display:none;">Agera</button>
+                </div>
             </div>
         </div>
 
