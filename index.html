@@ -259,7 +259,7 @@
             gap: 25px;
         }
 
-        /* IPHONE SPECIFIK FLIKMENY (Dold som standard på iPad) */
+        /* IPHONE SPECIFIK FLIKMENY */
         .iphone-tabs {
             display: none;
             position: fixed;
@@ -302,14 +302,16 @@
         .overlay.active { opacity: 1; pointer-events: auto; }
         .popup { background: #0f0f0f; border: 1px solid #262626; border-radius: 6px; padding: 25px; max-width: 450px; width: 90%; text-align: center; }
         .order-notice { background: rgba(236, 201, 75, 0.1); border: 1px dashed #ecc94b; color: #ecc94b; font-size: 12px; font-weight: bold; padding: 8px; margin-bottom: 15px; border-radius: 4px; text-transform: uppercase; }
+       
         .popup-large { max-width: 750px; height: 85vh; overflow-y: auto; text-align: left; padding: 35px; border-color: #2b6cb0; }
         .popup-large h2 { color: #2b6cb0; text-transform: uppercase; margin: 20px 0 8px 0; font-size: 18px; border-bottom: 1px solid #1a1a1a; padding-bottom: 4px;}
-        .popup-large p, .popup-large li { color: #a0aec0; font-size: 13px; line-height: 1.6; margin-bottom: 8px; }
-        .popup-large ul { padding-left: 15px; }
+        .popup-large p, .popup-large li { color: #cbd5e0; font-size: 14px; line-height: 1.6; margin-bottom: 10px; }
+        .popup-large ul { padding-left: 20px; margin-bottom: 12px; }
+       
         .popup-dice-badge { background: #ecc94b; color: #000; display: inline-block; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: 900; margin-bottom: 10px; text-transform: uppercase; }
         .popup-title { color: #e53e3e; font-size: 22px; text-transform: uppercase; margin-bottom: 10px; }
         .popup-desc { font-size: 14px; line-height: 1.5; color: #cbd5e0; margin-bottom: 20px; }
-        .popup-btn { background: #2b6cb0; color: white; font-size: 14px; padding: 12px; border-radius: 4px; width: 100%; font-weight: bold; border: none; }
+        .popup-btn { background: #2b6cb0; color: white; font-size: 14px; padding: 12px; border-radius: 4px; width: 100%; font-weight: bold; border: none; margin-top: 15px;}
         .pay-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; text-align: left; }
         .pay-grid label { display: block; font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
         .pay-grid select, .pay-grid input { width: 100%; background: #151515; border: 1px solid #262626; color: white; padding: 8px; border-radius: 4px; font-size: 14px; }
@@ -317,13 +319,15 @@
         .police-btn { text-align: left; padding: 12px; font-size: 13px; }
 
         /* ========================================================
-           📱 IPHONE-SPECIFIK RENDERING (Drivs via klassen .mode-iphone)
+           📱 IPHONE-SPECIFIK RENDERING
            ======================================================== */
         body.mode-iphone .game-container {
-            grid-template-rows: 1fr auto 50px; /* Tärning uppe, aktivt gäng i mitten, knappar nere */
-            grid-template-columns: 1fr;
-            padding: 12px;
-            gap: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 15px 15px 80px 15px;
+            height: 100vh;
+            gap: 15px;
         }
 
         body.mode-iphone .side-bar-left,
@@ -332,37 +336,40 @@
         }
 
         body.mode-iphone .center-console {
-            grid-area: 1 / 1;
-            gap: 10px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             justify-content: center;
+            margin: 10px 0;
         }
        
         body.mode-iphone #dice-container {
-            width: 100px; height: 100px; padding: 12px;
+            width: 110px; height: 110px; padding: 14px;
         }
 
         body.mode-iphone .player-corner {
-            grid-area: 2 / 1 !important; /* Tvinga ut aktiva hörnet till mitten */
-            display: none; /* Göm alla hörn som standard */
-            height: 250px;
-            padding: 12px;
+            display: none;
+            width: 100%;
+            min-height: 250px;
+            padding: 14px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
 
         body.mode-iphone .player-corner.active-tab {
-            display: flex; /* Visa endast det hörn vars flik är aktiv */
+            display: flex;
         }
 
         body.mode-iphone .stats-grid {
-            margin: 6px 0;
-            gap: 6px;
+            margin: 10px 0;
+            gap: 8px;
         }
-        body.mode-iphone .stat-value { font-size: 16px; }
-        body.mode-iphone .stat-box.pocket-box .stat-value { font-size: 18px; }
-        body.mode-iphone button { padding: 8px 4px; font-size: 11px; }
+        body.mode-iphone .stat-value { font-size: 18px; }
+        body.mode-iphone .stat-box.pocket-box .stat-value { font-size: 20px; }
+        body.mode-iphone button { padding: 10px 6px; font-size: 12px; }
 
         body.mode-iphone .iphone-tabs {
-            display: grid; /* Aktivera bottenmenyn på iPhone */
+            display: grid;
         }
     </style>
 </head>
@@ -428,7 +435,7 @@
         <div class="side-bar-left">THE NOIR SYNDICATE</div>
         <div class="side-bar-right">BOARD HUB v1.3</div>
 
-        <!-- MITTENKONSOL MED TÄRNING -->
+        <!-- MITTENKONSOL -->
         <div class="center-console">
             <div class="dice-wrapper">
                 <div id="dice-container" onclick="rollDice()">
@@ -439,8 +446,8 @@
                 <div class="dice-label pulse-text" id="dice-label">KLICKA FÖR ATT SLÅ</div>
             </div>
             <div style="display:flex; gap:8px; width: 100%; max-width: 240px; justify-content: center;">
-                <button onclick="openRulesModal()" style="font-size:10px; padding:6px 10px; background:rgba(0,0,0,0.6);">📜 Regler</button>
-                <button onclick="resetGame()" style="font-size:10px; padding:6px 10px; background:rgba(0,0,0,0.6); color:#666;">Reset</button>
+                <button onclick="openRulesModal()" style="font-size:11px; padding:6px 12px; background:rgba(0,0,0,0.6);">📜 Regler</button>
+                <button onclick="resetGame()" style="font-size:11px; padding:6px 12px; background:rgba(0,0,0,0.6); color:#666;">Reset</button>
             </div>
         </div>
 
@@ -491,7 +498,7 @@
         <button class="tab-btn" data-tab="4" onclick="switchTab(4)"><span>♦</span>Ruter</button>
     </div>
 
-    <!-- MODALER (Gemensamma) -->
+    <!-- MODALER -->
     <div class="overlay" id="event-overlay">
         <div class="popup">
             <div class="popup-dice-badge" id="event-dice-badge"></div>
@@ -504,7 +511,43 @@
    
     <div class="overlay" id="pay-overlay"><div class="popup" style="border-color:#ecc94b;"><div class="popup-title" style="color:#ecc94b;" id="pay-title">Skicka pengar</div><div class="pay-grid"><div><label for="pay-target">Mottagare</label><select id="pay-target"></select></div><div><label for="pay-amount">Belopp ($)</label><input type="number" id="pay-amount" value="10" min="1"></div></div><div style="display:flex; gap:10px;"><button onclick="executePayment()" class="btn-success" style="padding:10px; width:50%;">Bekräfta</button><button onclick="closePayModal()" style="background:#1a1a1a; padding:10px; width:50%;">Avbryt</button></div></div></div>
     <div class="overlay" id="police-overlay"><div class="popup" style="border-color:#e53e3e;"><div class="popup-title" style="color:#e53e3e;">Vem gjorde gripandet?</div><p style="font-size:13px; color:#a0aec0; margin-bottom:10px;">Pengarna tillfaller polisen.</p><div class="police-selector-grid" id="police-targets"></div><button onclick="closePoliceModal()" style="background:#1a1a1a; padding:10px; width:100%; margin-top:10px;">Avbryt</button></div></div>
-    <div class="overlay" id="rules-overlay"><div class="popup popup-large"><h1 style="color:#2b6cb0; text-align:center; margin-bottom:15px;">REGLER</h1><p>Se fullständigt regelhäfte på iPad-versionen eller pappersutskriften. Målet är att smuggla $200 från din kung till ditt Ess.</p><button class="popup-btn" onclick="closeRulesModal()">Stäng</button></div></div>
+   
+    <!-- REGLER-MODAL MED FULLSTÄNDIG TEXT -->
+    <div class="overlay" id="rules-overlay">
+        <div class="popup popup-large">
+            <h1 style="color:#2b6cb0; text-align:center; margin-bottom:15px; letter-spacing: 2px;">THE NOIR SYNDICATE — REGLER</h1>
+           
+            <h2>Spelidé & Mål</h2>
+            <p>Du leder ett brottssyndikat. Ditt mål är att hämta laster med svarta pengar ($100 i taget) från din <strong>Boss (Kung)</strong>, smuggla dem genom stadens farliga gator i <strong>Fickan</strong>, och säkra dem på ditt <strong>Högkvarter (Ess)</strong>. Den förste spelaren som har lyckats <strong>Säkra $200</strong> på sitt Ess vinner spelet.</p>
+           
+            <h2>Spelets Upplägg & Start</h2>
+            <p>Varje spelare startar med <strong>$300 i Banken</strong> (valvet hos Bossen), <strong>$20 i Fickan</strong>, och <strong>$0 Säkrat</strong>. Din droska/pjäs startar på ditt eget Ess-kvarter.</p>
+           
+            <h2>Turens Gång</h2>
+            <ul>
+                <li><strong>Slå tärningen:</strong> Klicka på tärningen i mitten. Den visar hur många steg du får flytta din droska. Du flyttar ortogonalt (framåt, bakåt, i sidled – ej diagonalt).</li>
+                <li><strong>Händelsechans (35%):</strong> Om tärningsslaget triggar ett Noir-kort dyker en händelse upp. <strong>Viktigt:</strong> Utför händelsens instruktion omedelbart <em>innan</em> du flyttar din pjäs på brädet!</li>
+            </ul>
+
+            <h2>Ekonomi & Aktioner i Control Room</h2>
+            <p>Appen hanterar din ekonomi. Du kan göra följande när som helst under din tur:</p>
+            <ul>
+                <li><strong>Hämta $100:</strong> Om din pjäs står på eller passerar din <strong>Boss (Kung)</strong> kan du hämta en last. $100 dras från din Bank och flyttas till Fickan. Du kan bara bära <em>en</em> last åt gången (max $120 totalt i fickan).</li>
+                <li><strong>Säkra Ess:</strong> Om du står på ditt <strong>Ess (Högkvarter)</strong> kan du klicka på "Säkra Ess". Alla dina fickpengar utöver startkapitalet ($20) låses in säkert. Det är dessa pengar som räknas mot vinsten!</li>
+                <li><strong>Överför pengar:</strong> Om du landar på en motståndares kvarter måste du betala hyra/muta. Klicka på knappen och välj mottagare. Om du får slut på fickpengar går du i personlig konkurs och din pjäs flyttas direkt tillbaka till ditt start-Ess med $20 i fickan.</li>
+            </ul>
+
+            <h2>Polisen & Gisslan (Knekten)</h2>
+            <p>Knekten i din kortfärg representerar din personliga poliskonstapel som du styr över för att störa motståndarna. Om en motståndares pjäs landar på samma ruta som din polis (eller om din polis flyttas till en motståndare via ett Noir-kort), blir motståndaren tagen som gisslan!</p>
+            <ul>
+                <li>Klicka på <strong>🚨 Gripgisslan</strong> under det drabbade gänget.</li>
+                <li>Välj vilket gäng som äger polisen som utförde gripandet.</li>
+                <li>Alla offrets fickpengar över grundbeloppet ($20) beslagtas och sätts direkt in i det gripande gängets **Bank**! Offrets pjäs skickas omedelbart tillbaka till häktet (motståndarens Boss-ruta).</li>
+            </ul>
+
+            <button class="popup-btn" onclick="closeRulesModal()">Stäng och återgå till spelet</button>
+        </div>
+    </div>
 
     <script>
         let players = {
@@ -532,7 +575,7 @@
         function startGame(mode) {
             if (mode === 'iphone') {
                 document.body.classList.add('mode-iphone');
-                switchTab(1); // Starta på Spader-fliken på telefonen
+                switchTab(1);
             } else {
                 document.body.classList.remove('mode-iphone');
             }
@@ -540,13 +583,13 @@
         }
 
         function switchTab(id) {
-            // Göm alla hörn och avaktivera flikknappar
             document.querySelectorAll('.player-corner').forEach(el => el.classList.remove('active-tab'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
            
-            // Aktivera rätt hörn och flik
             document.getElementById(`p${id}`).classList.add('active-tab');
-            document.querySelector(`.tab-btn[data-tab="${id}"]`).classList.add('active');
+            if(document.querySelector(`.tab-btn[data-tab="${id}"]`)) {
+                document.querySelector(`.tab-btn[data-tab="${id}"]`).classList.add('active');
+            }
         }
 
         function updateUI() {
