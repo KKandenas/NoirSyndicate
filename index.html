@@ -313,17 +313,29 @@
             visibility: hidden; /* Döljs som standard, aktiveras via JS-mönster */
         }
 
-        .dice-label {
-            font-size: 11px;
-            font-weight: 900;
-            letter-spacing: 3px;
-            color: rgba(255, 255, 255, 0.8);
-            background: rgba(0, 0, 0, 0.7);
-            padding: 4px 14px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            text-transform: uppercase;
-        }
+.dice-label {
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(0, 0, 0, 0.7);
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-transform: uppercase;
+    text-align: center;
+}
+
+/* Lägg till denna precis under .dice-label */
+.pulse-text {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.03); }
+    100% { opacity: 0.6; transform: scale(1); }
+}
 
         .side-bar-left { grid-area: 2 / 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(255,255,255,0.15); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
         .side-bar-right { grid-area: 2 / 3; display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(255,255,255,0.15); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
@@ -443,12 +455,13 @@
         <div class="center-console">
             <div class="dice-wrapper">
                 <div id="dice-container" onclick="rollDice()">
-                    <div class="dot" id="d1"></div><div class="dot" id="d2"></div><div class="dot" id="d3"></div>
-                    <div class="dot" id="d4"></div><div class="dot" id="d5"></div><div class="dot" id="d6"></div>
-                    <div class="dot" id="d7"></div><div class="dot" id="d8"></div><div class="dot" id="d9"></div>
-                </div>
-                <div class="dice-label" id="dice-label">SLOG: 1</div>
+                <div class="dot" id="d1"></div><div class="dot" id="d2"></div><div class="dot" id="d3"></div>
+                <div class="dot" id="d4"></div><div class="dot" id="d5"></div><div class="dot" id="d6"></div>
+                <div class="dot" id="d7"></div><div class="dot" id="d8"></div><div class="dot" id="d9"></div>
             </div>
+            <!-- Denna rad ersätter den gamla texten -->
+        <div class="dice-label pulse-text" id="dice-label">KLICKA FÖR ATT SLÅ</div>
+        </div>
             <div style="display:flex; flex-direction:column; gap:10px; width: 100%; max-width: 180px;">
                 <button onclick="openRulesModal()" style="background:rgba(15,15,15,0.8); border:1px solid rgba(255,255,255,0.1); font-size:12px; padding:8px 0; color:#8a99ad; backdrop-filter: blur(4px);">📜 Kompletta Regler</button>
                 <button onclick="resetGame()" style="background:rgba(15,15,15,0.8); border:1px solid rgba(255,255,255,0.1); font-size:12px; padding:8px 0; color:#555; backdrop-filter: blur(4px);">Nollställ Spel</button>
@@ -710,26 +723,41 @@
             closePayModal();
         }
 
-        function rollDice() {
-            if (isRolling) return;
-            isRolling = true;
-            const label = document.getElementById("dice-label");
-            let counter = 0;
-            const interval = setInterval(() => {
-                let currentVal = Math.floor(Math.random() * 6) + 1;
-                drawDiceDots(currentVal); // Uppdatera prickmönstret i animationen
-                label.innerText = `RULLAR...`;
-                counter++;
-                if (counter > 8) {
-                    clearInterval(interval);
-                    const finalResult = Math.floor(Math.random() * 6) + 1;
-                    drawDiceDots(finalResult); // Sätt slutgiltigt prickmönster
-                    label.innerText = `SLOG: ${finalResult}`;
-                    isRolling = false;
-                    if (Math.random() < 0.35) { triggerEvent(finalResult); }
-                }
-            }, 65);
-        }
+    function rollDice() {
+        if (isRolling) return;
+        isRolling = true;
+   
+        const label = document.getElementById("dice-label");
+        label.classList.remove("pulse-text");
+   
+        let counter = 0;
+        const interval = setInterval(() => {
+            let currentVal = Math.floor(Math.random() * 6) + 1;
+            drawDiceDots(currentVal);
+            label.innerText = `RULLAR...`;
+            counter++;
+       
+            if (counter > 8) {
+                clearInterval(interval);
+                const finalResult = Math.floor(Math.random() * 6) + 1;
+                drawDiceDots(finalResult);
+           
+                label.innerText = `SLOG: ${finalResult}`;
+           
+                // Visar resultatet i 3 sekunder, återgår sedan till instruktionen
+                setTimeout(() => {
+                    if (!isRolling) {
+                        label.innerText = "KLICKA FÖR ATT SLÅ";
+                        label.classList.add("pulse-text");
+                    }
+                }, 3000);
+           
+                isRolling = false;
+                if (Math.random() < 0.35) { triggerEvent(finalResult); }
+            }
+        }, 65);
+    }
+
 
         function triggerEvent(diceRoll) {
             const randomEvent = noirEvents[Math.floor(Math.random() * noirEvents.length)];
@@ -752,7 +780,9 @@
                     4: { name: "Diamond Syndicate (♦)", bank: 300, pocket: 20, secured: 0 }
                 };
                 drawDiceDots(1);
-                document.getElementById("dice-label").innerText = "SLOG: 1";
+                   const label = document.getElementById("dice-label");
+                    label.innerText = "KLICKA FÖR ATT SLÅ";
+                    label.classList.add("pulse-text");
                 updateUI();
             }
         }
