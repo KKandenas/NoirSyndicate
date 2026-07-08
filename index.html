@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>The Noir Syndicate</title>
-    <link rel="apple-touch-icon" href="gangsters.png">
+    <link class="apple-touch-icon" href="gangsters.png">
     <style>
         :root {
             --bg-color: #050505;
@@ -12,9 +12,9 @@
             --text-color: #e5e5e5;
             --text-muted: #aaa;
             --border-color: rgba(255, 255, 255, 0.1);
-          
-            --spades-color: #3182ce; 
-            --hearts-color: #e53e3e; 
+         
+            --spades-color: #3182ce;
+            --hearts-color: #e53e3e;
             --clovers-color: #38a169;
             --diamonds-color: #ecc94b;
         }
@@ -123,6 +123,30 @@
             box-shadow: 0 25px 60px rgba(0,0,0,0.95);
         }
 
+        .lang-toggle-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn-lang {
+            background: #151515;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #666;
+            padding: 8px 16px;
+            font-size: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-lang.active {
+            color: #fff;
+            border-color: #ecc94b;
+            background: rgba(236, 201, 75, 0.1);
+        }
+
         .device-selector {
             display: flex;
             flex-direction: column;
@@ -149,6 +173,24 @@
         .btn-device:active {
             border-color: #2b6cb0;
             background: linear-gradient(135deg, #1a497d, #112d52);
+        }
+
+        /* LIVE LANG CONTROL ON BOARD */
+        .live-lang-selector {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 90;
+            display: flex;
+            gap: 5px;
+            background: rgba(0,0,0,0.6);
+            padding: 4px;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .live-lang-selector .btn-lang {
+            padding: 4px 8px;
+            font-size: 10px;
         }
 
         /* SPELARHÖRN */
@@ -279,7 +321,7 @@
             margin-bottom: 12px;
         }
         .dot { background-color: #ecc94b; border-radius: 50%; width: 100%; height: 100%; box-shadow: inset 0 2px 4px rgba(0,0,0,0.4); visibility: hidden; }
-      
+     
         .dice-label {
             font-size: 11px; font-weight: 900; letter-spacing: 2px; color: rgba(255, 255, 255, 0.8);
             background: rgba(0, 0, 0, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); text-transform: uppercase; text-align: center;
@@ -296,7 +338,7 @@
         .overlay.active { opacity: 1; pointer-events: auto; }
         .popup { background: #0f0f0f; border: 1px solid #262626; border-radius: 6px; padding: 25px; max-width: 450px; width: 90%; text-align: center; }
         .order-notice { background: rgba(236, 201, 75, 0.1); border: 1px dashed #ecc94b; color: #ecc94b; font-size: 12px; font-weight: bold; padding: 8px; margin-bottom: 15px; border-radius: 4px; text-transform: uppercase; }
-      
+     
         .popup-large { max-width: 750px; height: 85vh; overflow-y: auto; text-align: left; padding: 35px; border-color: #2b6cb0; }
         .popup-large h2 { color: #2b6cb0; text-transform: uppercase; margin: 22px 0 8px 0; font-size: 16px; border-bottom: 1px solid #1a1a1a; padding-bottom: 4px;}
         .popup-large p, .popup-large li { color: #cbd5e0; font-size: 14px; line-height: 1.6; margin-bottom: 10px; }
@@ -314,7 +356,7 @@
             border: 1px solid #222;
             border-radius: 6px;
         }
-      
+     
         .popup-dice-badge { background: #ecc94b; color: #000; display: inline-block; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: 900; margin-bottom: 10px; text-transform: uppercase; }
         .popup-title { color: #e53e3e; font-size: 22px; text-transform: uppercase; margin-bottom: 10px; }
         .popup-desc { font-size: 14px; line-height: 1.5; color: #cbd5e0; margin-bottom: 20px; }
@@ -354,9 +396,7 @@
         .tab-btn.active[data-tab="4"] { color: var(--diamonds-color); background: rgba(236, 201, 75, 0.05); }
         .tab-btn span { font-size: 18px; }
 
-        /* ========================================================
-           📱 IPHONE-SPECIFIK RENDERING (TÄRNINGEN FLYTTAD TILL TOPPEN)
-           ======================================================== */
+        /* 📱 IPHONE-SPECIFIK RENDERING */
         body.mode-iphone .game-container {
             display: flex;
             flex-direction: column;
@@ -415,60 +455,71 @@
     <div class="background-container"></div>
     <div class="overlay-container"></div>
 
+    <!-- LIVE LANGUAGE SELECTOR ON BOARD -->
+    <div class="live-lang-selector">
+        <button class="btn-lang active" id="live-lang-sv" onclick="setLanguage('sv')">SV</button>
+        <button class="btn-lang" id="live-lang-en" onclick="setLanguage('en')">EN</button>
+    </div>
+
     <div class="welcome-screen" id="welcome-screen">
         <div class="welcome-title">THE NOIR SYNDICATE</div>
         <div class="welcome-subtitle">Control Room</div>
         <div class="welcome-card">
-            <p style="font-size:13px; color:#aaa; margin-bottom:15px;">Välj vilken enhet du vill spela på ikväll:</p>
+            <!-- Language toggle on welcome screen -->
+            <div class="lang-toggle-container">
+                <button class="btn-lang active" id="welcome-lang-sv" onclick="setLanguage('sv')">Svenska</button>
+                <button class="btn-lang" id="welcome-lang-en" onclick="setLanguage('en')">English</button>
+            </div>
+            <p style="font-size:13px; color:#aaa; margin-bottom:15px;" id="welcome-prompt">Välj vilken enhet du vill spela på ikväll:</p>
             <div class="device-selector">
-                <button class="btn-device" onclick="startGame('ipad')">💻 iPad (Liggande Bräde)</button>
-                <button class="btn-device" onclick="startGame('iphone')">📱 iPhone (Stående Flikar)</button>
+                <button class="btn-device" id="btn-mode-ipad" onclick="startGame('ipad')">💻 iPad (Liggande Bräde)</button>
+                <button class="btn-device" id="btn-mode-iphone" onclick="startGame('iphone')">📱 iPhone (Stående Flikar)</button>
             </div>
         </div>
     </div>
 
     <div class="game-container">
-      
+     
         <div class="player-corner active-tab" id="p1">
             <div class="gang-header">
                 <div class="gang-title">♠ Nightspades</div>
-                <div class="deck-suit suit-black">Spader</div>
+                <div class="deck-suit suit-black" data-key="suit-spades">Spader</div>
             </div>
             <div class="stats-grid">
-                <div class="stat-box"><div class="stat-label">🏦 Bank</div><div class="stat-value" id="p1-bank">$300</div></div>
-                <div class="stat-box pocket-box"><div class="stat-label">💼 Fickan</div><div class="stat-value" id="p1-pocket">$20</div></div>
-                <div class="stat-box"><div class="stat-label">🔒 Säkrat</div><div class="stat-value" id="p1-secured" style="color:var(--spades-color)">$0</div></div>
+                <div class="stat-box"><div class="stat-label" data-key="stat-bank">🏦 Bank</div><div class="stat-value" id="p1-bank">$300</div></div>
+                <div class="stat-box pocket-box"><div class="stat-label" data-key="stat-pocket">💼 Fickan</div><div class="stat-value" id="p1-pocket">$20</div></div>
+                <div class="stat-box"><div class="stat-label" data-key="stat-secured">🔒 Säkrat</div><div class="stat-value" id="p1-secured" style="color:var(--spades-color)">$0</div></div>
             </div>
             <div class="gang-actions">
-                <button onclick="takeLoad(1)" class="btn-success">💰 Hämta $100</button>
-                <button onclick="secureCash(1)" class="btn-secure">👑 Säkra Ess</button>
-                <button onclick="arrestPlayer(1)" class="btn-danger">🚨 Haffad</button>
-                <button onclick="openFightModal(1)" class="btn-fight">💥 Slagsmål</button>
-                <button onclick="openPayModal(1)" class="btn-pay">💸 Överför pengar ➔</button>
+                <button onclick="takeLoad(1)" class="btn-success" data-key="act-load">💰 Hämta $100</button>
+                <button onclick="secureCash(1)" class="btn-secure" data-key="act-secure">👑 Säkra Ess</button>
+                <button onclick="arrestPlayer(1)" class="btn-danger" data-key="act-arrest">🚨 Haffad</button>
+                <button onclick="openFightModal(1)" class="btn-fight" data-key="act-fight">💥 Slagsmål</button>
+                <button onclick="openPayModal(1)" class="btn-pay" data-key="act-pay">💸 Överför pengar ➔</button>
             </div>
         </div>
 
         <div class="player-corner" id="p4">
             <div class="gang-header">
                 <div class="gang-title">♦ Diamond</div>
-                <div class="deck-suit suit-red">Ruter</div>
+                <div class="deck-suit suit-red" data-key="suit-diamonds">Ruter</div>
             </div>
             <div class="stats-grid">
-                <div class="stat-box"><div class="stat-label">🏦 Bank</div><div class="stat-value" id="p4-bank">$300</div></div>
-                <div class="stat-box pocket-box"><div class="stat-label">💼 Fickan</div><div class="stat-value" id="p4-pocket">$20</div></div>
-                <div class="stat-box"><div class="stat-label">🔒 Säkrat</div><div class="stat-value" id="p4-secured" style="color:var(--diamonds-color)">$0</div></div>
+                <div class="stat-box"><div class="stat-label" data-key="stat-bank">🏦 Bank</div><div class="stat-value" id="p4-bank">$300</div></div>
+                <div class="stat-box pocket-box"><div class="stat-label" data-key="stat-pocket">💼 Fickan</div><div class="stat-value" id="p4-pocket">$20</div></div>
+                <div class="stat-box"><div class="stat-label" data-key="stat-secured">🔒 Säkrat</div><div class="stat-value" id="p4-secured" style="color:var(--diamonds-color)">$0</div></div>
             </div>
             <div class="gang-actions">
-                <button onclick="takeLoad(4)" class="btn-success">💰 Hämta $100</button>
-                <button onclick="secureCash(4)" class="btn-secure">👑 Säkra Ess</button>
-                <button onclick="arrestPlayer(4)" class="btn-danger">🚨 Haffad</button>
-                <button onclick="openFightModal(4)" class="btn-fight">💥 Slagsmål</button>
-                <button onclick="openPayModal(4)" class="btn-pay">💸 Överför pengar ➔</button>
+                <button onclick="takeLoad(4)" class="btn-success" data-key="act-load">💰 Hämta $100</button>
+                <button onclick="secureCash(4)" class="btn-secure" data-key="act-secure">👑 Säkra Ess</button>
+                <button onclick="arrestPlayer(4)" class="btn-danger" data-key="act-arrest">🚨 Haffad</button>
+                <button onclick="openFightModal(4)" class="btn-fight" data-key="act-fight">💥 Slagsmål</button>
+                <button onclick="openPayModal(4)" class="btn-pay" data-key="act-pay">💸 Överför pengar ➔</button>
             </div>
         </div>
 
         <div class="side-bar-left">THE NOIR SYNDICATE</div>
-        <div class="side-bar-right">BOARD HUB v1.6</div>
+        <div class="side-bar-right">BOARD HUB v1.7</div>
 
         <div class="center-console">
             <div class="dice-wrapper">
@@ -477,81 +528,106 @@
                     <div class="dot" id="d4"></div><div class="dot" id="d5"></div><div class="dot" id="d6"></div>
                     <div class="dot" id="d7"></div><div class="dot" id="d8"></div><div class="dot" id="d9"></div>
                 </div>
-                <div class="dice-label pulse-text" id="dice-label">KLICKA FÖR ATT SLÅ</div>
+                <div class="dice-label pulse-text" id="dice-label" data-key="dice-click">KLICKA FÖR ATT SLÅ</div>
             </div>
             <div style="display:flex; gap:8px; width: 100%; max-width: 240px; justify-content: center;">
-                <button onclick="openRulesModal()" style="font-size:11px; padding:6px 12px; background:rgba(0,0,0,0.6);">📜 Regler</button>
-                <button onclick="resetGame()" style="font-size:11px; padding:6px 12px; background:rgba(0,0,0,0.6); color:#666;">Reset</button>
+                <button onclick="openRulesModal()" style="font-size:11px; padding:6px 12px; background:rgba(0,0,0,0.6);" data-key="btn-rules">📜 Regler</button>
+                <button onclick="resetGame()" style="font-size:11px; padding:6px 12px; background:rgba(0,0,0,0.6); color:#666;" data-key="btn-reset">Reset</button>
             </div>
         </div>
 
         <div class="player-corner" id="p3">
             <div class="gang-header">
                 <div class="gang-title">♣ Iron Clovers</div>
-                <div class="deck-suit suit-black">Klöver</div>
+                <div class="deck-suit suit-black" data-key="suit-clovers">Klöver</div>
             </div>
             <div class="stats-grid">
-                <div class="stat-box"><div class="stat-label">🏦 Bank</div><div class="stat-value" id="p3-bank">$300</div></div>
-                <div class="stat-box pocket-box"><div class="stat-label">💼 Fickan</div><div class="stat-value" id="p3-pocket">$20</div></div>
-                <div class="stat-box"><div class="stat-label">🔒 Säkrat</div><div class="stat-value" id="p3-secured" style="color:var(--clovers-color)">$0</div></div>
+                <div class="stat-box"><div class="stat-label" data-key="stat-bank">🏦 Bank</div><div class="stat-value" id="p3-bank">$300</div></div>
+                <div class="stat-box pocket-box"><div class="stat-label" data-key="stat-pocket">💼 Fickan</div><div class="stat-value" id="p3-pocket">$20</div></div>
+                <div class="stat-box"><div class="stat-label" data-key="stat-secured">🔒 Säkrat</div><div class="stat-value" id="p3-secured" style="color:var(--clovers-color)">$0</div></div>
             </div>
             <div class="gang-actions">
-                <button onclick="takeLoad(3)" class="btn-success">💰 Hämta $100</button>
-                <button onclick="secureCash(3)" class="btn-secure">👑 Säkra Ess</button>
-                <button onclick="arrestPlayer(3)" class="btn-danger">🚨 Haffad</button>
-                <button onclick="openFightModal(3)" class="btn-fight">💥 Slagsmål</button>
-                <button onclick="openPayModal(3)" class="btn-pay">💸 Överför pengar ➔</button>
+                <button onclick="takeLoad(3)" class="btn-success" data-key="act-load">💰 Hämta $100</button>
+                <button onclick="secureCash(3)" class="btn-secure" data-key="act-secure">👑 Säkra Ess</button>
+                <button onclick="arrestPlayer(3)" class="btn-danger" data-key="act-arrest">🚨 Haffad</button>
+                <button onclick="openFightModal(3)" class="btn-fight" data-key="act-fight">💥 Slagsmål</button>
+                <button onclick="openPayModal(3)" class="btn-pay" data-key="act-pay">💸 Överför pengar ➔</button>
             </div>
         </div>
 
         <div class="player-corner" id="p2">
             <div class="gang-header">
                 <div class="gang-title">♥ Crimson</div>
-                <div class="deck-suit suit-red">Hjärter</div>
+                <div class="deck-suit suit-red" data-key="suit-hearts">Hjärter</div>
             </div>
             <div class="stats-grid">
-                <div class="stat-box"><div class="stat-label">🏦 Bank</div><div class="stat-value" id="p2-bank">$300</div></div>
-                <div class="stat-box pocket-box"><div class="stat-label">💼 Fickan</div><div class="stat-value" id="p2-pocket">$20</div></div>
-                <div class="stat-box"><div class="stat-label">🔒 Säkrat</div><div class="stat-value" id="p2-secured" style="color:var(--hearts-color)">$0</div></div>
+                <div class="stat-box"><div class="stat-label" data-key="stat-bank">🏦 Bank</div><div class="stat-value" id="p2-bank">$300</div></div>
+                <div class="stat-box pocket-box"><div class="stat-label" data-key="stat-pocket">💼 Fickan</div><div class="stat-value" id="p2-pocket">$20</div></div>
+                <div class="stat-box"><div class="stat-label" data-key="stat-secured">🔒 Säkrat</div><div class="stat-value" id="p2-secured" style="color:var(--hearts-color)">$0</div></div>
             </div>
             <div class="gang-actions">
-                <button onclick="takeLoad(2)" class="btn-success">💰 Hämta $100</button>
-                <button onclick="secureCash(2)" class="btn-secure">👑 Säkra Ess</button>
-                <button onclick="arrestPlayer(2)" class="btn-danger">🚨 Haffad</button>
-                <button onclick="openFightModal(2)" class="btn-fight">💥 Slagsmål</button>
-                <button onclick="openPayModal(2)" class="btn-pay">💸 Överför pengar ➔</button>
+                <button onclick="takeLoad(2)" class="btn-success" data-key="act-load">💰 Hämta $100</button>
+                <button onclick="secureCash(2)" class="btn-secure" data-key="act-secure">👑 Säkra Ess</button>
+                <button onclick="arrestPlayer(2)" class="btn-danger" data-key="act-arrest">🚨 Haffad</button>
+                <button onclick="openFightModal(2)" class="btn-fight" data-key="act-fight">💥 Slagsmål</button>
+                <button onclick="openPayModal(2)" class="btn-pay" data-key="act-pay">💸 Överför pengar ➔</button>
             </div>
         </div>
     </div>
 
     <div class="iphone-tabs" id="iphone-tabs">
-        <button class="tab-btn active" data-tab="1" onclick="switchTab(1)"><span>♠</span>Spader</button>
-        <button class="tab-btn" data-tab="2" onclick="switchTab(2)"><span>♥</span>Hjärter</button>
-        <button class="tab-btn" data-tab="3" onclick="switchTab(3)"><span>♣</span>Klöver</button>
-        <button class="tab-btn" data-tab="4" onclick="switchTab(4)"><span>♦</span>Ruter</button>
+        <button class="tab-btn active" data-tab="1" onclick="switchTab(1)"><span id="tab-s1">♠</span><span data-key="suit-spades">Spader</span></button>
+        <button class="tab-btn" data-tab="2" onclick="switchTab(2)"><span id="tab-s2">♥</span><span data-key="suit-hearts">Hjärter</span></button>
+        <button class="tab-btn" data-tab="3" onclick="switchTab(3)"><span id="tab-s3">♣</span><span data-key="suit-clovers">Klöver</span></button>
+        <button class="tab-btn" data-tab="4" onclick="switchTab(4)"><span id="tab-s4">♦</span><span data-key="suit-diamonds">Ruter</span></button>
     </div>
 
     <div class="overlay" id="event-overlay">
         <div class="popup">
             <div class="popup-dice-badge" id="event-dice-badge"></div>
-            <div class="order-notice">⚠️ Utför händelsen först — flytta pjäsen sen!</div>
+            <div class="order-notice" data-key="event-notice">⚠️ Utför händelsen först — flytta pjäsen sen!</div>
             <div class="popup-title" id="event-title"></div>
             <div class="popup-desc" id="event-desc"></div>
-            <button class="popup-btn" onclick="closePopup()">Uppfattat</button>
+            <button class="popup-btn" onclick="closePopup()" data-key="btn-ok">Uppfattat</button>
         </div>
     </div>
-  
-    <div class="overlay" id="pay-overlay"><div class="popup" style="border-color:#ecc94b;"><div class="popup-title" style="color:#ecc94b;" id="pay-title">Skicka pengar</div><div class="pay-grid"><div><label for="pay-target">Mottagare</label><select id="pay-target"></select></div><div><label for="pay-amount">Belopp ($)</label><input type="number" id="pay-amount" value="10" min="1"></div></div><div style="display:flex; gap:10px;"><button onclick="executePayment()" class="btn-success" style="padding:10px; width:50%;">Bekräfta</button><button onclick="closePayModal()" style="background:#1a1a1a; padding:10px; width:50%;">Avbryt</button></div></div></div>
-    <div class="overlay" id="police-overlay"><div class="popup" style="border-color:#e53e3e;"><div class="popup-title" style="color:#e53e3e;">Vem gjorde gripandet?</div><p style="font-size:13px; color:#a0aec0; margin-bottom:10px;">Pengarna tillfaller polisen.</p><div class="police-selector-grid" id="police-targets"></div><button onclick="closePoliceModal()" style="background:#1a1a1a; padding:10px; width:100%; margin-top:10px;">Avbryt</button></div></div>
-  
-    <!-- FLIK / MODAL FÖR GATUSLAGSMÅL -->
+ 
+    <div class="overlay" id="pay-overlay">
+        <div class="popup" style="border-color:#ecc94b;">
+            <div class="popup-title" style="color:#ecc94b;" id="pay-title" data-key="pay-header">Skicka pengar</div>
+            <div class="pay-grid">
+                <div>
+                    <label for="pay-target" data-key="pay-recipient">Mottagare</label>
+                    <select id="pay-target"></select>
+                </div>
+                <div>
+                    <label for="pay-amount" data-key="pay-sum">Belopp ($)</label>
+                    <input type="number" id="pay-amount" value="10" min="1">
+                </div>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button onclick="executePayment()" class="btn-success" style="padding:10px; width:50%;" data-key="btn-confirm">Bekräfta</button>
+                <button onclick="closePayModal()" style="background:#1a1a1a; padding:10px; width:50%;" data-key="btn-cancel">Avbryt</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" id="police-overlay">
+        <div class="popup" style="border-color:#e53e3e;">
+            <div class="popup-title" style="color:#e53e3e;" data-key="police-title">Vem gjorde gripandet?</div>
+            <p style="font-size:13px; color:#a0aec0; margin-bottom:10px;" data-key="police-subtitle">Pengarna tillfaller polisen.</p>
+            <div class="police-selector-grid" id="police-targets"></div>
+            <button onclick="closePoliceModal()" style="background:#1a1a1a; padding:10px; width:100%; margin-top:10px;" data-key="btn-cancel">Avbryt</button>
+        </div>
+    </div>
+ 
     <div class="overlay" id="fight-overlay">
         <div class="popup" style="border-color:#ff7849;">
-            <div class="popup-title" style="color:#ff7849;">Gatuslagsmål!</div>
+            <div class="popup-title" style="color:#ff7849;" data-key="fight-title">Gatuslagsmål!</div>
             <div id="fight-setup-view">
-                <p style="font-size:13px; color:#a0aec0; margin-bottom:15px;">Välj vilken motståndare som står på rutan och ska attackeras:</p>
+                <p style="font-size:13px; color:#a0aec0; margin-bottom:15px;" data-key="fight-prompt">Välj vilken motståndare som står på rutan och ska attackeras:</p>
                 <div class="police-selector-grid" id="fight-targets"></div>
-                <button onclick="closeFightModal()" style="background:#1a1a1a; padding:10px; width:100%; margin-top:12px;">Avbryt</button>
+                <button onclick="closeFightModal()" style="background:#1a1a1a; padding:10px; width:100%; margin-top:12px;" data-key="btn-cancel">Avbryt</button>
             </div>
             <div id="fight-rolling-view" style="display:none;">
                 <div class="fight-dice-container">
@@ -565,66 +641,150 @@
                     </div>
                 </div>
                 <div class="order-notice" id="fight-status-label" style="margin-bottom:0;">RULLAR KNOGJÄRNEN...</div>
-                <button class="popup-btn" id="fight-close-btn" onclick="closeFightModal()" style="display:none;">Avsluta duell</button>
+                <button class="popup-btn" id="fight-close-btn" onclick="closeFightModal()">Avsluta duell</button>
             </div>
         </div>
     </div>
 
     <div class="overlay" id="rules-overlay">
-        <div class="popup popup-large">
-            <h1 style="color:#2b6cb0; text-align:center; margin-bottom:15px; letter-spacing: 2px;">THE NOIR SYNDICATE — REGLER</h1>
-          
-            <h2>Spelplan & Setup (Kortlayout)</h2>
-            <p>Bygg upp spelplanen på bordet med vanliga spelkort enligt bilden nedan. Om bilden saknas, kom ihåg grundmönstret: Ess i hörnen, Kungar på kanterna, gator där emellan och samtliga Knekter (poliser) startande på polisstationen i absolut centrum.Varje spelare placerar sin droska/markör på sitt Ess.</p>
-
-            <div class="setup-image-container">
-                <img src="setup.PNG" alt="Spelplan Setup">
-            </div>
-
-            <h2>Spelidét & Mål</h2>
-            <p>Du leder ett brottssyndikat. Ditt mål är att hämta laster med svarta pengar ($100 i taget) från din <strong>Boss (Kung)</strong>, smuggla dem genom stadens farliga gator i <strong>Fickan</strong>, och säkra dem på ditt <strong>Högkvarter (Ess)</strong>. Den förste spelaren som har lyckats <strong>Säkra $200</strong> på sitt Ess vinner spelet.</p>
-          
-            <h2>Turens Gång</h2>
-            <ul>
-                <li><strong>Slå tärningen:</strong> Klicka på tärningen i mitten. Den visar hur många steg du får flytta din droska. Du flyttar framåt och/eller i sidled – ej diagonalt eller bakåt). Du måste flytta exakt det antal steg tärningen visar. Passerar du ditt Ess eller Kung så för du över pengar enligt nedan och flyttar sen återstående steg.</li>
-                <li><strong>Händelsechans (35%):</strong> Om tärningsslaget triggar ett Noir-kort dyker en händelse upp. <strong>Viktigt:</strong> Utför händelsens instruktion omedelbart <em>innan</em> du flyttar din pjäs på brädet!</li>
-            </ul>
-
-            <h2>Rörelseregler & Positioner</h2>
-            <ul>
-                <li><strong>Gatuslagsmål vid krock:</strong> Det får egentligen inte stå två spelare på samma ruta. Om din droska landar på en ruta där en motståndare redan står, triggas ett <strong>Gatuslagsmål</strong> direkt! Klicka på knappen i ditt hörn och utmana motståndaren.</li>
-                <li><strong>Vända kort:</strong> När du landar på ett dolt kort vänds det upp direkt och tull betalas om det inte är egen färg.</li>
-                <li><strong>Stanna på kort:</strong> Om du landar på en motståndares öppna kvarter (kort) måste du betala tull till den spelaren (dras direkt från din ficka till deras).</li>
-            </ul>
-
-            <h2>Regler för Gatuslagsmål 💥</h2>
-            <ul>
-                <li>Båda spelarna slår varsin digital tärning via appen genom att klicka på knappen.</li>
-                <li><strong>Vinst:</strong> Vinnaren stjäl 10 dollar direkt från förlorarens ficka.</li>
-                <li><strong>Straff:</strong> Förloraren måste omedelbart flytta sin fysiska pjäs på brädet <strong>tillbaka</strong> till antingen <strong>Ess</strong> (Högkvarter) eller <strong>Kung</strong> (Boss).</li>
-                <li><strong>Oavgjort:</strong> Om ni slår lika vinner den som blev attackerad (försvararen)!</li>
-            </ul>
-
-            <h2>Polisen (Knekter) & Arresteringar</h2>
-            <ul>
-                <li><strong>Polisens rörelse:</strong> Poliser rör sig enbart via Noir-händelser (t.ex. Patrullering eller Utryckning).</li>
-                <li><strong>Att bli haffad:</strong> Om en polis landar på din droska, eller om du tvingas landa på en ruta med en polis, blir du <strong>Haffad</strong>.</li>
-                <li><strong>Straff vid arrestering:</strong> Klicka på "🚨 Haffad" i ditt hörn. Alla pengar du har i Fickan (utöver dina start-$20) beslagtas och sätts in i <em>banken</em> hos det syndikat som äger polisen. Din droska skickas sedan tillbaka till din Boss (Kung).</li>
-            </ul>
-
-            <h2>Ekonomi, Transaktioner & Konkurs</h2>
-            <ul>
-                <li><strong>Hämta last:</strong> När du står på en Kung (Boss) kan du klicka på "💰 Hämta $100". Dessa flyttas från din Bank till din Ficka. Du kan bara bära en last i taget.</li>
-                <li><strong>Säkra pengar:</strong> När du står på ditt Ess (Högkvarter) klickar du på "👑 Säkra Ess". Alla pengar i Fickan utöver dina grund-$20 låses och räknas mot vinstmålet på $200.</li>
-                <li><strong>Frivilliga överföringar:</strong> Du kan när som helst använda knappen "💸 Överför pengar" för att betala tull eller mutor till andra spelare.</li>
-                <li><strong>Konkurs:</strong> Om du måste betala en skuld eller tull som är större än vad du har i fickan går du i personlig konkurs. Dina fickpengar nollställs och din pjäs flyttas direkt till ditt Ess där du startar om med $20 i fickan.</li>
-            </ul>
-
-            <button class="popup-btn" onclick="closeRulesModal()">Stäng och återgå till spelet</button>
+        <div class="popup popup-large" id="rules-content-area">
+            <!-- Dynamically populated rules -->
         </div>
     </div>
 
     <script>
+        let currentLang = 'sv';
+
+        const i18n = {
+            sv: {
+                welcomePrompt: "Välj vilken enhet du vill spela på ikväll:",
+                modeIpad: "💻 iPad (Liggande Bräde)",
+                modeIphone: "📱 iPhone (Stående Flikar)",
+                suitSpades: "Spader",
+                suitHearts: "Hjärter",
+                suitClovers: "Klöver",
+                suitDiamonds: "Ruter",
+                statBank: "🏦 Bank",
+                statPocket: "💼 Fickan",
+                statSecured: "🔒 Säkrat",
+                actLoad: "💰 Hämta $100",
+                actSecure: "👑 Säkra Ess",
+                actArrest: "🚨 Haffad",
+                actFight: "💥 Slagsmål",
+                actPay: "💸 Överför pengar ➔",
+                diceClick: "KLICKA FÖR ATT SLÅ",
+                btnRules: "📜 Regler",
+                btnReset: "Reset",
+                eventNotice: "⚠️ Utför händelsen först — flytta pjäsen sen!",
+                btnOk: "Uppfattat",
+                btnCancel: "Avbryt",
+                btnConfirm: "Bekräfta",
+                payHeader: "Skicka pengar",
+                payRecipient: "Mottagare",
+                paySum: "Belopp ($)",
+                policeTitle: "Vem gjorde gripandet?",
+                policeSubtitle: "Pengarna tillfaller polisen.",
+                fightTitle: "Gatuslagsmål!",
+                fightPrompt: "Välj vilken motståndare som står på rutan och ska attackeras:",
+                fightAttacker: "Anfallare",
+                fightDefender: "Försvarare",
+                fightRolling: "KASTAR TÄRNINGARNA...",
+                fightClose: "Avsluta duell",
+                diceRolling: "RULLAR...",
+                diceSlog: "SLOG: ",
+                alertWinner: "BOSS! {name} kontrollerar staden!",
+                alertNoSecure: "Inga pengar att säkra!",
+                alertNoBank: "Bossens valv är tomt!",
+                alertArrested: "{victim} haffad av {cop}! Beslagtog ${loot}.",
+                alertJail: "{victim} skickas till häktet.",
+                alertBankrupt: "Konkurs! Nollställs till $20 på ditt Ess.",
+                alertReset: "Nollställa spelet?",
+                fightChallenge: "🥊 Utmana ",
+                payPayer: " betalar",
+                fightLogDrawBankrupt: "OAVGJORT! Men anfallaren {loser} har inte råd att betala skadan. KONKURS! Flyttas till sitt Ess med $20 i fickan.",
+                fightLogWinnerBankrupt: "VINNARE: {winner}! Förloraren {loser} har inte råd att betala. KONKURS! Flyttas till sitt Ess med $20 i fickan.",
+                fightLogDraw: "OAVGJORT! {winner} försvarade rutan! Tar $10 och skickar bort anfallaren.",
+                fightLogWinner: "VINNARE: {winner}! Tar $10 från förloraren som flyttas till valfritt Ess/Kung.",
+                eventBadge: "SLOG EN {roll}:A 🎲"
+            },
+            en: {
+                welcomePrompt: "Choose which device you are playing on tonight:",
+                modeIpad: "💻 iPad (Landscape Board)",
+                modeIphone: "📱 iPhone (Portrait Tabs)",
+                suitSpades: "Spades",
+                suitHearts: "Hearts",
+                suitClovers: "Clubs",
+                suitDiamonds: "Diamonds",
+                statBank: "🏦 Bank",
+                statPocket: "💼 Pocket",
+                statSecured: "🔒 Secured",
+                actLoad: "💰 Get $100",
+                actSecure: "👑 Secure Ace",
+                actArrest: "🚨 Busted",
+                actFight: "💥 Street Fight",
+                actPay: "💸 Transfer Cash ➔",
+                diceClick: "CLICK TO ROLL",
+                btnRules: "📜 Rules",
+                btnReset: "Reset",
+                eventNotice: "⚠️ Execute event first — move your piece after!",
+                btnOk: "Understood",
+                btnCancel: "Cancel",
+                btnConfirm: "Confirm",
+                payHeader: "Send Money",
+                payRecipient: "Recipient",
+                paySum: "Amount ($)",
+                policeTitle: "Who made the arrest?",
+                policeSubtitle: "The confiscated money goes to their bank.",
+                fightTitle: "Street Fight!",
+                fightPrompt: "Select the opponent occupying the square to attack:",
+                fightAttacker: "Attacker",
+                fightDefender: "Defender",
+                fightRolling: "ROLLING KNUCKLES...",
+                fightClose: "End Duel",
+                diceRolling: "ROLLING...",
+                diceSlog: "ROLLED: ",
+                alertWinner: "BOSS! {name} controls the city!",
+                alertNoSecure: "No extra money to secure!",
+                alertNoBank: "The Boss's vault is empty!",
+                alertArrested: "{victim} busted by {cop}! Confiscated ${loot}.",
+                alertJail: "{victim} sent to local precinct.",
+                alertBankrupt: "Bankrupt! Reset to $20 back at your Ace.",
+                alertReset: "Reset the game?",
+                fightChallenge: "🥊 Challenge ",
+                payPayer: " pays",
+                fightLogDrawBankrupt: "DRAW! But attacker {loser} cannot afford the damage. BANKRUPTCY! Moved to Ace with $20 pocket cash.",
+                fightLogWinnerBankrupt: "WINNER: {winner}! Loser {loser} cannot afford to pay. BANKRUPTCY! Moved to Ace with $20 pocket cash.",
+                fightLogDraw: "DRAW! {winner} defended the block! Takes $10 and expels the attacker.",
+                fightLogWinner: "WINNER: {winner}! Takes $10 from the loser, who is sent back to any Ace/King.",
+                eventBadge: "ROLLED A {roll} 🎲"
+            }
+        };
+
+        const noirEvents = {
+            sv: [
+                { title: "🚨 Patrullering", desc: "Du får flytta din egen polis (Knekt) 1 steg på brädet. Hamnar den på en motståndare åker denne direkt till din Boss (i häktet)!" },
+                { title: "🚨 Utryckning", desc: "Brådskande larm! Du får flytta din egen polis (Knekt) 2 steg in på spelplanen." },
+                { title: "💵 Mutor inom polisen", desc: "Du har köpt en konstabel. Du får flytta ut valfri motståndares polis (Knekt) till sin ursprungliga startplats i mitten." },
+                { title: "📂 Insiderjobb", desc: "Kartorna ritas om. Du får byta plats på två valfria kort av din egen färg ute på spelplanen." },
+                { title: "💥 Gatustrid", desc: "Skuggspel i gränderna! Du får byta plats med ett av dina egna kort och en motståndares kort (dock ej kort där det står en polis)." },
+                { title: "🔍 Razzia!", desc: "Polisens strålkastare tänds. Alla dolda kort som ligger direkt intill en valfri polis (Knekt) ska omedelbart vändas upp!" },
+                { title: "📉 Ekonomisk Kris", desc: "Tuffa tider i stan. Under nästa varv kostar det dubbelt så mycket att landa på motståndarnas kvarter." },
+                { title: "🏃 Genväg i gränden", desc: "Du hittar en olåst dörr. Du får dispens att flytta diagonalt under just detta drag om du vill." },
+                { title: "🕵️ Ficktjuv", desc: "Ett snabbt möte i trängseln. Stjäl $10 av fickpengarna från valfri motståndare." }
+            ],
+            en: [
+                { title: "🚨 Foot Patrol", desc: "Move your own cop (Jack) 1 step on the board. If it lands on an opponent, they are sent directly to your jail (Boss)!" },
+                { title: "🚨 Emergency Call", desc: "Urgent dispatch! Move your own cop (Jack) up to 2 steps onto the field." },
+                { title: "💵 Police Bribery", desc: "You bought off a constable. Move any opponent's cop (Jack) back to its starting station in the absolute center." },
+                { title: "📂 Inside Job", desc: "The maps are redrawn. Swap positions of two face-up quarters of your own color on the board." },
+                { title: "💥 Turf War", desc: "Shady maneuvers! Swap one of your own quarters with an opponent's quarter (cannot swap cards occupied by cops)." },
+                { title: "🔍 Police Raid!", desc: "The searchlights turn on. Immediately reveal all facedown cards neighboring any cop (Jack)!" },
+                { title: "📉 Economic Crash", desc: "Hard times in the district. During the next round, landing on opponents' quarters costs double rent." },
+                { title: "🏃 Alleyway Shortcut", desc: "You find an unlocked fire escape. You are permitted to move diagonally during this turn only." },
+                { title: "🕵️ Pickpocket", desc: "A brief bump in the crowd. Steal $10 from the pocket cash of any opponent." }
+            ]
+        };
+
         let players = {
             1: { name: "Nightspades (♠)", bank: 300, pocket: 20, secured: 0 },
             2: { name: "Crimson Hearts (♥)", bank: 300, pocket: 20, secured: 0 },
@@ -632,21 +792,38 @@
             4: { name: "Diamond Syndicate (♦)", bank: 300, pocket: 20, secured: 0 }
         };
 
-        const noirEvents = [
-            { title: "🚨 Patrullering", desc: "Du får flytta din egen polis (Knekt) 1 steg på brädet. Hamnar den på en motståndare åker denne direkt till din Boss (i häktet)!" },
-            { title: "🚨 Utryckning", desc: "Brådskande larm! Du får flytta din egen polis (Knekt) 2 steg in på spelplanen." },
-            { title: "💵 Mutor inom polisen", desc: "Du har köpt en konstabel. Du får flytta ut valfri motståndares polis (Knekt) till sin ursprungliga startplats i mitten." },
-            { title: "📂 Insiderjobb", desc: "Kartorna ritas om. Du får byta plats på två valfria kort av din egen färg ute på spelplanen." },
-            { title: "💥 Gatustrid", desc: "Skuggspel i gränderna! Du får byta plats med ett av dina egna kort och en motståndares kort (dock ej kort där det står en polis)." },
-            { title: "🔍 Razzia!", desc: "Polisens strålkastare tänds. Alla dolda kort som ligger direkt intill en valfri polis (Knekt) ska omedelbart vändas upp!" },
-            { title: "📉 Ekonomisk Kris", desc: "Tuffa tider i stan. Under nästa varv kostar det dubbelt så mycket att landa på motståndarnas kvarter." },
-            { title: "🏃 Genväg i gränden", desc: "Du hittar en olåst dörr. Du får dispens att flytta diagonalt under just detta drag om du vill." },
-            { title: "🕵️ Ficktjuv", desc: "Ett snabbt möte i trängseln. Stjäl $10 av fickpengarna från valfri motståndare." }
-        ];
+        const dicePatterns = { 
+            1: [5], 2: [3, 7], 3: [3, 5, 7], 4: [1, 3, 7, 9], 5: [1, 3, 5, 7, 9], 6: [1, 3, 4, 6, 7, 9] 
+        };
 
-        const dicePatterns = { 1: [5], 2: [3, 7], 3: [3, 5, 7], 4: [1, 3, 7, 9], 5: [1, 3, 5, 7, 9], 6: [1, 3, 4, 6, 7, 9] };
-        let isRolling = false; let activePayerId = null; let activeArrestedId = null;
-        let activeAttackerId = null; let isFighting = false;
+        let isRolling = false; 
+        let activePayerId = null; 
+        let activeArrestedId = null;
+        let activeAttackerId = null; 
+        let isFighting = false;
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            
+            // Sync toggles visually
+            document.getElementById('welcome-lang-sv').classList.toggle('active', lang === 'sv');
+            document.getElementById('welcome-lang-en').classList.toggle('active', lang === 'en');
+            document.getElementById('live-lang-sv').classList.toggle('active', lang === 'sv');
+            document.getElementById('live-lang-en').classList.toggle('active', lang === 'en');
+            
+            // Translate static nodes
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (i18n[lang][key]) el.innerText = i18n[lang][key];
+            });
+
+            // Welcome texts specifically
+            document.getElementById('welcome-prompt').innerText = i18n[lang].welcomePrompt;
+            document.getElementById('btn-mode-ipad').innerText = i18n[lang].modeIpad;
+            document.getElementById('btn-mode-iphone').innerText = i18n[lang].modeIphone;
+            
+            renderRules();
+        }
 
         function startGame(mode) {
             if (mode === 'iphone') {
@@ -661,7 +838,7 @@
         function switchTab(id) {
             document.querySelectorAll('.player-corner').forEach(el => el.classList.remove('active-tab'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-          
+         
             document.getElementById(`p${id}`).classList.add('active-tab');
             if(document.querySelector(`.tab-btn[data-tab="${id}"]`)) {
                 document.querySelector(`.tab-btn[data-tab="${id}"]`).classList.add('active');
@@ -671,55 +848,84 @@
         function updateUI() {
             for (let id in players) {
                 document.getElementById(`p${id}-bank`).innerText = `$${players[id].bank}`;
-                document.getElementById(`p` + id + `-pocket`).innerText = `$${players[id].pocket}`;
+                document.getElementById(`p${id}-pocket`).innerText = `$${players[id].pocket}`;
                 document.getElementById(`p${id}-secured`).innerText = `$${players[id].secured}`;
             }
         }
 
         function drawDiceDots(number) {
-            for (let i = 1; i <= 9; i++) document.getElementById(`d${i}`).style.visibility = 'hidden';
-            dicePatterns[number].forEach(dotId => document.getElementById(`d${dotId}`).style.visibility = 'visible');
+            for (let i = 1; i <= 9; i++) {
+                document.getElementById(`d${i}`).style.visibility = 'hidden';
+            }
+            dicePatterns[number].forEach(dotId => {
+                document.getElementById(`d${dotId}`).style.visibility = 'visible';
+            });
         }
 
         function takeLoad(id) {
-            if (players[id].bank >= 100) { players[id].bank -= 100; players[id].pocket += 100; updateUI(); }
-            else { alert("Bossens valv är tomt!"); }
+            if (players[id].bank >= 100) { 
+                players[id].bank -= 100; 
+                players[id].pocket += 100; 
+                updateUI(); 
+            } else { 
+                alert(i18n[currentLang].alertNoBank); 
+            }
         }
 
         function secureCash(id) {
             if (players[id].pocket > 20) {
                 let toSecure = players[id].pocket - 20;
-                players[id].secured += toSecure; players[id].pocket = 20; updateUI();
-                if (players[id].secured >= 200) setTimeout(() => { alert(`BOSS! ${players[id].name} kontrollerar staden!`); }, 100);
-            } else { alert("Inga pengar att säkra!"); }
+                players[id].secured += toSecure; 
+                players[id].pocket = 20; 
+                updateUI();
+                if (players[id].secured >= 200) {
+                    setTimeout(() => { alert(i18n[currentLang].alertWinner.replace('{name}', players[id].name)); }, 100);
+                }
+            } else { 
+                alert(i18n[currentLang].alertNoSecure); 
+            }
         }
 
         function arrestPlayer(id) {
-            activeArrestedId = id; const grid = document.getElementById("police-targets"); grid.innerHTML = "";
+            activeArrestedId = id; 
+            const grid = document.getElementById("police-targets"); 
+            grid.innerHTML = "";
             for (let pId in players) {
                 if (pId != id) {
-                    let btn = document.createElement("button"); btn.className = "police-btn";
-                    btn.innerText = `👮‍♂️ ${players[pId].name}`; btn.onclick = function() { executeArrest(pId); };
+                    let btn = document.createElement("button"); 
+                    btn.className = "police-btn";
+                    btn.innerText = `👮‍♂️ ${players[pId].name}`; 
+                    btn.onclick = function() { executeArrest(pId); };
                     grid.appendChild(btn);
                 }
             }
             document.getElementById("police-overlay").classList.add("active");
         }
-        function closePoliceModal() { document.getElementById("police-overlay").classList.remove("active"); }
-        function executeArrest(policeGangId) {
-            let victim = players[activeArrestedId]; let cop = players[policeGangId];
-            if (victim.pocket > 20) {
-                let loot = victim.pocket - 20; cop.bank += loot; victim.pocket = 20;
-                alert(`${victim.name} haffad av ${cop.name}! Beslagtog $${loot}.`);
-            } else { alert(`${victim.name} skickas till häktet.`); }
-            closePoliceModal(); updateUI();
+
+        function closePoliceModal() { 
+            document.getElementById("police-overlay").classList.remove("active"); 
         }
 
-        // LOGIK FÖR MANUELLT GATUSLAGSMÅL
+        function executeArrest(policeGangId) {
+            let victim = players[activeArrestedId]; 
+            let cop = players[policeGangId];
+            if (victim.pocket > 20) {
+                let loot = victim.pocket - 20; 
+                cop.bank += loot; 
+                victim.pocket = 20;
+                alert(i18n[currentLang].alertArrested.replace('{victim}', victim.name).replace('{cop}', cop.name).replace('{loot}', loot));
+            } else { 
+                alert(i18n[currentLang].alertJail.replace('{victim}', victim.name)); 
+            }
+            closePoliceModal(); 
+            updateUI();
+        }
+
         function openFightModal(id) {
             if (isFighting) return;
             activeAttackerId = id;
-            const grid = document.getElementById("fight-targets"); grid.innerHTML = "";
+            const grid = document.getElementById("fight-targets"); 
+            grid.innerHTML = "";
            
             document.getElementById("fight-setup-view").style.display = "block";
             document.getElementById("fight-rolling-view").style.display = "none";
@@ -727,8 +933,9 @@
            
             for (let pId in players) {
                 if (pId != id) {
-                    let btn = document.createElement("button"); btn.className = "police-btn";
-                    btn.innerText = `🥊 Utmana ${players[pId].name}`;
+                    let btn = document.createElement("button"); 
+                    btn.className = "police-btn";
+                    btn.innerText = i18n[currentLang].fightChallenge + players[pId].name;
                     btn.onclick = function() { startStreetFight(pId); };
                     grid.appendChild(btn);
                 }
@@ -746,13 +953,14 @@
             document.getElementById("fight-setup-view").style.display = "none";
             document.getElementById("fight-rolling-view").style.display = "block";
            
-            document.getElementById("fight-attacker-name").innerText = `👊 ${players[activeAttackerId].name} (Anfallare)`;
-            document.getElementById("fight-defender-name").innerText = `🛡️ ${players[defenderId].name} (Försvarare)`;
+            document.getElementById("fight-attacker-name").innerText = `👊 ${players[activeAttackerId].name} (${i18n[currentLang].fightAttacker})`;
+            document.getElementById("fight-defender-name").innerText = `🛡️ ${players[defenderId].name} (${i18n[currentLang].fightDefender})`;
+            document.getElementById("fight-close-btn").innerText = i18n[currentLang].fightClose;
            
             let counter = 0;
             const statusLabel = document.getElementById("fight-status-label");
             statusLabel.className = "order-notice";
-            statusLabel.innerText = "KASTAR TÄRNINGARNA...";
+            statusLabel.innerText = i18n[currentLang].fightRolling;
 
             const interval = setInterval(() => {
                 document.getElementById("fight-attacker-dice").innerText = Math.floor(Math.random() * 6) + 1;
@@ -773,84 +981,248 @@
                     if (attVal > defVal) {
                         winnerId = activeAttackerId;
                         loserId = defenderId;
-                    } else if (defVal > attVal) {
-                        winnerId = defenderId;
-                        loserId = activeAttackerId;
                     } else {
-                        // Vid oavgjort vinner försvararen
                         winnerId = defenderId;
                         loserId = activeAttackerId;
-                        drawGame = true;
+                        if (attVal === defVal) drawGame = true;
                     }
                    
-                    // Genomför rån på 10 dollar
-                    let cashStolen = 10;
-                    if (players[loserId].pocket < 10) cashStolen = players[loserId].pocket; // Ta det som finns
-                   
-                    players[loserId].pocket -= cashStolen;
-                    players[winnerId].pocket += cashStolen;
-                    updateUI();
-                   
-                    if (drawGame) {
-                        statusLabel.innerText = `OAVGJORT! ${players[winnerId].name} försvarade rutan! Tar $${cashStolen} och skickar bort anfallaren.`;
+                    if (players[loserId].pocket < 10) {
+                        let pityCash = players[loserId].pocket; 
+                        players[winnerId].pocket += pityCash;
+                        players[loserId].pocket = 20; 
+                        
+                        statusLabel.className = "order-notice";
+                        statusLabel.style.backgroundColor = "rgba(229, 62, 62, 0.2)";
+                        statusLabel.style.color = "#f56565";
+                        statusLabel.style.borderColor = "#e53e3e";
+                        
+                        if (drawGame) {
+                            statusLabel.innerText = i18n[currentLang].fightLogDrawBankrupt.replace('{loser}', players[loserId].name);
+                        } else {
+                            statusLabel.innerText = i18n[currentLang].fightLogWinnerBankrupt.replace('{winner}', players[winnerId].name).replace('{loser}', players[loserId].name);
+                        }
                     } else {
-                        statusLabel.innerText = `VINNARE: ${players[winnerId].name}! Tar $${cashStolen} från förloraren som flyttas till valfritt Ess/Kung.`;
+                        players[loserId].pocket -= 10;
+                        players[winnerId].pocket += 10;
+                        
+                        if (drawGame) {
+                            statusLabel.innerText = i18n[currentLang].fightLogDraw.replace('{winner}', players[winnerId].name);
+                        } else {
+                            statusLabel.innerText = i18n[currentLang].fightLogWinner.replace('{winner}', players[winnerId].name);
+                        }
                     }
                    
                     isFighting = false;
                     document.getElementById("fight-close-btn").style.display = "block";
+                    updateUI();
                 }
             }, 70);
         }
 
         function openPayModal(id) {
-            activePayerId = id; document.getElementById("pay-title").innerText = `${players[id].name} betalar`;
-            const select = document.getElementById("pay-target"); select.innerHTML = "";
-            for (let pId in players) { if (pId != id) { let opt = document.createElement("option"); opt.value = pId; opt.innerText = players[pId].name; select.appendChild(opt); } }
+            activePayerId = id; 
+            document.getElementById("pay-title").innerText = players[id].name + i18n[currentLang].payPayer;
+            const select = document.getElementById("pay-target"); 
+            select.innerHTML = "";
+            for (let pId in players) { 
+                if (pId != id) { 
+                    let opt = document.createElement("option"); 
+                    opt.value = pId; 
+                    opt.innerText = players[pId].name; 
+                    select.appendChild(opt); 
+                } 
+            }
             document.getElementById("pay-overlay").classList.add("active");
         }
-        function closePayModal() { document.getElementById("pay-overlay").classList.remove("active"); }
+
+        function closePayModal() { 
+            document.getElementById("pay-overlay").classList.remove("active"); 
+        }
+
         function executePayment() {
-            const targetId = document.getElementById("pay-target").value; const amount = parseInt(document.getElementById("pay-amount").value);
+            const targetId = document.getElementById("pay-target").value; 
+            const amount = parseInt(document.getElementById("pay-amount").value);
             if (isNaN(amount) || amount <= 0) return;
-            if (players[activePayerId].pocket < amount) { alert("Konkurs! Nollställs till $20 på ditt Ess."); players[activePayerId].pocket = 20; closePayModal(); updateUI(); return; }
-            players[activePayerId].pocket -= amount; players[targetId].pocket += amount; updateUI(); closePayModal();
+            if (players[activePayerId].pocket < amount) { 
+                alert(i18n[currentLang].alertBankrupt); 
+                players[activePayerId].pocket = 20; 
+                closePayModal(); 
+                updateUI(); 
+                return; 
+            }
+            players[activePayerId].pocket -= amount; 
+            players[targetId].pocket += amount; 
+            updateUI(); 
+            closePayModal();
         }
 
         function rollDice() {
-            if (isRolling) return; isRolling = true;
-            const label = document.getElementById("dice-label"); label.classList.remove("pulse-text");
+            if (isRolling) return; 
+            isRolling = true;
+            const label = document.getElementById("dice-label"); 
+            label.classList.remove("pulse-text");
             let counter = 0;
             const interval = setInterval(() => {
-                let currentVal = Math.floor(Math.random() * 6) + 1; drawDiceDots(currentVal); label.innerText = `RULLAR...`; counter++;
+                let currentVal = Math.floor(Math.random() * 6) + 1; 
+                drawDiceDots(currentVal); 
+                label.innerText = i18n[currentLang].diceRolling; 
+                counter++;
                 if (counter > 8) {
-                    clearInterval(interval); const finalResult = Math.floor(Math.random() * 6) + 1; drawDiceDots(finalResult);
-                    label.innerText = `SLOG: ${finalResult}`;
-                    setTimeout(() => { if (!isRolling) { label.innerText = "KLICKA FÖR ATT SLÅ"; label.classList.add("pulse-text"); } }, 3000);
-                    isRolling = false; if (Math.random() < 0.35) { triggerEvent(finalResult); }
+                    clearInterval(interval); 
+                    const finalResult = Math.floor(Math.random() * 6) + 1; 
+                    drawDiceDots(finalResult);
+                    label.innerText = i18n[currentLang].diceSlog + finalResult;
+                    setTimeout(() => { 
+                        if (!isRolling) { 
+                            label.innerText = i18n[currentLang].diceClick; 
+                            label.classList.add("pulse-text"); 
+                        } 
+                    }, 3000);
+                    isRolling = false; 
+                    if (Math.random() < 0.35) { 
+                        triggerEvent(finalResult); 
+                    }
                 }
             }, 65);
         }
 
         function triggerEvent(diceRoll) {
-            const randomEvent = noirEvents[Math.floor(Math.random() * noirEvents.length)];
-            document.getElementById("event-dice-badge").innerText = `SLOG EN ${diceRoll}:A 🎲`;
+            const list = noirEvents[currentLang];
+            const randomEvent = list[Math.floor(Math.random() * list.length)];
+            document.getElementById("event-dice-badge").innerText = i18n[currentLang].eventBadge.replace('{roll}', diceRoll);
             document.getElementById("event-title").innerText = randomEvent.title;
             document.getElementById("event-desc").innerText = randomEvent.desc;
             document.getElementById("event-overlay").classList.add("active");
         }
-        function closePopup() { document.getElementById("event-overlay").classList.remove("active"); }
-        function openRulesModal() { document.getElementById("rules-overlay").classList.add("active"); }
-        function closeRulesModal() { document.getElementById("rules-overlay").classList.remove("active"); }
+
+        function closePopup() { 
+            document.getElementById("event-overlay").classList.remove("active"); 
+        }
+        function openRulesModal() { 
+            document.getElementById("rules-overlay").classList.add("active"); 
+        }
+        function closeRulesModal() { 
+            document.getElementById("rules-overlay").classList.remove("active"); 
+        }
 
         function resetGame() {
-            if (confirm("Nollställa spelet?")) {
-                players = { 1: { name: "Nightspades (♠)", bank: 300, pocket: 20, secured: 0 }, 2: { name: "Crimson Hearts (♥)", bank: 300, pocket: 20, secured: 0 }, 3: { name: "Iron Clovers (♣)", bank: 300, pocket: 20, secured: 0 }, 4: { name: "Diamond Syndicate (♦)", bank: 300, pocket: 20, secured: 0 } };
-                drawDiceDots(1); const label = document.getElementById("dice-label"); label.innerText = "KLICKA FÖR ATT SLÅ"; label.classList.add("pulse-text"); updateUI();
+            if (confirm(i18n[currentLang].alertReset)) {
+                players = { 
+                    1: { name: "Nightspades (♠)", bank: 300, pocket: 20, secured: 0 }, 
+                    2: { name: "Crimson Hearts (♥)", bank: 300, pocket: 20, secured: 0 }, 
+                    3: { name: "Iron Clovers (♣)", bank: 300, pocket: 20, secured: 0 }, 
+                    4: { name: "Diamond Syndicate (♦)", bank: 300, pocket: 20, secured: 0 } 
+                };
+                drawDiceDots(1); 
+                const label = document.getElementById("dice-label"); 
+                label.innerText = i18n[currentLang].diceClick; 
+                label.classList.add("pulse-text"); 
+                updateUI();
             }
         }
 
-        drawDiceDots(1); updateUI();
+        function renderRules() {
+            const area = document.getElementById("rules-content-area");
+            if (currentLang === 'sv') {
+                area.innerHTML = `
+                    <h1 style="color:#2b6cb0; text-align:center; margin-bottom:15px; letter-spacing: 2px;">THE NOIR SYNDICATE — REGLER</h1>
+                    <h2>Spelplan & Setup (Kortlayout)</h2>
+                    <p>Bygg upp spelplanen på bordet med vanliga spelkort enligt bilden nedan. Om bilden saknas, kom ihåg grundmönstret: Ess i hörnen, Kungar på kanterna, gator där emellan och samtliga Knekter (poliser) startande på polisstationen i absolut centrum. Varje spelare placerar sin droska/markör på sitt Ess.</p>
+                    <div class="setup-image-container"><img src="setup.PNG" alt="Setup"></div>
+                    <h2>Spelidét & Mål</h2>
+                    <p>Du leder ett brottssyndikat. Ditt mål är att hämta laster med svantar pengar ($100 i taget) från din <strong>Boss (Kung)</strong>, smuggla dem genom stadens farliga gator i <strong>Fickan</strong> och säkra dem på ditt <strong>Högkvarter (Ess)</strong>. Den förste spelaren som har lyckats <strong>Säkra $200</strong> på sitt Ess vinner spelet.</p>
+                    <h2>Turens Gång</h2>
+                    <ul>
+                        <li><strong>Slå tärningen:</strong> Klicka på tärningen i mitten. Den visar hur många steg du får flytta din droska (framåt/sidled – ej diagonalt eller bakåt). Du måste flytta exakt det antal steg tärningen visar.</li>
+                        <li><strong>Händelsechans (35%):</strong> Om tärningsslaget triggar ett Noir-kort dyker en händelse upp. <strong>Viktigt:</strong> Utför händelsens instruktion omedelbart <em>innan</em> du flyttar din pjäs på brädet!</li>
+                    </ul>
+                    <h2>Rörelseregler & Positioner</h2>
+                    <ul>
+                        <li><strong>Gatuslagsmål vid krock:</strong> Om din droska landar på en ruta där en motståndare redan står, triggas ett gatuslagsmål direkt!</li>
+                        <li><strong>Vända kort:</strong> När du landar på ett dolt kort vänds det upp direkt och tull betalas om det inte är egen färg.</li>
+                        <li><strong>Stanna på kort:</strong> Om du landar på en motståndares öppna kvarter måste du betala tull till den spelaren (dras från fickan).</li>
+                    </ul>
+                    <h2>Regler för Gatuslagsmål 💥</h2>
+                    <ul>
+                        <li>Båda spelarna rullar varsin digital tärning via appen.</li>
+                        <li><strong>Vinst:</strong> Vinnaren stjäl 10 dollar direkt från förlorarens ficka.</li>
+                        <li><strong>Straff:</strong> Förloraren måste omedelbart flytta sin fysiska pjäs på brädet tillbaka till antingen Ess (Högkvarter) eller Kung (Boss).</li>
+                        <li><strong>Oavgjort:</strong> Om ni slår lika vinner den som blev attackerad (försvararen)!</li>
+                    </ul>
+                    <h2>Regler för Barerna (Damerna) 🥂</h2>
+                    <ul>
+                        <li><strong>Neutral mark:</strong> Barerna (Damerna) räknas som neutral, fredad mark. Du kan inte bli attackerad i gatuslagsmål eller bli haffad av polisen här.</li>
+                        <li><strong>Fri lejd:</strong> Det är helt gratis att landa på en Dam oavsett färg – ingen tull betalas överhuvudtaget.</li>
+                        <li><strong>Tappa fokus:</strong> Om din pjäs landar på en Dam måste du <strong>stå över nästa omgång</strong>.</li>
+                    </ul>
+                    <h2>Polisen (Knekter) & Arresteringar</h2>
+                    <ul>
+                        <li><strong>Polisens rörelse:</strong> Poliser rör sig enbart via Noir-händelser.</li>
+                        <li><strong>Att bli haffad:</strong> Om en polis landar på din droska, eller om du landar hos en polis, blir du <strong>Haffad</strong> (om du inte står säkert på en Bar).</li>
+                        <li><strong>Straff vid arrestering:</strong> Klicka på "🚨 Haffad" i ditt hörn. Alla pengar du har i Fickan (utöver dina start-$20) beslagtas och tillfaller banken hos det syndikat som äger polisen. Din droska skickas tillbaka till din Boss (Kung).</li>
+                    </ul>
+                    <h2>Ekonomi & Konkurs</h2>
+                    <ul>
+                        <li><strong>Hämta last:</strong> På din Kung (Boss) klickar du på "💰 Hämta $100". Flyttas från din Bank till Fickan. Max en last i taget.</li>
+                        <li><strong>Säkra pengar:</strong> På ditt Ess (Högkvarter) klickar du på "👑 Säkra Ess". Allt över dina grund-$20 låses på ditt Ess mot vinstmålet.</li>
+                        <li><strong>Konkurs:</strong> Om du måste betala en skuld/tull/förlust som är större än vad du har i fickan går du i personlig konkurs. Dina fickpengar nollställs och din pjäs flyttas direkt till ditt Ess där du startar om med $20 i fickan.</li>
+                    </ul>
+                    <button class="popup-btn" onclick="closeRulesModal()">Stäng och återgå till spelet</button>
+                `;
+            } else {
+                area.innerHTML = `
+                    <h1 style="color:#2b6cb0; text-align:center; margin-bottom:15px; letter-spacing: 2px;">THE NOIR SYNDICATE — RULES</h1>
+                    <h2>Board Setup (Card Layout)</h2>
+                    <p>Arrange the physical board game using a standard deck of cards according to the design plan. Remember the core framework: Aces in the corners, Kings at the borders, streets in between, and all Jacks (Cops) starting at the central precinct. Every player places their token on their matching Ace.</p>
+                    <div class="setup-image-container"><img src="setup.PNG" alt="Setup"></div>
+                    <h2>Objective</h2>
+                    <p>You lead a notorious crime syndicate. Your objective is to pick up contraband cash shipments ($100 at a time) from your <strong>Boss (King)</strong>, smuggle them through dangerous streets in your <strong>Pocket</strong>, and lock them away safely inside your <strong>Headquarters (Ace)</strong>. The first player to successfully <strong>Secure $200</strong> on their Ace wins the match.</p>
+                    <h2>Turn Sequence</h2>
+                    <ul>
+                        <li><strong>Roll Dice:</strong> Tap the central dice module. It dictates exactly how many spaces you must move your token (forward or sideways – no moving diagonally or back-tracking).</li>
+                        <li><strong>Noir Incident (35% Chance):</strong> If the roll triggers a Noir Event card, a pop-up displays. <strong>Crucial:</strong> Resolve the incident directive immediately <em>before</em> moving your physical token on the board!</li>
+                    </ul>
+                    <h2>Movement & Interactions</h2>
+                    <ul>
+                        <li><strong>Collisions & Fights:</strong> Two tokens cannot occupy the exact same card. If your token lands on a square held by an opponent, a Street Fight triggers immediately!</li>
+                        <li><strong>Revealing Quarters:</strong> Landing on a facedown card flips it over permanently. Rent/toll must be paid unless it matches your syndicate's suit.</li>
+                        <li><strong>Stepping on Open Cards:</strong> Landing on an opponent's face-up quarter forces you to pay rent directly from your Pocket to theirs.</li>
+                    </ul>
+                    <h2>Street Fight Rules 💥</h2>
+                    <ul>
+                        <li>Both participants roll a digital die using the in-app interface.</li>
+                        <li><strong>Victory:</strong> The winner steals $10 instantly from the loser's pocket.</li>
+                        <li><strong>Reprimand:</strong> The loser must immediately banish their physical token back to either their <strong>Ace</strong> (HQ) or <strong>King</strong> (Boss).</li>
+                        <li><strong>Ties/Draws:</strong> In the event of a tie, the defender (the one who was attacked) wins the clash!</li>
+                    </ul>
+                    <h2>The Bars (Queens) 🥂</h2>
+                    <ul>
+                        <li><strong>Neutral Ground:</strong> Queens are completely safe, open havens. You cannot be attacked in a street fight, and Cops (Jacks) cannot arrest you here.</li>
+                        <li><strong>Free Passing:</strong> Landing or stepping on a Queen is completely free regardless of color – no tolls or costs apply.</li>
+                        <li><strong>Losing Focus:</strong> The high life comes with a price. If your token lands on a Queen, your syndicate is distracted; you must <strong>skip your next turn</strong>.</li>
+                    </ul>
+                    <h2>The Cops (Jacks) & Arrests</h2>
+                    <ul>
+                        <li><strong>Police Movement:</strong> Cops move exclusively via internal Noir Event prompts (e.g., Foot Patrol or Emergency Calls).</li>
+                        <li><strong>Getting Caught:</strong> If a cop lands on your token, or you land on a square with a cop, you are <strong>Busted</strong> (unless shielded inside a Bar).</li>
+                        <li><strong>Arrest Penalties:</strong> Click "🚨 Busted" in your control panel. All money in your Pocket (beyond your basic $20 starting cash) is seized and added to the <em>Bank</em> of the syndicate controlling that cop. Your token is sent back to your Boss (King).</li>
+                    </ul>
+                    <h2>Economics & Bankruptcy</h2>
+                    <ul>
+                        <li><strong>Load Shipments:</strong> While standing on your King, click "💰 Get $100" to transfer money from your Bank to your Pocket. Maximum 1 cargo at a time.</li>
+                        <li><strong>Secure Funds:</strong> While standing on your Ace, click "👑 Secure Ace". All pocket cash exceeding your base $20 is locked toward the win condition.</li>
+                        <li><strong>Bankruptcy:</strong> If forced to pay a debt, rent, or fight loss that exceeds your pocket total, you go bankrupt. Your pocket is instantly cleared, and your token is moved to your Ace, starting over with $20.</li>
+                    </ul>
+                    <button class="popup-btn" onclick="closeRulesModal()">Close and Resume Game</button>
+                `;
+            }
+        }
+
+        // Initialize setup
+        setLanguage('sv');
+        drawDiceDots(1); 
+        updateUI();
     </script>
 </body>
 </html>
