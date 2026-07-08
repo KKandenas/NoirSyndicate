@@ -17,39 +17,40 @@
         body {
             background-color: #0a0a0a;
             color: #e5e5e5;
-            padding: 20px;
+            padding: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         .container {
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
             background: #121212;
             border: 1px solid #222;
-            padding: 25px;
+            padding: 15px;
             border-radius: 12px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.8);
             text-align: center;
         }
 
         h1 {
-            font-size: 26px;
+            font-size: 22px;
             letter-spacing: 4px;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
             color: #fff;
             font-weight: 900;
         }
 
         .subtitle {
-            font-size: 11px;
+            font-size: 10px;
             color: #666;
             text-transform: uppercase;
             letter-spacing: 3px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         .screen {
@@ -59,7 +60,7 @@
         .screen.active {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
         }
 
         input, select {
@@ -73,46 +74,30 @@
             text-align: center;
         }
 
-        input:focus, select:focus {
-            outline: none;
-            border-color: #ecc94b;
-        }
-
         button {
             width: 100%;
             background: #1e3a8a;
             color: white;
             border: none;
             padding: 14px;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: bold;
             border-radius: 6px;
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 1px;
-            transition: background 0.2s;
         }
 
-        button:active {
-            transform: scale(0.98);
-        }
-
-        .btn-secondary {
-            background: #222;
-            border: 1px solid #333;
-            color: #aaa;
-        }
-
-        .btn-success {
-            background: #15803d;
-        }
+        button:active { transform: scale(0.98); }
+        .btn-secondary { background: #222; border: 1px solid #333; color: #aaa; }
+        .btn-success { background: #15803d; }
 
         .room-code-display {
-            font-size: 36px;
+            font-size: 32px;
             font-weight: 900;
             letter-spacing: 5px;
             color: #ecc94b;
-            margin: 15px 0;
+            margin: 10px 0;
             background: #1a1a1a;
             padding: 10px;
             border-radius: 6px;
@@ -124,35 +109,124 @@
             background: #161616;
             border-radius: 6px;
             padding: 10px;
-            margin-top: 10px;
             border: 1px solid #222;
         }
 
         .player-item {
             padding: 8px 5px;
             border-bottom: 1px solid #222;
-            font-size: 14px;
+            font-size: 13px;
             display: flex;
             justify-content: space-between;
         }
 
-        .player-item:last-child {
-            border-bottom: none;
+        /* ==========================================
+           ZOOMBAR KARTA DESIGN
+           ========================================== */
+        .map-viewport {
+            width: 100%;
+            height: 320px;
+            background: #0d0d0d;
+            border: 2px solid #222;
+            border-radius: 8px;
+            overflow: auto; /* Tillåter skroll på mobiler */
+            position: relative;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.9);
         }
 
-        /* Enkel placeholder för spelskärmen */
-        #game-board-placeholder {
-            font-size: 18px;
-            color: #ecc94b;
-            padding: 40px 0;
+        .map-container {
+            width: 500px; /* Fixerad storlek på "staden" så vi kan zooma */
+            height: 500px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 6px;
+            padding: 10px;
+            transform-origin: top left;
+            transition: transform 0.2s ease-out;
+        }
+
+        .map-tile {
+            background: #161616;
+            border: 1px solid #333;
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            text-align: center;
+            position: relative;
+            color: #ccc;
+        }
+
+        /* Färgteman för distrikt */
+        .tile-hq-black { border: 2px solid #555; background: #222; color: #fff; box-shadow: inset 0 0 10px rgba(255,255,255,0.1); }
+        .tile-hq-red { border: 2px solid #991b1b; background: #450a0a; color: #fca5a5; box-shadow: inset 0 0 10px rgba(239,68,68,0.2); }
+        .tile-street-black { border-left: 4px solid #444; background: #181818; }
+        .tile-street-red { border-left: 4px solid #ef4444; background: #221010; }
+
+        .tile-title {
+            font-size: 9px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            line-height: 1.1;
+        }
+
+        /* Spelarpjäser på kartan */
+        .presence-container {
+            display: flex;
+            gap: 3px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 4px;
+        }
+
+        .player-token {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #ecc94b;
+            border: 1px solid #fff;
+            font-size: 8px;
+            color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+        }
+
+        /* Zoomkontroller */
+        .zoom-controls {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 8px;
+        }
+        .zoom-controls button {
+            padding: 8px;
+            font-size: 16px;
+            background: #222;
+            border: 1px solid #444;
+        }
+
+        .hud {
+            background: #161616;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            text-align: left;
+            border: 1px solid #222;
         }
     </style>
 
+    <!-- Firebase SDK via CDN -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set, push, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // Dina exakta config-uppgifter insatta
         const firebaseConfig = {
             apiKey: "AIzaSyBJMAUFQYCpvbXl3T1fyEb1dZRFqXbPFQ8",
             authDomain: "noir-syndicate-digital.firebaseapp.com",
@@ -163,144 +237,181 @@
             appId: "1:211341530009:web:31366f14989e8f4b737908"
         };
 
-        // Initiera Firebase & Databas
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Globalt speltillstånd i mobilen
         let currentRoomCode = null;
         let myPlayerId = null;
         let isLeader = false;
+        let currentZoom = 0.8; // Startzoom för att passa mobilen skapligt
 
-        // Skärmhantering (Hjälpfunktion)
+        // Den fasta staden (4x4 kartmatris)
+        const cityMapData = [
+            // Rad 0
+            { x: 0, y: 0, type: "hq-black", name: "Obsidian Vault", code: "OV" },
+            { x: 1, y: 0, type: "street-black", name: "Shadow Alley", code: "SA" },
+            { x: 2, y: 0, type: "street-red", name: "Neon Bazaar", code: "NB" },
+            { x: 3, y: 0, type: "hq-red", name: "Crimson Lounge", code: "CL" },
+            // Rad 1
+            { x: 0, y: 1, type: "street-black", name: "Ink District", code: "ID" },
+            { x: 1, y: 1, type: "street-black", name: "Safehouse Noir", code: "SN" },
+            { x: 2, y: 1, type: "street-red", name: "Ruby Bank", code: "RB" },
+            { x: 3, y: 1, type: "street-red", name: "Scarlet Gate", code: "SG" },
+            // Rad 2
+            { x: 0, y: 2, type: "street-black", name: "Charcoal Docks", code: "CD" },
+            { x: 1, y: 2, type: "street-black", name: "Smugglers Cove", code: "SC" },
+            { x: 2, y: 2, type: "street-red", name: "Viper Club", code: "VC" },
+            { x: 3, y: 2, type: "street-red", name: "Blood Street", code: "BS" },
+            // Rad 3
+            { x: 0, y: 3, type: "hq-black", name: "Onyx Pier", code: "OP" },
+            { x: 1, y: 3, type: "street-black", name: "Dusk Slums", code: "DS" },
+            { x: 2, y: 3, type: "street-red", name: "Velvet Hotel", code: "VH" },
+            { x: 3, y: 3, type: "hq-red", name: "Bloodstone Casino", code: "BC" }
+        ];
+
         function showScreen(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
         }
 
-        // Generera slumpad rumskod (4 tecken)
-        function generateRoomCode() {
-            const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // Skippat O, I, 1, 0 för tydlighet
-            let code = "";
-            for (let i = 0; i < 4; i++) {
-                code += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return code;
-        }
+        // Zoom-knapparnas funktioner
+        window.adjustZoom = function(amount) {
+            currentZoom = Math.max(0.5, Math.min(1.5, currentZoom + amount));
+            document.getElementById("map-board").style.transform = `scale(${currentZoom})`;
+        };
 
-        // ==========================================
-        // HANDELSER & LOGIK
-        // ==========================================
-
-        // Tryckt på "Skapa nytt spel"
         window.onCreateRoom = function() {
-            const code = generateRoomCode();
+            const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+            let code = ""; for (let i = 0; i < 4; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
             currentRoomCode = code;
             myPlayerId = "player_" + Date.now();
             isLeader = true;
 
-            // Skapa rummet i Firebase
             set(ref(db, 'rooms/' + code), {
                 status: "lobby",
-                turn: "",
                 createdAt: Date.now()
             }).then(() => {
-                // Lägg till sig själv som ledare
                 set(ref(db, `rooms/${code}/players/${myPlayerId}`), {
                     name: "Boss (Host)",
-                    syndicate: "Ej valt",
+                    syndicate: "♠ Nightspades",
+                    x: 0, y: 0, // Startposition
                     isLeader: true
                 });
-
                 document.getElementById("display-code").innerText = code;
-                document.getElementById("start-game-btn").style.display = "block"; // Ledaren kan starta
+                document.getElementById("start-game-btn").style.display = "block";
                 showScreen("lobby-screen");
                 listenToRoom(code);
             });
         };
 
-        // Tryckt på "Gå med i spel" från startskärmen
-        window.onJoinSetup = function() {
-            showScreen("join-screen");
-        };
+        window.onJoinSetup = function() { showScreen("join-screen"); };
 
-        // Tryckt på "Anslut" efter att ha skrivit kod och namn
         window.onExecuteJoin = function() {
             const codeInput = document.getElementById("join-code-input").value.toUpperCase().trim();
             const nameInput = document.getElementById("join-name-input").value.trim();
             const syndicateInput = document.getElementById("join-syndicate-select").value;
 
-            if (!codeInput || !nameInput) {
-                alert("Fyll i både rumskod och ditt namn!");
-                return;
-            }
+            if (!codeInput || !nameInput) return alert("Fyll i allt!");
 
-            // Kontrollera om rummet finns
             onValue(ref(db, 'rooms/' + codeInput), (snapshot) => {
                 if (snapshot.exists()) {
                     currentRoomCode = codeInput;
                     myPlayerId = "player_" + Date.now();
                     isLeader = false;
 
-                    // Lägg till spelaren i databasen
+                    // Slumpa start-HQ baserat på val
+                    let startX = syndicateInput.includes("Crimson") || syndicateInput.includes("Diamond") ? 3 : 0;
+                    let startY = syndicateInput.includes("Diamond") || syndicateInput.includes("Clovers") ? 3 : 0;
+
                     set(ref(db, `rooms/${codeInput}/players/${myPlayerId}`), {
                         name: nameInput,
                         syndicate: syndicateInput,
+                        x: startX, y: startY,
                         isLeader: false
                     });
 
                     document.getElementById("display-code").innerText = codeInput;
-                    document.getElementById("start-game-btn").style.display = "none"; // Gäster kan inte starta
+                    document.getElementById("start-game-btn").style.display = "none";
                     showScreen("lobby-screen");
                     listenToRoom(codeInput);
                 } else {
-                    alert("Hittade inget rum med den koden. Kolla stavningen!");
+                    alert("Rummet finns inte!");
                 }
             }, { onlyOnce: true });
         };
 
-        // Lyssna på förändringar i rummet i realtid
         function listenToRoom(code) {
             onValue(ref(db, 'rooms/' + code), (snapshot) => {
                 const data = snapshot.val();
                 if (!data) return;
 
-                // 1. Uppdatera spelarlistan i lobbyn
+                // 1. Lobbylistan
                 const listEl = document.getElementById("player-list-box");
-                listEl.innerHTML = "";
-                
-                if (data.players) {
-                    for (let id in data.players) {
-                        const p = data.players[id];
-                        const item = document.createElement("div");
-                        item.className = "player-item";
-                        item.innerHTML = `<span>👤 ${p.name}</span> <span style="color:#ecc94b; font-size:12px;">${p.syndicate}</span>`;
-                        listEl.appendChild(item);
+                if (listEl) {
+                    listEl.innerHTML = "";
+                    if (data.players) {
+                        for (let id in data.players) {
+                            const p = data.players[id];
+                            listEl.innerHTML += `<div class="player-item"><span>👤 ${p.name}</span><span style="color:#ecc94b;">${p.syndicate}</span></div>`;
+                        }
                     }
                 }
 
-                // 2. Kika om spelledaren har ändrat status till "playing"
+                // 2. Om spelet har startat -> Rendera kartan
                 if (data.status === "playing") {
                     showScreen("game-screen");
+                    renderCityMap(data.players);
+                    
+                    // Uppdatera en liten personlig HUD på skärmen
+                    const me = data.players[myPlayerId];
+                    if (me) {
+                        document.getElementById("hud-info").innerHTML = `<b>Syndikat:</b> ${me.syndicate}<br><b>Position:</b> X:${me.x}, Y:${me.y}`;
+                    }
                 }
             });
         }
 
-        // Spelledaren klickar på "Starta Spel"
+        // Bygg och rita upp kartan utifrån spelarnas positioner i Firebase
+        function renderCityMap(players) {
+            const boardEl = document.getElementById("map-board");
+            boardEl.innerHTML = ""; // Rensa gamla gubbar
+
+            cityMapData.forEach(tile => {
+                const tileDiv = document.createElement("div");
+                tileDiv.className = `map-tile tile-${tile.type}`;
+                
+                // Hitta om det står några spelare på den här rutan just nu
+                let presenceHTML = "";
+                if (players) {
+                    for (let id in players) {
+                        const p = players[id];
+                        if (p.x === tile.x && p.y === tile.y) {
+                            // Ta första bokstaven i spelarens namn som pjäs-text
+                            const initial = p.name.charAt(0).toUpperCase();
+                            presenceHTML += `<div class="player-token" title="${p.name}">${initial}</div>`;
+                        }
+                    }
+                }
+
+                tileDiv.innerHTML = `
+                    <div class="tile-title">${tile.name}</div>
+                    <div style="color: #555; font-size: 8px;">[${tile.x},${tile.y}]</div>
+                    <div class="presence-container">${presenceHTML}</div>
+                `;
+                
+                boardEl.appendChild(tileDiv);
+            });
+            
+            // Verkställ nuvarande zoom-skala
+            boardEl.style.transform = `scale(${currentZoom})`;
+        }
+
         window.onStartGame = function() {
             if (!isLeader) return;
-            // Ändra status i databasen, alla anslutna mobiler kommer hoppa över till spelskärmen automatiskt
-            update(ref(db, 'rooms/' + currentRoomCode), {
-                status: "playing"
-            });
+            update(ref(db, 'rooms/' + currentRoomCode), { status: "playing" });
         };
 
-        // Gå tillbaka till startskärmen
-        window.onGoBack = function() {
-            showScreen("start-screen");
-        };
-
-        // Visa startskärmen direkt vid laddning
+        window.onGoBack = function() { showScreen("start-screen"); };
         showScreen("start-screen");
     </script>
 </head>
@@ -308,41 +419,51 @@
 
     <div class="container">
         <h1>NOIR SYNDICATE</h1>
-        <div class="subtitle">Multiplayer Hub</div>
+        <div class="subtitle">Digital Core</div>
 
+        <!-- SKÄRM 1: START -->
         <div class="screen active" id="start-screen">
             <button onclick="onCreateRoom()">💼 Skapa nytt spelrum</button>
-            <button onclick="onJoinSetup()" class="btn-secondary">📱 Gå med i befintligt rum</button>
+            <button onclick="onJoinSetup()" class="btn-secondary">📱 Gå med i rum</button>
         </div>
 
+        <!-- SKÄRM 2: ANSLUT -->
         <div class="screen" id="join-screen">
-            <input type="text" id="join-code-input" placeholder="RUMSKOD (4 BOKSTÄVER)" maxlength="4" style="text-transform: uppercase;">
-            <input type="text" id="join-name-input" placeholder="Ditt Gangster-namn" maxlength="15">
+            <input type="text" id="join-code-input" placeholder="RUMSKOD" maxlength="4" style="text-transform: uppercase;">
+            <input type="text" id="join-name-input" placeholder="Ditt gangster-namn" maxlength="12">
             <select id="join-syndicate-select">
-                <option value="♠ Nightspades">♠ Nightspades</option>
-                <option value="♥ Crimson Hearts">♥ Crimson Hearts</option>
-                <option value="♣ Iron Clovers">♣ Iron Clovers</option>
-                <option value="♦ Diamond Syndicate">♦ Diamond Syndicate</option>
+                <option value="♠ Nightspades">♠ Nightspades (Svart, HQ Top-Vänster)</option>
+                <option value="♥ Crimson Hearts">♥ Crimson Hearts (Röd, HQ Top-Höger)</option>
+                <option value="♣ Iron Clovers">♣ Iron Clovers (Svart, HQ Botten-Vänster)</option>
+                <option value="♦ Diamond Syndicate">♦ Diamond Syndicate (Röd, HQ Botten-Höger)</option>
             </select>
             <button onclick="onExecuteJoin()" class="btn-success">Anslut till rummet</button>
             <button onclick="onGoBack()" class="btn-secondary">Tillbaka</button>
         </div>
 
+        <!-- SKÄRM 3: LOBBY -->
         <div class="screen" id="lobby-screen">
-            <p style="font-size: 13px; color: #888;">Dela denna kod med dina kompisar:</p>
+            <p style="font-size: 12px; color: #888;">Rumskod:</p>
             <div class="room-code-display" id="display-code">----</div>
-            
-            <p style="text-align: left; font-size: 12px; color: #aaa; font-weight: bold; margin-top: 10px;">ANSLUTNA GANSTERS:</p>
-            <div class="player-list" id="player-list-box">
-                </div>
-
-            <button id="start-game-btn" onclick="onStartGame()" class="btn-success" style="margin-top: 15px; display: none;">STARTA SPELET 🚀</button>
-            <p id="wait-message" style="font-size: 11px; color: #666; margin-top: 5px;">Väntar på att spelledaren ska starta...</p>
+            <div class="player-list" id="player-list-box"></div>
+            <button id="start-game-btn" onclick="onStartGame()" class="btn-success" style="margin-top: 10px; display: none;">STARTA SPELET 🚀</button>
         </div>
 
+        <!-- SKÄRM 4: SPELSKÄRM MED ZOOMBAR MINIKARTA -->
         <div class="screen" id="game-screen">
-            <div id="game-board-placeholder">🏙️ STADEN LADDAS...</div>
-            <p style="font-size: 13px; color: #aaa;">Här kommer den zoombara minikartan att ligga, synkad med dina kompisars drag!</p>
+            <div class="hud" id="hud-info">Laddar spelinfo...</div>
+            
+            <div class="map-viewport">
+                <div class="map-container" id="map-board">
+                    <!-- Kartrutor och spelarpjäser genereras här automatiskt -->
+                </div>
+            </div>
+
+            <!-- Kontroller för att zooma kartan enkelt på mobilen -->
+            <div class="zoom-controls">
+                <button onclick="adjustZoom(-0.1)">🔍 Minska karta [ - ]</button>
+                <button onclick="adjustZoom(0.1)">🔍 Förstora karta [ + ]</button>
+            </div>
         </div>
 
     </div>
