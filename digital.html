@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Noir Syndicate — Digital</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        body {
+            background-color: #0a0a0a;
+            color: #e5e5e5;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: #121212;
+            border: 1px solid #222;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 26px;
+            letter-spacing: 4px;
+            margin-bottom: 5px;
+            color: #fff;
+            font-weight: 900;
+        }
+
+        .subtitle {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 30px;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        input, select {
+            width: 100%;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #ecc94b;
+        }
+
+        button {
+            width: 100%;
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background 0.2s;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background: #222;
+            border: 1px solid #333;
+            color: #aaa;
+        }
+
+        .btn-success {
+            background: #15803d;
+        }
+
+        .room-code-display {
+            font-size: 36px;
+            font-weight: 900;
+            letter-spacing: 5px;
+            color: #ecc94b;
+            margin: 15px 0;
+            background: #1a1a1a;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px dashed #ecc94b;
+        }
+
+        .player-list {
+            text-align: left;
+            background: #161616;
+            border-radius: 6px;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #222;
+        }
+
+        .player-item {
+            padding: 8px 5px;
+            border-bottom: 1px solid #222;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .player-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Enkel placeholder för spelskärmen */
+        #game-board-placeholder {
+            font-size: 18px;
+            color: #ecc94b;
+            padding: 40px 0;
+        }
+    </style>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, set, push, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        // Dina exakta config-uppgifter insatta
+        const firebaseConfig = {
+            apiKey: "AIzaSyBJMAUFQYCpvbXl3T1fyEb1dZRFqXbPFQ8",
+            authDomain: "noir-syndicate-digital.firebaseapp.com",
+            databaseURL: "https://noir-syndicate-digital-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "noir-syndicate-digital",
+            storageBucket: "noir-syndicate-digital.firebasestorage.app",
+            messagingSenderId: "211341530009",
+            appId: "1:211341530009:web:31366f14989e8f4b737908"
+        };
+
+        // Initiera Firebase & Databas
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Globalt speltillstånd i mobilen
+        let currentRoomCode = null;
+        let myPlayerId = null;
+        let isLeader = false;
+
+        // Skärmhantering (Hjälpfunktion)
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        // Generera slumpad rumskod (4 tecken)
+        function generateRoomCode() {
+            const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // Skippat O, I, 1, 0 för tydlighet
+            let code = "";
+            for (let i = 0; i < 4; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return code;
+        }
+
+        // ==========================================
+        // HANDELSER & LOGIK
+        // ==========================================
+
+        // Tryckt på "Skapa nytt spel"
+        window.onCreateRoom = function() {
+            const code = generateRoomCode();
+            currentRoomCode = code;
+            myPlayerId = "player_" + Date.now();
+            isLeader = true;
+
+            // Skapa rummet i Firebase
+            set(ref(db, 'rooms/' + code), {
+                status: "lobby",
+                turn: "",
+                createdAt: Date.now()
+            }).then(() => {
+                // Lägg till sig själv som ledare
+                set(ref(db, `rooms/${code}/players/${myPlayerId}`), {
+                    name: "Boss (Host)",
+                    syndicate: "Ej valt",
+                    isLeader: true
+                });
+
+                document.getElementById("display-code").innerText = code;
+                document.getElementById("start-game-btn").style.display = "block"; // Ledaren kan starta
+                showScreen("lobby-screen");
+                listenToRoom(code);
+            });
+        };
+
+        // Tryckt på "Gå med i spel" från startskärmen
+        window.onJoinSetup = function() {
+            showScreen("join-screen");
+        };
+
+        // Tryckt på "Anslut" efter att ha skrivit kod och namn
+        window.onExecuteJoin = function() {
+            const codeInput = document.getElementById("join-code-input").value.toUpperCase().trim();
+            const nameInput = document.getElementById("join-name-input").value.trim();
+            const syndicateInput = document.getElementById("join-syndicate-select").value;
+
+            if (!codeInput || !nameInput) {
+                alert("Fyll i både rumskod och ditt namn!");
+                return;
+            }
+
+            // Kontrollera om rummet finns
+            onValue(ref(db, 'rooms/' + codeInput), (snapshot) => {
+                if (snapshot.exists()) {
+                    currentRoomCode = codeInput;
+                    myPlayerId = "player_" + Date.now();
+                    isLeader = false;
+
+                    // Lägg till spelaren i databasen
+                    set(ref(db, `rooms/${codeInput}/players/${myPlayerId}`), {
+                        name: nameInput,
+                        syndicate: syndicateInput,
+                        isLeader: false
+                    });
+
+                    document.getElementById("display-code").innerText = codeInput;
+                    document.getElementById("start-game-btn").style.display = "none"; // Gäster kan inte starta
+                    showScreen("lobby-screen");
+                    listenToRoom(codeInput);
+                } else {
+                    alert("Hittade inget rum med den koden. Kolla stavningen!");
+                }
+            }, { onlyOnce: true });
+        };
+
+        // Lyssna på förändringar i rummet i realtid
+        function listenToRoom(code) {
+            onValue(ref(db, 'rooms/' + code), (snapshot) => {
+                const data = snapshot.val();
+                if (!data) return;
+
+                // 1. Uppdatera spelarlistan i lobbyn
+                const listEl = document.getElementById("player-list-box");
+                listEl.innerHTML = "";
+                
+                if (data.players) {
+                    for (let id in data.players) {
+                        const p = data.players[id];
+                        const item = document.createElement("div");
+                        item.className = "player-item";
+                        item.innerHTML = `<span>👤 ${p.name}</span> <span style="color:#ecc94b; font-size:12px;">${p.syndicate}</span>`;
+                        listEl.appendChild(item);
+                    }
+                }
+
+                // 2. Kika om spelledaren har ändrat status till "playing"
+                if (data.status === "playing") {
+                    showScreen("game-screen");
+                }
+            });
+        }
+
+        // Spelledaren klickar på "Starta Spel"
+        window.onStartGame = function() {
+            if (!isLeader) return;
+            // Ändra status i databasen, alla anslutna mobiler kommer hoppa över till spelskärmen automatiskt
+            update(ref(db, 'rooms/' + currentRoomCode), {
+                status: "playing"
+            });
+        };
+
+        // Gå tillbaka till startskärmen
+        window.onGoBack = function() {
+            showScreen("start-screen");
+        };
+
+        // Visa startskärmen direkt vid laddning
+        showScreen("start-screen");
+    </script>
+</head>
+<body>
+
+    <div class="container">
+        <h1>NOIR SYNDICATE</h1>
+        <div class="subtitle">Multiplayer Hub</div>
+
+        <div class="screen active" id="start-screen">
+            <button onclick="onCreateRoom()">💼 Skapa nytt spelrum</button>
+            <button onclick="onJoinSetup()" class="btn-secondary">📱 Gå med i befintligt rum</button>
+        </div>
+
+        <div class="screen" id="join-screen">
+            <input type="text" id="join-code-input" placeholder="RUMSKOD (4 BOKSTÄVER)" maxlength="4" style="text-transform: uppercase;">
+            <input type="text" id="join-name-input" placeholder="Ditt Gangster-namn" maxlength="15">
+            <select id="join-syndicate-select">
+                <option value="♠ Nightspades">♠ Nightspades</option>
+                <option value="♥ Crimson Hearts">♥ Crimson Hearts</option>
+                <option value="♣ Iron Clovers">♣ Iron Clovers</option>
+                <option value="♦ Diamond Syndicate">♦ Diamond Syndicate</option>
+            </select>
+            <button onclick="onExecuteJoin()" class="btn-success">Anslut till rummet</button>
+            <button onclick="onGoBack()" class="btn-secondary">Tillbaka</button>
+        </div>
+
+        <div class="screen" id="lobby-screen">
+            <p style="font-size: 13px; color: #888;">Dela denna kod med dina kompisar:</p>
+            <div class="room-code-display" id="display-code">----</div>
+            
+            <p style="text-align: left; font-size: 12px; color: #aaa; font-weight: bold; margin-top: 10px;">ANSLUTNA GANSTERS:</p>
+            <div class="player-list" id="player-list-box">
+                </div>
+
+            <button id="start-game-btn" onclick="onStartGame()" class="btn-success" style="margin-top: 15px; display: none;">STARTA SPELET 🚀</button>
+            <p id="wait-message" style="font-size: 11px; color: #666; margin-top: 5px;">Väntar på att spelledaren ska starta...</p>
+        </div>
+
+        <div class="screen" id="game-screen">
+            <div id="game-board-placeholder">🏙️ STADEN LADDAS...</div>
+            <p style="font-size: 13px; color: #aaa;">Här kommer den zoombara minikartan att ligga, synkad med dina kompisars drag!</p>
+        </div>
+
+    </div>
+
+</body>
+</html>
