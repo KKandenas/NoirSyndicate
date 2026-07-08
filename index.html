@@ -7,9 +7,9 @@
     <style>
         :root {
             --bg-color: #050505;
-            --card-bg: #121212;
+            --card-bg: rgba(18, 18, 18, 0.85); /* Gjort lite transparent så bakgrunden anas */
             --text-color: #e5e5e5;
-            --text-muted: #666;
+            --text-muted: #888;
             --border-color: #222;
             
             /* Fyra unika gängfärger anpassade för 20-talstema */
@@ -29,6 +29,11 @@
 
         body {
             background-color: var(--bg-color);
+            /* Lagt till din nya bakgrund.PNG med mörk toning för perfekt kontrast */
+            background-image: linear-gradient(rgba(5, 5, 5, 0.65), rgba(5, 5, 5, 0.85)), url('bakgrund.PNG');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             color: var(--text-color);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             height: 100vh;
@@ -48,7 +53,6 @@
             width: 100vw;
             height: 100vh;
             background-color: #050505;
-            /* Ny bild: Två skumma figurer i hatt och rock på en mörk gata */
             background-image: linear-gradient(to bottom, rgba(5, 5, 5, 0.5), rgba(0, 0, 0, 0.9)), url('gangsters.png');
             background-size: cover;
             background-position: center 30%;
@@ -139,8 +143,9 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.7);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.85);
             position: relative;
+            backdrop-filter: blur(4px); /* Ger snygg glaseffekt mot din bakgrund */
         }
 
         .player-corner::before {
@@ -151,16 +156,17 @@
             border-radius: 8px 8px 0 0;
         }
 
-        #p1 { --gang-color: var(--spades-color); grid-area: 1 / 1; }
-        #p2 { --gang-color: var(--hearts-color); grid-area: 1 / 3; }
-        #p3 { --gang-color: var(--clovers-color); grid-area: 3 / 1; }
-        #p4 { --gang-color: var(--diamonds-color); grid-area: 3 / 3; }
+        /* NYTT POSITIONSSCHEMA ENLIGT DINA ÖNSKEMÅL */
+        #p4 { --gang-color: var(--diamonds-color); grid-area: 1 / 1; } /* Ruter uppe vänster */
+        #p1 { --gang-color: var(--spades-color);   grid-area: 1 / 3; } /* Spader uppe höger */
+        #p3 { --gang-color: var(--clovers-color);  grid-area: 3 / 1; } /* Klöver nere vänster */
+        #p2 { --gang-color: var(--hearts-color);   grid-area: 3 / 3; } /* Hjärter nere höger */
 
         .gang-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #1a1a1a;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
             padding-bottom: 4px;
         }
 
@@ -180,7 +186,7 @@
             font-weight: bold;
             text-transform: uppercase;
         }
-        .suit-black { color: #777; border: 1px solid #252525; }
+        .suit-black { color: #888; border: 1px solid #252525; }
         .suit-red { color: #e53e3e; border: 1px solid #3b1010; }
 
         .stats-grid {
@@ -191,8 +197,8 @@
         }
 
         .stat-box {
-            background: rgba(255,255,255,0.01);
-            border: 1px solid rgba(255,255,255,0.03);
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.02);
             border-radius: 4px;
             padding: 6px 2px;
             text-align: center;
@@ -218,9 +224,9 @@
         }
 
         button {
-            background: #1a1a1a;
+            background: #161616;
             color: white;
-            border: 1px solid #262626;
+            border: 1px solid #282828;
             border-radius: 4px;
             padding: 8px 4px;
             font-size: 11px;
@@ -244,9 +250,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: rgba(255,255,255,0.005);
-            border-left: 1px solid rgba(255,255,255,0.02);
-            border-right: 1px solid rgba(255,255,255,0.02);
+            background: rgba(0,0,0,0.1);
             padding: 20px;
             gap: 25px;
         }
@@ -262,20 +266,20 @@
             justify-content: center;
             font-size: 48px;
             font-weight: bold;
-            box-shadow: 0 0 25px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             cursor: pointer;
             transition: transform 0.1s;
         }
         #dice-container:active { transform: scale(0.95); }
 
-        .side-bar-left { grid-area: 2 / 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #1f1f1f; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; }
-        .side-bar-right { grid-area: 2 / 3; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #1f1f1f; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; }
+        .side-bar-left { grid-area: 2 / 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(255,255,255,0.07); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; }
+        .side-bar-right { grid-area: 2 / 3; display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(255,255,255,0.07); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; }
 
         /* Overlays & Popups */
         .overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.92);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -328,7 +332,26 @@
         </div>
     </div>
 
-    <!-- SPELARE 1: SPADER -->
+    <!-- SPELARE 4: RUTER (Uppe vänster) -->
+    <div class="player-corner" id="p4">
+        <div class="gang-header">
+            <div class="gang-title">♦ Diamond Syndicate</div>
+            <div class="deck-suit suit-red">Röd svit</div>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-box"><div class="stat-label">Bank</div><div class="stat-value" id="p4-bank">$300</div></div>
+            <div class="stat-box"><div class="stat-label">Fickan</div><div class="stat-value" id="p4-pocket">$20</div></div>
+            <div class="stat-box"><div class="stat-label">Säkrat</div><div class="stat-value" id="p4-secured" style="color:var(--diamonds-color)">$0</div></div>
+        </div>
+        <div class="gang-actions">
+            <button onclick="takeLoad(4)" class="btn-success">Hämta $100</button>
+            <button onclick="secureCash(4)">Säkra Ess</button>
+            <button onclick="arrestPlayer(4)" class="btn-danger">Häktad (Polis)</button>
+            <button onclick="openPayModal(4)" class="btn-pay">Skicka pengar ➔</button>
+        </div>
+    </div>
+
+    <!-- SPELARE 1: SPADER (Uppe höger) -->
     <div class="player-corner" id="p1">
         <div class="gang-header">
             <div class="gang-title">♠ Nightspades</div>
@@ -347,27 +370,8 @@
         </div>
     </div>
 
-    <!-- SPELARE 2: HJÄRTER -->
-    <div class="player-corner" id="p2">
-        <div class="gang-header">
-            <div class="gang-title">♥ Crimson Hearts</div>
-            <div class="deck-suit suit-red">Röd svit</div>
-        </div>
-        <div class="stats-grid">
-            <div class="stat-box"><div class="stat-label">Bank</div><div class="stat-value" id="p2-bank">$300</div></div>
-            <div class="stat-box"><div class="stat-label">Fickan</div><div class="stat-value" id="p2-pocket">$20</div></div>
-            <div class="stat-box"><div class="stat-label">Säkrat</div><div class="stat-value" id="p2-secured" style="color:var(--hearts-color)">$0</div></div>
-        </div>
-        <div class="gang-actions">
-            <button onclick="takeLoad(2)" class="btn-success">Hämta $100</button>
-            <button onclick="secureCash(2)">Säkra Ess</button>
-            <button onclick="arrestPlayer(2)" class="btn-danger">Häktad (Polis)</button>
-            <button onclick="openPayModal(2)" class="btn-pay">Skicka pengar ➔</button>
-        </div>
-    </div>
-
     <div class="side-bar-left">THE NOIR SYNDICATE</div>
-    <div class="side-bar-right">BOARD HUB v1.12</div>
+    <div class="side-bar-right">BOARD HUB v1.13</div>
 
     <!-- CENTERKONSOL -->
     <div class="center-console">
@@ -378,7 +382,7 @@
         </div>
     </div>
 
-    <!-- SPELARE 3: KLÖVER -->
+    <!-- SPELARE 3: KLÖVER (Nere vänster) -->
     <div class="player-corner" id="p3">
         <div class="gang-header">
             <div class="gang-title">♣ Iron Clovers</div>
@@ -397,22 +401,22 @@
         </div>
     </div>
 
-    <!-- SPELARE 4: RUTER -->
-    <div class="player-corner" id="p4">
+    <!-- SPELARE 2: HJÄRTER (Nere höger) -->
+    <div class="player-corner" id="p2">
         <div class="gang-header">
-            <div class="gang-title">♦ Diamond Syndicate</div>
+            <div class="gang-title">♥ Crimson Hearts</div>
             <div class="deck-suit suit-red">Röd svit</div>
         </div>
         <div class="stats-grid">
-            <div class="stat-box"><div class="stat-label">Bank</div><div class="stat-value" id="p4-bank">$300</div></div>
-            <div class="stat-box"><div class="stat-label">Fickan</div><div class="stat-value" id="p4-pocket">$20</div></div>
-            <div class="stat-box"><div class="stat-label">Säkrat</div><div class="stat-value" id="p4-secured" style="color:var(--diamonds-color)">$0</div></div>
+            <div class="stat-box"><div class="stat-label">Bank</div><div class="stat-value" id="p2-bank">$300</div></div>
+            <div class="stat-box"><div class="stat-label">Fickan</div><div class="stat-value" id="p2-pocket">$20</div></div>
+            <div class="stat-box"><div class="stat-label">Säkrat</div><div class="stat-value" id="p2-secured" style="color:var(--hearts-color)">$0</div></div>
         </div>
         <div class="gang-actions">
-            <button onclick="takeLoad(4)" class="btn-success">Hämta $100</button>
-            <button onclick="secureCash(4)">Säkra Ess</button>
-            <button onclick="arrestPlayer(4)" class="btn-danger">Häktad (Polis)</button>
-            <button onclick="openPayModal(4)" class="btn-pay">Skicka pengar ➔</button>
+            <button onclick="takeLoad(2)" class="btn-success">Hämta $100</button>
+            <button onclick="secureCash(2)">Säkra Ess</button>
+            <button onclick="arrestPlayer(2)" class="btn-danger">Häktad (Polis)</button>
+            <button onclick="openPayModal(2)" class="btn-pay">Skicka pengar ➔</button>
         </div>
     </div>
 
@@ -437,7 +441,7 @@
             <h2>🗺️ Spelplanens Layout (48 Kort)</h2>
             <p style="margin-bottom: 15px;">Blanda kortleken och placera ut korten dolda (upp och ner) på bordet enligt schemat nedan. Essen, Kungarna och Knektarna har fasta startpositioner:</p>
 
-            <!-- DIN NYA SETUP-BILD INLAGD HÄR -->
+            <!-- DIN NYA SETUP-BILD MED STORA BOKSTÄVER INLAGD HÄR -->
             <div style="text-align: center; margin: 20px 0;">
                 <img src="setup.PNG" alt="Spelplanens utplacering" style="max-width: 100%; height: auto; border-radius: 6px; border: 1px solid #262626; box-shadow: 0 10px 30px rgba(0,0,0,0.6);">
             </div>
