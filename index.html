@@ -447,7 +447,6 @@
     <div class="background-container"></div>
     <div class="overlay-container"></div>
 
-    <!-- LIVE LANGUAGE SELECTOR ON BOARD -->
     <div class="live-lang-selector">
         <button class="btn-lang active" id="live-lang-sv" onclick="setLanguage('sv')">SV</button>
         <button class="btn-lang" id="live-lang-en" onclick="setLanguage('en')">EN</button>
@@ -457,7 +456,6 @@
         <div class="welcome-title">THE NOIR SYNDICATE</div>
         <div class="welcome-subtitle">Control Room</div>
         <div class="welcome-card">
-            <!-- Language toggle on welcome screen -->
             <div class="lang-toggle-container">
                 <button class="btn-lang active" id="welcome-lang-sv" onclick="setLanguage('sv')">Svenska</button>
                 <button class="btn-lang" id="welcome-lang-en" onclick="setLanguage('en')">English</button>
@@ -639,7 +637,6 @@
         </div>
     </div>
 
-    <!-- VALUE ADJUSTMENT MODAL -->
     <div class="overlay" id="adjust-overlay">
         <div class="popup" style="border-color:#ecc94b; max-width: 400px;">
             <div class="popup-title" style="color:#ecc94b;" data-key="mod-title">Justera spelarvärden</div>
@@ -672,8 +669,7 @@
 
     <div class="overlay" id="rules-overlay">
         <div class="popup popup-large" id="rules-content-area">
-            <!-- Dynamically populated rules -->
-        </div>
+            </div>
     </div>
 
     <script>
@@ -728,7 +724,7 @@
                 fightChallenge: "🥊 Utmana ",
                 payPayer: " betalar",
                 fightLogDrawBankrupt: "OAVGJORT! Men anfallaren {loser} har inte råd att betala skadan. KONKURS! Flyttas till sitt Ess med $20 i fickan.",
-                fightLogWinnerBankrupt: "VINNARE: {winner}! Förloraren {loser} har inte råd att betala. KONKURS! Flyttas till sitt Ess med $20 i fickan.",
+                fightLogWinnerBankrupt: "WINNER: {winner}! Loser {loser} cannot afford to pay. BANKRUPTCY! Moved to Ace with $20 pocket cash.",
                 fightLogDraw: "OAVGJORT! {winner} försvarade rutan! Tar $10 och skickar bort anfallaren.",
                 fightLogWinner: "VINNARE: {winner}! Tar $10 från förloraren som flyttas till valfritt Ess/Kung.",
                 eventBadge: "SLOG EN {roll}:A 🎲",
@@ -839,6 +835,7 @@
         let activeArrestedId = null;
         let activeAttackerId = null;
         let isFighting = false;
+        let currentActiveEventIndex = null; 
 
         function setLanguage(lang) {
             currentLang = lang;
@@ -880,6 +877,19 @@
             document.getElementById('btn-mode-ipad').innerText = i18n[lang].modeIpad;
             document.getElementById('btn-mode-iphone').innerText = i18n[lang].modeIphone;
            
+            // Uppdatera event-popupen om den är öppen
+            if (document.getElementById("event-overlay").classList.contains("active") && currentActiveEventIndex !== null) {
+                const randomEvent = noirEvents[currentLang][currentActiveEventIndex];
+                document.getElementById("event-dice-badge").innerText = i18n[currentLang].eventBadge.replace('{roll}', currentDiceResult);
+                document.getElementById("event-title").innerText = randomEvent.title;
+                document.getElementById("event-desc").innerText = randomEvent.desc;
+            }
+
+            // Uppdatera betalnings-modalen om den är öppen
+            if (document.getElementById("pay-overlay").classList.contains("active") && activePayerId !== null) {
+                document.getElementById("pay-title").innerText = gangNames[activePayerId][currentLang] + i18n[currentLang].payPayer;
+            }
+
             renderRules();
         }
 
@@ -1096,6 +1106,7 @@
 
         function closePayModal() {
             document.getElementById("pay-overlay").classList.remove("active");
+            activePayerId = null;
         }
 
         function executePayment() {
@@ -1186,7 +1197,9 @@
 
         function triggerEvent(diceRoll) {
             const list = noirEvents[currentLang];
-            const randomEvent = list[Math.floor(Math.random() * list.length)];
+            currentActiveEventIndex = Math.floor(Math.random() * list.length);
+            const randomEvent = list[currentActiveEventIndex];
+            
             document.getElementById("event-dice-badge").innerText = i18n[currentLang].eventBadge.replace('{roll}', diceRoll);
             document.getElementById("event-title").innerText = randomEvent.title;
             document.getElementById("event-desc").innerText = randomEvent.desc;
@@ -1195,6 +1208,7 @@
 
         function closePopup() {
             document.getElementById("event-overlay").classList.remove("active");
+            currentActiveEventIndex = null;
         }
         function openRulesModal() {
             document.getElementById("rules-overlay").classList.add("active");
