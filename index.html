@@ -347,12 +347,12 @@
         .tab-btn span { font-size: 18px; }
 
         /* ========================================================
-           📱 IPHONE-SPECIFIK RENDERING
+           📱 IPHONE-SPECIFIK RENDERING (TÄRNINGEN FLYTTAD TILL TOPPEN)
            ======================================================== */
         body.mode-iphone .game-container {
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: flex-start; /* Ändrat från space-between så elementen staplas uppifrån */
             padding: 15px 15px 80px 15px;
             height: 100vh;
             gap: 15px;
@@ -364,12 +364,17 @@
         }
 
         body.mode-iphone .center-console {
-            flex: 1;
+            order: -1; /* Tvingar mittenkonsolen med tärningen att alltid renderas först/högst upp */
+            flex: none;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin: 10px 0;
+            margin-bottom: 10px;
+        }
+
+        body.mode-iphone .dice-wrapper {
+            margin-top: 35px; /* Sänker ner tärningen något från skärmens ovankant */
         }
 
         body.mode-iphone .player-corner {
@@ -402,7 +407,6 @@
     <div class="background-container"></div>
     <div class="overlay-container"></div>
 
-    <!-- ENHETSVAL / VÄLKOMSTSIDA -->
     <div class="welcome-screen" id="welcome-screen">
         <div class="welcome-title">THE NOIR SYNDICATE</div>
         <div class="welcome-subtitle">Control Room</div>
@@ -415,10 +419,8 @@
         </div>
     </div>
 
-    <!-- HUVUDCONTAINER FÖR SPELET -->
     <div class="game-container">
        
-        <!-- SPELARE 1: SPADER -->
         <div class="player-corner active-tab" id="p1">
             <div class="gang-header">
                 <div class="gang-title">♠ Nightspades</div>
@@ -437,7 +439,6 @@
             </div>
         </div>
 
-        <!-- SPELARE 4: RUTER -->
         <div class="player-corner" id="p4">
             <div class="gang-header">
                 <div class="gang-title">♦ Diamond</div>
@@ -457,9 +458,8 @@
         </div>
 
         <div class="side-bar-left">THE NOIR SYNDICATE</div>
-        <div class="side-bar-right">BOARD HUB v1.5</div>
+        <div class="side-bar-right">BOARD HUB v1.6</div>
 
-        <!-- MITTENKONSOL -->
         <div class="center-console">
             <div class="dice-wrapper">
                 <div id="dice-container" onclick="rollDice()">
@@ -475,7 +475,6 @@
             </div>
         </div>
 
-        <!-- SPELARE 3: KLÖVER -->
         <div class="player-corner" id="p3">
             <div class="gang-header">
                 <div class="gang-title">♣ Iron Clovers</div>
@@ -494,7 +493,6 @@
             </div>
         </div>
 
-        <!-- SPELARE 2: HJÄRTER -->
         <div class="player-corner" id="p2">
             <div class="gang-header">
                 <div class="gang-title">♥ Crimson</div>
@@ -514,7 +512,6 @@
         </div>
     </div>
 
-    <!-- IPHONE BOTTOM TABS MENU -->
     <div class="iphone-tabs" id="iphone-tabs">
         <button class="tab-btn active" data-tab="1" onclick="switchTab(1)"><span>♠</span>Spader</button>
         <button class="tab-btn" data-tab="2" onclick="switchTab(2)"><span>♥</span>Hjärter</button>
@@ -522,7 +519,6 @@
         <button class="tab-btn" data-tab="4" onclick="switchTab(4)"><span>♦</span>Ruter</button>
     </div>
 
-    <!-- MODALER -->
     <div class="overlay" id="event-overlay">
         <div class="popup">
             <div class="popup-dice-badge" id="event-dice-badge"></div>
@@ -536,7 +532,6 @@
     <div class="overlay" id="pay-overlay"><div class="popup" style="border-color:#ecc94b;"><div class="popup-title" style="color:#ecc94b;" id="pay-title">Skicka pengar</div><div class="pay-grid"><div><label for="pay-target">Mottagare</label><select id="pay-target"></select></div><div><label for="pay-amount">Belopp ($)</label><input type="number" id="pay-amount" value="10" min="1"></div></div><div style="display:flex; gap:10px;"><button onclick="executePayment()" class="btn-success" style="padding:10px; width:50%;">Bekräfta</button><button onclick="closePayModal()" style="background:#1a1a1a; padding:10px; width:50%;">Avbryt</button></div></div></div>
     <div class="overlay" id="police-overlay"><div class="popup" style="border-color:#e53e3e;"><div class="popup-title" style="color:#e53e3e;">Vem gjorde gripandet?</div><p style="font-size:13px; color:#a0aec0; margin-bottom:10px;">Pengarna tillfaller polisen.</p><div class="police-selector-grid" id="police-targets"></div><button onclick="closePoliceModal()" style="background:#1a1a1a; padding:10px; width:100%; margin-top:10px;">Avbryt</button></div></div>
    
-    <!-- REGLER-MODAL MED RESTAURERAD SPELLAYOUT-BILD -->
     <div class="overlay" id="rules-overlay">
         <div class="popup popup-large">
             <h1 style="color:#2b6cb0; text-align:center; margin-bottom:15px; letter-spacing: 2px;">THE NOIR SYNDICATE — REGLER</h1>
@@ -544,7 +539,6 @@
             <h2>Spelplan & Setup (Kortlayout)</h2>
             <p>Bygg upp spelplanen på bordet med vanliga spelkort enligt bilden nedan. Om bilden saknas, kom ihåg grundmönstret: Ess i hörnen, Kungar på kanterna, gator där emellan och samtliga Knekter (poliser) startande på polisstationen i absolut centrum.</p>
 
-            <!-- TRADITIONELL BILDÅTERSTÄLLNING -->
             <div class="setup-image-container">
                 <img src="setup.PNG" alt="Spelplan Setup">
             </div>
@@ -553,7 +547,7 @@
             <p>Du leder ett brottssyndikat. Ditt mål är att hämta laster med svarta pengar ($100 i taget) från din <strong>Boss (Kung)</strong>, smuggla dem genom stadens farliga gator i <strong>Fickan</strong>, och säkra dem på ditt <strong>Högkvarter (Ess)</strong>. Den förste spelaren som har lyckats <strong>Säkra $200</strong> på sitt Ess vinner spelet.</p>
            
             <h2>Spelets Upplägg & Start</h2>
-            <p>Varje spelare startar med <strong>$300 i Banken</strong> (valvet hos Bossen), <strong>$20 i Fickan</strong>, and <strong>$0 Säkrat</strong>. Din droska/pjäs startar på ditt eget Ess-kvarter.</p>
+            <p>Varje spelare startar med <strong>$300 i Banken</strong> (valvet hos Bossen), <strong>$20 i Fickan</strong>, och <strong>$0 Säkrat</strong>. Din droska/pjäs startar på ditt eget Ess-kvarter.</p>
            
             <h2>Turens Gång</h2>
             <ul>
