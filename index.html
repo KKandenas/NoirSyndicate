@@ -250,14 +250,78 @@
         .btn-danger { background: rgba(70, 24, 28, 0.85); color: #f56565; border-color: rgba(245,101,101,0.25); }
         .btn-pay { background: rgba(45, 38, 18, 0.85); color: #ecc94b; border-color: rgba(236,201,75,0.25); grid-column: span 2; padding: 8px; font-size: 11px; text-transform: uppercase;}
 
+        /* MITTENKONSOL OCH FIXERAD TÄRNING */
         .center-console {
             grid-area: 1 / 2 / 4 / 3;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 25px;
+            gap: 20px;
         }
+
+        .dice-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 180px;
+            width: 220px;
+        }
+
+        #dice-container {
+            width: 115px; height: 115px; background: #151515;
+            border: 3px solid rgba(255, 255, 255, 0.85); border-radius: 18px; padding: 16px;
+            display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 8px;
+            box-shadow: 0 0 25px rgba(236, 201, 75, 0.15), 0 15px 35px rgba(0,0,0,0.9); cursor: pointer;
+            margin-bottom: 12px;
+        }
+        .dot { background-color: #ecc94b; border-radius: 50%; width: 100%; height: 100%; box-shadow: inset 0 2px 4px rgba(0,0,0,0.4); visibility: hidden; }
+       
+        .dice-label {
+            font-size: 11px; font-weight: 900; letter-spacing: 2px; color: rgba(255, 255, 255, 0.8);
+            background: rgba(0, 0, 0, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); text-transform: uppercase; text-align: center;
+            width: 180px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 20px;
+        }
+        .pulse-text { animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.03); } 100% { opacity: 0.6; transform: scale(1); } }
+
+        .side-bar-left, .side-bar-right { display: flex; color: rgba(255,255,255,0.12); font-size: 12px; letter-spacing: 3px; text-transform: uppercase; font-weight: bold; justify-content: center; align-items: center; }
+        .side-bar-left { grid-area: 2 / 1; } .side-bar-right { grid-area: 2 / 3; }
+
+        /* OVERLAYS & POPUPS */
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); display: flex; align-items: center; justify-content: center; z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.15s ease; }
+        .overlay.active { opacity: 1; pointer-events: auto; }
+        .popup { background: #0f0f0f; border: 1px solid #262626; border-radius: 6px; padding: 25px; max-width: 450px; width: 90%; text-align: center; }
+        .order-notice { background: rgba(236, 201, 75, 0.1); border: 1px dashed #ecc94b; color: #ecc94b; font-size: 12px; font-weight: bold; padding: 8px; margin-bottom: 15px; border-radius: 4px; text-transform: uppercase; }
+       
+        .popup-large { max-width: 750px; height: 85vh; overflow-y: auto; text-align: left; padding: 35px; border-color: #2b6cb0; }
+        .popup-large h2 { color: #2b6cb0; text-transform: uppercase; margin: 22px 0 8px 0; font-size: 16px; border-bottom: 1px solid #1a1a1a; padding-bottom: 4px;}
+        .popup-large p, .popup-large li { color: #cbd5e0; font-size: 14px; line-height: 1.6; margin-bottom: 10px; }
+        .popup-large ul { padding-left: 20px; margin-bottom: 12px; }
+
+        /* SETUP-BILD STYLING */
+        .setup-image-container {
+            max-width: 100%;
+            margin: 15px auto;
+            text-align: center;
+        }
+        .setup-image-container img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #222;
+            border-radius: 6px;
+        }
+       
+        .popup-dice-badge { background: #ecc94b; color: #000; display: inline-block; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: 900; margin-bottom: 10px; text-transform: uppercase; }
+        .popup-title { color: #e53e3e; font-size: 22px; text-transform: uppercase; margin-bottom: 10px; }
+        .popup-desc { font-size: 14px; line-height: 1.5; color: #cbd5e0; margin-bottom: 20px; }
+        .popup-btn { background: #2b6cb0; color: white; font-size: 14px; padding: 12px; border-radius: 4px; width: 100%; font-weight: bold; border: none; margin-top: 15px;}
+        .pay-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; text-align: left; }
+        .pay-grid label { display: block; font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
+        .pay-grid select, .pay-grid input { width: 100%; background: #151515; border: 1px solid #262626; color: white; padding: 8px; border-radius: 4px; font-size: 14px; }
+        .police-selector-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 15px; }
+        .police-btn { text-align: left; padding: 12px; font-size: 13px; }
 
         /* IPHONE SPECIFIK FLIKMENY */
         .iphone-tabs {
@@ -281,42 +345,6 @@
         .tab-btn.active[data-tab="3"] { color: var(--clovers-color); background: rgba(56, 161, 105, 0.05); }
         .tab-btn.active[data-tab="4"] { color: var(--diamonds-color); background: rgba(236, 201, 75, 0.05); }
         .tab-btn span { font-size: 18px; }
-
-        /* TÄRNING */
-        #dice-container {
-            width: 115px; height: 115px; background: #151515;
-            border: 3px solid rgba(255, 255, 255, 0.85); border-radius: 18px; padding: 16px;
-            display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 8px;
-            box-shadow: 0 0 25px rgba(236, 201, 75, 0.15), 0 15px 35px rgba(0,0,0,0.9); cursor: pointer;
-        }
-        .dot { background-color: #ecc94b; border-radius: 50%; width: 100%; height: 100%; box-shadow: inset 0 2px 4px rgba(0,0,0,0.4); visibility: hidden; }
-        .dice-label { font-size: 11px; font-weight: 900; letter-spacing: 3px; color: rgba(255, 255, 255, 0.8); background: rgba(0, 0, 0, 0.7); padding: 6px 16px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); text-transform: uppercase; text-align: center; }
-        .pulse-text { animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.03); } 100% { opacity: 0.6; transform: scale(1); } }
-
-        .side-bar-left, .side-bar-right { display: flex; color: rgba(255,255,255,0.12); font-size: 12px; letter-spacing: 3px; text-transform: uppercase; font-weight: bold; justify-content: center; align-items: center; }
-        .side-bar-left { grid-area: 2 / 1; } .side-bar-right { grid-area: 2 / 3; }
-
-        /* OVERLAYS & POPUPS */
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); display: flex; align-items: center; justify-content: center; z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.15s ease; }
-        .overlay.active { opacity: 1; pointer-events: auto; }
-        .popup { background: #0f0f0f; border: 1px solid #262626; border-radius: 6px; padding: 25px; max-width: 450px; width: 90%; text-align: center; }
-        .order-notice { background: rgba(236, 201, 75, 0.1); border: 1px dashed #ecc94b; color: #ecc94b; font-size: 12px; font-weight: bold; padding: 8px; margin-bottom: 15px; border-radius: 4px; text-transform: uppercase; }
-       
-        .popup-large { max-width: 750px; height: 85vh; overflow-y: auto; text-align: left; padding: 35px; border-color: #2b6cb0; }
-        .popup-large h2 { color: #2b6cb0; text-transform: uppercase; margin: 20px 0 8px 0; font-size: 18px; border-bottom: 1px solid #1a1a1a; padding-bottom: 4px;}
-        .popup-large p, .popup-large li { color: #cbd5e0; font-size: 14px; line-height: 1.6; margin-bottom: 10px; }
-        .popup-large ul { padding-left: 20px; margin-bottom: 12px; }
-       
-        .popup-dice-badge { background: #ecc94b; color: #000; display: inline-block; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: 900; margin-bottom: 10px; text-transform: uppercase; }
-        .popup-title { color: #e53e3e; font-size: 22px; text-transform: uppercase; margin-bottom: 10px; }
-        .popup-desc { font-size: 14px; line-height: 1.5; color: #cbd5e0; margin-bottom: 20px; }
-        .popup-btn { background: #2b6cb0; color: white; font-size: 14px; padding: 12px; border-radius: 4px; width: 100%; font-weight: bold; border: none; margin-top: 15px;}
-        .pay-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; text-align: left; }
-        .pay-grid label { display: block; font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
-        .pay-grid select, .pay-grid input { width: 100%; background: #151515; border: 1px solid #262626; color: white; padding: 8px; border-radius: 4px; font-size: 14px; }
-        .police-selector-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 15px; }
-        .police-btn { text-align: left; padding: 12px; font-size: 13px; }
 
         /* ========================================================
            📱 IPHONE-SPECIFIK RENDERING
@@ -342,10 +370,6 @@
             align-items: center;
             justify-content: center;
             margin: 10px 0;
-        }
-       
-        body.mode-iphone #dice-container {
-            width: 110px; height: 110px; padding: 14px;
         }
 
         body.mode-iphone .player-corner {
@@ -433,7 +457,7 @@
         </div>
 
         <div class="side-bar-left">THE NOIR SYNDICATE</div>
-        <div class="side-bar-right">BOARD HUB v1.3</div>
+        <div class="side-bar-right">BOARD HUB v1.5</div>
 
         <!-- MITTENKONSOL -->
         <div class="center-console">
@@ -512,16 +536,24 @@
     <div class="overlay" id="pay-overlay"><div class="popup" style="border-color:#ecc94b;"><div class="popup-title" style="color:#ecc94b;" id="pay-title">Skicka pengar</div><div class="pay-grid"><div><label for="pay-target">Mottagare</label><select id="pay-target"></select></div><div><label for="pay-amount">Belopp ($)</label><input type="number" id="pay-amount" value="10" min="1"></div></div><div style="display:flex; gap:10px;"><button onclick="executePayment()" class="btn-success" style="padding:10px; width:50%;">Bekräfta</button><button onclick="closePayModal()" style="background:#1a1a1a; padding:10px; width:50%;">Avbryt</button></div></div></div>
     <div class="overlay" id="police-overlay"><div class="popup" style="border-color:#e53e3e;"><div class="popup-title" style="color:#e53e3e;">Vem gjorde gripandet?</div><p style="font-size:13px; color:#a0aec0; margin-bottom:10px;">Pengarna tillfaller polisen.</p><div class="police-selector-grid" id="police-targets"></div><button onclick="closePoliceModal()" style="background:#1a1a1a; padding:10px; width:100%; margin-top:10px;">Avbryt</button></div></div>
    
-    <!-- REGLER-MODAL MED FULLSTÄNDIG TEXT -->
+    <!-- REGLER-MODAL MED RESTAURERAD SPELLAYOUT-BILD -->
     <div class="overlay" id="rules-overlay">
         <div class="popup popup-large">
             <h1 style="color:#2b6cb0; text-align:center; margin-bottom:15px; letter-spacing: 2px;">THE NOIR SYNDICATE — REGLER</h1>
            
+            <h2>Spelplan & Setup (Kortlayout)</h2>
+            <p>Bygg upp spelplanen på bordet med vanliga spelkort enligt bilden nedan. Om bilden saknas, kom ihåg grundmönstret: Ess i hörnen, Kungar på kanterna, gator där emellan och samtliga Knekter (poliser) startande på polisstationen i absolut centrum.</p>
+
+            <!-- TRADITIONELL BILDÅTERSTÄLLNING -->
+            <div class="setup-image-container">
+                <img src="setup.png" alt="Spelplan Setup">
+            </div>
+
             <h2>Spelidé & Mål</h2>
             <p>Du leder ett brottssyndikat. Ditt mål är att hämta laster med svarta pengar ($100 i taget) från din <strong>Boss (Kung)</strong>, smuggla dem genom stadens farliga gator i <strong>Fickan</strong>, och säkra dem på ditt <strong>Högkvarter (Ess)</strong>. Den förste spelaren som har lyckats <strong>Säkra $200</strong> på sitt Ess vinner spelet.</p>
            
             <h2>Spelets Upplägg & Start</h2>
-            <p>Varje spelare startar med <strong>$300 i Banken</strong> (valvet hos Bossen), <strong>$20 i Fickan</strong>, och <strong>$0 Säkrat</strong>. Din droska/pjäs startar på ditt eget Ess-kvarter.</p>
+            <p>Varje spelare startar med <strong>$300 i Banken</strong> (valvet hos Bossen), <strong>$20 i Fickan</strong>, and <strong>$0 Säkrat</strong>. Din droska/pjäs startar på ditt eget Ess-kvarter.</p>
            
             <h2>Turens Gång</h2>
             <ul>
