@@ -59,7 +59,6 @@
             z-index: -1;
         }
 
-        /* DEFAULT / IPAD LAYOUT (Liggande) */
         .game-container {
             display: grid;
             grid-template-rows: 320px 1fr 320px;
@@ -70,7 +69,6 @@
             overflow: hidden;
         }
 
-        /* VÄLKOMSTSIDA */
         .welcome-screen {
             position: fixed;
             top: 0;
@@ -175,7 +173,6 @@
             background: linear-gradient(135deg, #1a497d, #112d52);
         }
 
-        /* LIVE LANG CONTROL ON BOARD */
         .live-lang-selector {
             position: fixed;
             top: 15px;
@@ -193,7 +190,6 @@
             font-size: 10px;
         }
 
-        /* SPELARHÖRN */
         .player-corner {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -294,7 +290,6 @@
         .btn-fight { background: rgba(90, 35, 15, 0.85); color: #ff7849; border-color: rgba(255,120,73,0.3); }
         .btn-pay { background: rgba(45, 38, 18, 0.85); color: #ecc94b; border-color: rgba(236,201,75,0.25); grid-column: span 2; padding: 8px; font-size: 11px; text-transform: uppercase;}
 
-        /* MITTENKONSOL OCH FIXERAD TÄRNING */
         .center-console {
             grid-area: 1 / 2 / 4 / 3;
             display: flex;
@@ -333,7 +328,6 @@
         .side-bar-left, .side-bar-right { display: flex; color: rgba(255,255,255,0.12); font-size: 12px; letter-spacing: 3px; text-transform: uppercase; font-weight: bold; justify-content: center; align-items: center; }
         .side-bar-left { grid-area: 2 / 1; } .side-bar-right { grid-area: 2 / 3; }
 
-        /* OVERLAYS & POPUPS */
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); display: flex; align-items: center; justify-content: center; z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.15s ease; }
         .overlay.active { opacity: 1; pointer-events: auto; }
         .popup { background: #0f0f0f; border: 1px solid #262626; border-radius: 6px; padding: 25px; max-width: 450px; width: 90%; text-align: center; }
@@ -344,7 +338,6 @@
         .popup-large p, .popup-large li { color: #cbd5e0; font-size: 14px; line-height: 1.6; margin-bottom: 10px; }
         .popup-large ul { padding-left: 20px; margin-bottom: 12px; }
 
-        /* SETUP-BILD STYLING */
         .setup-image-container {
             max-width: 100%;
             margin: 15px auto;
@@ -367,13 +360,11 @@
         .police-selector-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 15px; }
         .police-btn { text-align: left; padding: 12px; font-size: 13px; }
 
-        /* SLAGSMÅLS-MODAL OCH VISUELLA TÄRNINGAR */
         .fight-dice-container { display: flex; justify-content: space-around; margin: 20px 0; gap: 15px; }
         .fight-dice-box { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; flex: 1; text-align: center; }
         .fight-dice-name { font-size: 11px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; height: 32px; display: flex; align-items: center; justify-content: center;}
         .fight-dice-value { font-size: 36px; font-weight: 900; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
 
-        /* IPHONE SPECIFIK FLIKMENY */
         .iphone-tabs {
             display: none;
             position: fixed;
@@ -396,7 +387,6 @@
         .tab-btn.active[data-tab="4"] { color: var(--diamonds-color); background: rgba(236, 201, 75, 0.05); }
         .tab-btn span { font-size: 18px; }
 
-        /* 📱 IPHONE-SPECIFIK RENDERING */
         body.mode-iphone .game-container {
             display: flex;
             flex-direction: column;
@@ -454,7 +444,7 @@
 
     <div class="welcome-screen" id="welcome-screen">
         <div class="welcome-title">THE NOIR SYNDICATE</div>
-        <div class="welcome-subtitle">Control Room</div>
+        <div class="welcome-subtitle" id="welcome-subtitle">Kontrollrum</div>
         <div class="welcome-card">
             <div class="lang-toggle-container">
                 <button class="btn-lang active" id="welcome-lang-sv" onclick="setLanguage('sv')">Svenska</button>
@@ -523,7 +513,7 @@
             <div style="display:flex; gap:8px; width: 100%; max-width: 240px; justify-content: center; flex-wrap: wrap;">
                 <button onclick="openRulesModal()" style="font-size:11px; padding:6px 12px; background:rgba(0,0,0,0.6);" data-key="btn-rules">📜 Regler</button>
                 <button onclick="openAdjustModal()" style="font-size:11px; padding:6px 12px; background:rgba(0,0,0,0.6); color:#666;" data-key="btn-adjust">🛠️ Justera</button>
-                <button onclick="resetGame()" style="font-size:11px; padding:6px 12px; background:rgba(0,0,0,0.6); color:#666;" data-key="btn-reset">Reset</button>
+                <button onclick="resetGame()" style="font-size:11px; padding:6px 12px; background:rgba(0,0,0,0.6); color:#666;" data-key="btn-reset">Återställ</button>
             </div>
         </div>
 
@@ -606,7 +596,7 @@
     <div class="overlay" id="police-overlay">
         <div class="popup" style="border-color:#e53e3e;">
             <div class="popup-title" style="color:#e53e3e;" data-key="police-title">Vem gjorde gripandet?</div>
-            <p style="font-size:13px; color:#a0aec0; margin-bottom:10px;" data-key="police-subtitle">Pengarna tillfaller polisen.</p>
+            <p style="font-size:13px; color:#a0aec0; margin-bottom:10px;" id="police-subtitle" data-key="police-subtitle">Pengarna tillfaller polisen.</p>
             <div class="police-selector-grid" id="police-targets"></div>
             <button onclick="closePoliceModal()" style="background:#1a1a1a; padding:10px; width:100%; margin-top:10px;" data-key="btn-cancel">Avbryt</button>
         </div>
@@ -616,7 +606,7 @@
         <div class="popup" style="border-color:#ff7849;">
             <div class="popup-title" style="color:#ff7849;" data-key="fight-title">Gatuslagsmål!</div>
             <div id="fight-setup-view">
-                <p style="font-size:13px; color:#a0aec0; margin-bottom:15px;" data-key="fight-prompt">Välj vilken motståndare som står på rutan och ska attackeras:</p>
+                <p style="font-size:13px; color:#a0aec0; margin-bottom:15px;" id="fight-prompt" data-key="fight-prompt">Välj vilken motståndare som står på rutan och ska attackeras:</p>
                 <div class="police-selector-grid" id="fight-targets"></div>
                 <button onclick="closeFightModal()" style="background:#1a1a1a; padding:10px; width:100%; margin-top:12px;" data-key="btn-cancel">Avbryt</button>
             </div>
@@ -668,8 +658,7 @@
     </div>
 
     <div class="overlay" id="rules-overlay">
-        <div class="popup popup-large" id="rules-content-area">
-            </div>
+        <div class="popup popup-large" id="rules-content-area"></div>
     </div>
 
     <script>
@@ -678,6 +667,7 @@
 
         const i18n = {
             sv: {
+                welcomeSubtitle: "Kontrollrum",
                 welcomePrompt: "Välj vilken enhet du vill spela på ikväll:",
                 modeIpad: "💻 iPad (Liggande Bräde)",
                 modeIphone: "📱 iPhone (Stående Flikar)",
@@ -696,7 +686,7 @@
                 diceClick: "KLICKA FÖR ATT SLÅ",
                 btnRules: "📜 Regler",
                 btnAdjust: "🛠️ Justera",
-                btnReset: "Reset",
+                btnReset: "Återställ",
                 eventNotice: "⚠️ Utför händelsen först — flytta pjäsen sen!",
                 btnOk: "Uppfattat",
                 btnCancel: "Avbryt",
@@ -710,21 +700,21 @@
                 fightPrompt: "Välj vilken motståndare som står på rutan och ska attackeras:",
                 fightAttacker: "Anfallare",
                 fightDefender: "Försvarare",
-                fightRolling: "KASTAR TÄRNINGARNA...",
+                fightRolling: "RULLAR KNOGJÄRNEN...",
                 fightClose: "Avsluta duell",
                 diceRolling: "RULLAR...",
                 diceSlog: "SLOG: ",
                 alertWinner: "BOSS! {name} kontrollerar staden!",
-                alertNoSecure: "Inga pengar att säkra!",
+                alertNoSecure: "Inga extra pengar att säkra!",
                 alertNoBank: "Bossens valv är tomt!",
                 alertArrested: "{victim} haffad av {cop}! Beslagtog ${loot}.",
                 alertJail: "{victim} skickas till häktet.",
-                alertBankrupt: "Konkurs! Nollställs till $20 på ditt Ess.",
-                alertReset: "Nollställa spelet?",
+                alertBankrupt: "Konkurs! Du har inte råd att betala. Nollställs och flyttas till ditt Ess med $20 i fickan.",
+                alertReset: "Vill du nollställa spelet?",
                 fightChallenge: "🥊 Utmana ",
                 payPayer: " betalar",
-                fightLogDrawBankrupt: "OAVGJORT! Men anfallaren {loser} har inte råd att betala skadan. KONKURS! Flyttas till sitt Ess med $20 i fickan.",
-                fightLogWinnerBankrupt: "WINNER: {winner}! Loser {loser} cannot afford to pay. BANKRUPTCY! Moved to Ace with $20 pocket cash.",
+                fightLogDrawBankrupt: "OAVGJORT! Men anfallaren {loser} har inte råd att paya skadan. KONKURS! Flyttas till sitt Ess med $20 i fickan.",
+                fightLogWinnerBankrupt: "VINNARE: {winner}! Förloraren {loser} har inte råd att betala. KONKURS! Flyttas till sitt Ess med $20 i fickan.",
                 fightLogDraw: "OAVGJORT! {winner} försvarade rutan! Tar $10 och skickar bort anfallaren.",
                 fightLogWinner: "VINNARE: {winner}! Tar $10 från förloraren som flyttas till valfritt Ess/Kung.",
                 eventBadge: "SLOG EN {roll}:A 🎲",
@@ -732,6 +722,7 @@
                 modLblPlayer: "Välj syndikat"
             },
             en: {
+                welcomeSubtitle: "Control Room",
                 welcomePrompt: "Choose which device you are playing on tonight:",
                 modeIpad: "💻 iPad (Landscape Board)",
                 modeIphone: "📱 iPhone (Portrait Tabs)",
@@ -773,7 +764,7 @@
                 alertNoBank: "The Boss's vault is empty!",
                 alertArrested: "{victim} busted by {cop}! Confiscated ${loot}.",
                 alertJail: "{victim} sent to local precinct.",
-                alertBankrupt: "Bankrupt! Reset to $20 back at your Ace.",
+                alertBankrupt: "Bankrupt! You cannot afford to pay. Reset and moved back to your Ace with $20 pocket cash.",
                 alertReset: "Reset the game?",
                 fightChallenge: "🥊 Challenge ",
                 payPayer: " pays",
@@ -801,7 +792,7 @@
                 { title: "💵 Mutor inom polisen", desc: "Du har köpt en konstabel. Du får flytta ut valfri motståndares polis (Knekt) till sin ursprungliga startplats i mitten." },
                 { title: "📂 Insiderjobb", desc: "Kartorna ritas om. Du får byta plats på två valfria kort av din egen färg ute på spelplanen." },
                 { title: "💥 Gatustrid", desc: "Skuggspel i gränderna! Du får byta plats med ett av dina egna kort och en motståndares kort (dock ej kort där det står en polis)." },
-                { title: "🔍 Razzia!", desc: "Polisens strålkastare tänds. Alla dolda kort som ligger direkt intill en valfri polis (Knekt) ska omedelbart vändas upp!" },
+                { title: "🔍 Razzia!", desc: "Polisens strålkastare tänds. Alle dolda kort som ligger direkt intill en valfri polis (Knekt) ska omedelbart vändas upp!" },
                 { title: "📉 Ekonomisk Kris", desc: "Tuffa tider i stan. Under nästa varv kostar det dubbelt så mycket att landa på motståndarnas kvarter." },
                 { title: "🏃 Genväg i gränden", desc: "Du hittar en olåst dörr. Du får dispens att flytta diagonalt under just detta drag om du vill." },
                 { title: "🕵️ Ficktjuv", desc: "Ett snabbt möte i trängseln. Stjäl $10 av fickpengarna från valfri motståndare." }
@@ -840,29 +831,24 @@
         function setLanguage(lang) {
             currentLang = lang;
            
-            // Sync toggles visually
             document.getElementById('welcome-lang-sv').classList.toggle('active', lang === 'sv');
             document.getElementById('welcome-lang-en').classList.toggle('active', lang === 'en');
             document.getElementById('live-lang-sv').classList.toggle('active', lang === 'sv');
             document.getElementById('live-lang-en').classList.toggle('active', lang === 'en');
            
-            // Translate all elements with data-key
             document.querySelectorAll('[data-key]').forEach(el => {
                 const key = el.getAttribute('data-key');
                 if (i18n[lang][key]) el.innerText = i18n[lang][key];
             });
 
-            // Update Gang Names
             for (let id in gangNames) {
                 document.getElementById(`p${id}-gang-title`).innerText = gangNames[id][lang];
             }
 
-            // Sync structural labels inside adjusting module
             document.getElementById('lbl-mod-bank').innerText = i18n[lang].statBank;
             document.getElementById('lbl-mod-pocket').innerText = i18n[lang].statPocket;
             document.getElementById('lbl-mod-secured').innerText = i18n[lang].statSecured;
 
-            // Update Dice Label immediately
             const label = document.getElementById("dice-label");
             if (!isRolling) {
                 if (currentDiceResult !== null) {
@@ -872,12 +858,11 @@
                 }
             }
 
-            // Welcome screen translations
+            document.getElementById('welcome-subtitle').innerText = i18n[lang].welcomeSubtitle;
             document.getElementById('welcome-prompt').innerText = i18n[lang].welcomePrompt;
             document.getElementById('btn-mode-ipad').innerText = i18n[lang].modeIpad;
             document.getElementById('btn-mode-iphone').innerText = i18n[lang].modeIphone;
            
-            // Uppdatera event-popupen om den är öppen
             if (document.getElementById("event-overlay").classList.contains("active") && currentActiveEventIndex !== null) {
                 const randomEvent = noirEvents[currentLang][currentActiveEventIndex];
                 document.getElementById("event-dice-badge").innerText = i18n[currentLang].eventBadge.replace('{roll}', currentDiceResult);
@@ -885,9 +870,13 @@
                 document.getElementById("event-desc").innerText = randomEvent.desc;
             }
 
-            // Uppdatera betalnings-modalen om den är öppen
             if (document.getElementById("pay-overlay").classList.contains("active") && activePayerId !== null) {
                 document.getElementById("pay-title").innerText = gangNames[activePayerId][currentLang] + i18n[currentLang].payPayer;
+            }
+
+            if (document.getElementById("fight-overlay").classList.contains("active") && activeAttackerId !== null) {
+                document.getElementById("fight-status-label").innerText = isFighting ? i18n[currentLang].fightRolling : document.getElementById("fight-status-label").innerText;
+                document.getElementById("fight-close-btn").innerText = i18n[currentLang].fightClose;
             }
 
             renderRules();
@@ -1126,7 +1115,6 @@
             closePayModal();
         }
 
-        // CONTROL/ADJUSTMENT PANEL FUNCTIONS
         function openAdjustModal() {
             const select = document.getElementById("mod-player");
             select.innerHTML = "";
@@ -1240,14 +1228,14 @@
                 area.innerHTML = `
                     <h1 style="color:#2b6cb0; text-align:center; margin-bottom:15px; letter-spacing: 2px;">THE NOIR SYNDICATE — REGLER</h1>
                     <h2>Spelplan & Setup (Kortlayout)</h2>
-                    <p>Bygg upp spelplanen på bordet med vanliga spelkort enligt bilden nedan. Om bilden saknas, kom ihåg grundmönstret: Ess i hörnen, Kungar på kanterna, gator där emellan och samtliga Knekter (poliser) startande på polisstationen i absolut centrum. Varje spelare placerar sin droska/markör på sitt Ess.</p>
+                    <p>Bygg upp spelplanen på bordet med vanliga spelkort enligt bilden nedan. Kom ihåg grundmönstret: Ess i hörnen, Kungar på kanterna, gator där emellan och samtliga Knekter (poliser) startande på polisstationen i absolut centrum. Varje spelare placerar sin droska/markör på sitt Ess.</p>
                     <div class="setup-image-container"><img src="setup.PNG" alt="Setup"></div>
-                    <h2>Spelidét & Mål</h2>
-                    <p>Du leder ett brottssyndikat. Ditt mål är att hämta laster med svanta pengar ($100 i taget) från din <strong>Boss (Kung)</strong>, smuggla dem genom stadens farliga gator i <strong>Fickan</strong> och säkra dem på ditt <strong>Högkvarter (Ess)</strong>. Den förste spelaren som har lyckats <strong>Säkra $200</strong> på sitt Ess vinner spelet.</p>
+                    <h2>Spelidé & Mål</h2>
+                    <p>Du leder ett brottssyndikat. Ditt mål är att hämta laster med svarta pengar ($100 i taget) från din <strong>Boss (Kung)</strong>, smuggla dem genom stadens farliga gator i <strong>Fickan</strong> och säkra dem på ditt <strong>Högkvarter (Ess)</strong>. Den förste spelaren som har lyckats <strong>Säkra $200</strong> på sitt Ess vinner spelet.</p>
                     <h2>Turens Gång</h2>
                     <ul>
                         <li><strong>Slå tärningen:</strong> Klicka på tärningen i mitten. Den visar hur många steg du får flytta din droska (framåt/sidled – ej diagonalt eller bakåt). Du måste flytta exakt det antal steg tärningen visar.</li>
-                        <li><strong>Händelsechans (35%):</strong> Om tärningsslaget triggar ett Noir-kort dyker en händelse upp. <strong>Viktigt:</strong> Utför händelsens instruktion omedelbart <em>innan</em> du flyttar din pjäs på brädet!</li>
+                        <li><strong>Händelsechans (35%):</strong> Om tärningsslaget triggar ett Noir-kort dyker en händelse upp. <strong>Viktigt:</strong> Utför händelsens instruktion omedelbart <em>innan</em> du flyttar din pjäskombination på brädet!</li>
                     </ul>
                     <h2>Rörelseregler & Positioner</h2>
                     <ul>
@@ -1331,7 +1319,6 @@
             }
         }
 
-        // Initialize setup
         setLanguage('sv');
         drawDiceDots(1);
         updateUI();
