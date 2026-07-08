@@ -12,10 +12,10 @@
             --text-color: #e5e5e5;
             --text-muted: #aaa;
             --border-color: rgba(255, 255, 255, 0.1);
-           
-            --spades-color: #3182ce;  
-            --hearts-color: #e53e3e;  
-            --clovers-color: #38a169; 
+          
+            --spades-color: #3182ce; 
+            --hearts-color: #e53e3e; 
+            --clovers-color: #38a169;
             --diamonds-color: #ecc94b;
         }
 
@@ -249,6 +249,7 @@
         .btn-success { background: rgba(22, 54, 38, 0.85); color: #48bb78; border-color: rgba(72,187,120,0.3); }
         .btn-secure { background: rgba(30, 50, 70, 0.85); color: #63b3ed; border-color: rgba(99,179,237,0.3); }
         .btn-danger { background: rgba(70, 24, 28, 0.85); color: #f56565; border-color: rgba(245,101,101,0.25); }
+        .btn-fight { background: rgba(90, 35, 15, 0.85); color: #ff7849; border-color: rgba(255,120,73,0.3); }
         .btn-pay { background: rgba(45, 38, 18, 0.85); color: #ecc94b; border-color: rgba(236,201,75,0.25); grid-column: span 2; padding: 8px; font-size: 11px; text-transform: uppercase;}
 
         /* MITTENKONSOL OCH FIXERAD TÄRNING */
@@ -278,7 +279,7 @@
             margin-bottom: 12px;
         }
         .dot { background-color: #ecc94b; border-radius: 50%; width: 100%; height: 100%; box-shadow: inset 0 2px 4px rgba(0,0,0,0.4); visibility: hidden; }
-       
+      
         .dice-label {
             font-size: 11px; font-weight: 900; letter-spacing: 2px; color: rgba(255, 255, 255, 0.8);
             background: rgba(0, 0, 0, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); text-transform: uppercase; text-align: center;
@@ -295,7 +296,7 @@
         .overlay.active { opacity: 1; pointer-events: auto; }
         .popup { background: #0f0f0f; border: 1px solid #262626; border-radius: 6px; padding: 25px; max-width: 450px; width: 90%; text-align: center; }
         .order-notice { background: rgba(236, 201, 75, 0.1); border: 1px dashed #ecc94b; color: #ecc94b; font-size: 12px; font-weight: bold; padding: 8px; margin-bottom: 15px; border-radius: 4px; text-transform: uppercase; }
-       
+      
         .popup-large { max-width: 750px; height: 85vh; overflow-y: auto; text-align: left; padding: 35px; border-color: #2b6cb0; }
         .popup-large h2 { color: #2b6cb0; text-transform: uppercase; margin: 22px 0 8px 0; font-size: 16px; border-bottom: 1px solid #1a1a1a; padding-bottom: 4px;}
         .popup-large p, .popup-large li { color: #cbd5e0; font-size: 14px; line-height: 1.6; margin-bottom: 10px; }
@@ -313,7 +314,7 @@
             border: 1px solid #222;
             border-radius: 6px;
         }
-       
+      
         .popup-dice-badge { background: #ecc94b; color: #000; display: inline-block; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: 900; margin-bottom: 10px; text-transform: uppercase; }
         .popup-title { color: #e53e3e; font-size: 22px; text-transform: uppercase; margin-bottom: 10px; }
         .popup-desc { font-size: 14px; line-height: 1.5; color: #cbd5e0; margin-bottom: 20px; }
@@ -323,6 +324,12 @@
         .pay-grid select, .pay-grid input { width: 100%; background: #151515; border: 1px solid #262626; color: white; padding: 8px; border-radius: 4px; font-size: 14px; }
         .police-selector-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 15px; }
         .police-btn { text-align: left; padding: 12px; font-size: 13px; }
+
+        /* SLAGSMÅLS-MODAL OCH VISUELLA TÄRNINGAR */
+        .fight-dice-container { display: flex; justify-content: space-around; margin: 20px 0; gap: 15px; }
+        .fight-dice-box { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; flex: 1; text-align: center; }
+        .fight-dice-name { font-size: 11px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; height: 32px; display: flex; align-items: center; justify-content: center;}
+        .fight-dice-value { font-size: 36px; font-weight: 900; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
 
         /* IPHONE SPECIFIK FLIKMENY */
         .iphone-tabs {
@@ -353,7 +360,7 @@
         body.mode-iphone .game-container {
             display: flex;
             flex-direction: column;
-            justify-content: flex-start; /* Ändrat från space-between så elementen staplas uppifrån */
+            justify-content: flex-start;
             padding: 15px 15px 80px 15px;
             height: 100vh;
             gap: 15px;
@@ -365,7 +372,7 @@
         }
 
         body.mode-iphone .center-console {
-            order: -1; /* Tvingar mittenkonsolen med tärningen att alltid renderas först/högst upp */
+            order: -1;
             flex: none;
             display: flex;
             flex-direction: column;
@@ -375,7 +382,7 @@
         }
 
         body.mode-iphone .dice-wrapper {
-            margin-top: 80px; /* Sänker ner tärningen något från skärmens ovankant */
+            margin-top: 80px;
         }
 
         body.mode-iphone .player-corner {
@@ -421,7 +428,7 @@
     </div>
 
     <div class="game-container">
-       
+      
         <div class="player-corner active-tab" id="p1">
             <div class="gang-header">
                 <div class="gang-title">♠ Nightspades</div>
@@ -436,6 +443,7 @@
                 <button onclick="takeLoad(1)" class="btn-success">💰 Hämta $100</button>
                 <button onclick="secureCash(1)" class="btn-secure">👑 Säkra Ess</button>
                 <button onclick="arrestPlayer(1)" class="btn-danger">🚨 Haffad</button>
+                <button onclick="openFightModal(1)" class="btn-fight">💥 Slagsmål</button>
                 <button onclick="openPayModal(1)" class="btn-pay">💸 Överför pengar ➔</button>
             </div>
         </div>
@@ -454,6 +462,7 @@
                 <button onclick="takeLoad(4)" class="btn-success">💰 Hämta $100</button>
                 <button onclick="secureCash(4)" class="btn-secure">👑 Säkra Ess</button>
                 <button onclick="arrestPlayer(4)" class="btn-danger">🚨 Haffad</button>
+                <button onclick="openFightModal(4)" class="btn-fight">💥 Slagsmål</button>
                 <button onclick="openPayModal(4)" class="btn-pay">💸 Överför pengar ➔</button>
             </div>
         </div>
@@ -490,6 +499,7 @@
                 <button onclick="takeLoad(3)" class="btn-success">💰 Hämta $100</button>
                 <button onclick="secureCash(3)" class="btn-secure">👑 Säkra Ess</button>
                 <button onclick="arrestPlayer(3)" class="btn-danger">🚨 Haffad</button>
+                <button onclick="openFightModal(3)" class="btn-fight">💥 Slagsmål</button>
                 <button onclick="openPayModal(3)" class="btn-pay">💸 Överför pengar ➔</button>
             </div>
         </div>
@@ -508,6 +518,7 @@
                 <button onclick="takeLoad(2)" class="btn-success">💰 Hämta $100</button>
                 <button onclick="secureCash(2)" class="btn-secure">👑 Säkra Ess</button>
                 <button onclick="arrestPlayer(2)" class="btn-danger">🚨 Haffad</button>
+                <button onclick="openFightModal(2)" class="btn-fight">💥 Slagsmål</button>
                 <button onclick="openPayModal(2)" class="btn-pay">💸 Överför pengar ➔</button>
             </div>
         </div>
@@ -529,14 +540,40 @@
             <button class="popup-btn" onclick="closePopup()">Uppfattat</button>
         </div>
     </div>
-   
+  
     <div class="overlay" id="pay-overlay"><div class="popup" style="border-color:#ecc94b;"><div class="popup-title" style="color:#ecc94b;" id="pay-title">Skicka pengar</div><div class="pay-grid"><div><label for="pay-target">Mottagare</label><select id="pay-target"></select></div><div><label for="pay-amount">Belopp ($)</label><input type="number" id="pay-amount" value="10" min="1"></div></div><div style="display:flex; gap:10px;"><button onclick="executePayment()" class="btn-success" style="padding:10px; width:50%;">Bekräfta</button><button onclick="closePayModal()" style="background:#1a1a1a; padding:10px; width:50%;">Avbryt</button></div></div></div>
     <div class="overlay" id="police-overlay"><div class="popup" style="border-color:#e53e3e;"><div class="popup-title" style="color:#e53e3e;">Vem gjorde gripandet?</div><p style="font-size:13px; color:#a0aec0; margin-bottom:10px;">Pengarna tillfaller polisen.</p><div class="police-selector-grid" id="police-targets"></div><button onclick="closePoliceModal()" style="background:#1a1a1a; padding:10px; width:100%; margin-top:10px;">Avbryt</button></div></div>
-   
+  
+    <!-- FLIK / MODAL FÖR GATUSLAGSMÅL -->
+    <div class="overlay" id="fight-overlay">
+        <div class="popup" style="border-color:#ff7849;">
+            <div class="popup-title" style="color:#ff7849;">Gatuslagsmål!</div>
+            <div id="fight-setup-view">
+                <p style="font-size:13px; color:#a0aec0; margin-bottom:15px;">Välj vilken motståndare som står på rutan och ska attackeras:</p>
+                <div class="police-selector-grid" id="fight-targets"></div>
+                <button onclick="closeFightModal()" style="background:#1a1a1a; padding:10px; width:100%; margin-top:12px;">Avbryt</button>
+            </div>
+            <div id="fight-rolling-view" style="display:none;">
+                <div class="fight-dice-container">
+                    <div class="fight-dice-box">
+                        <div class="fight-dice-name" id="fight-attacker-name">Attackare</div>
+                        <div class="fight-dice-value" id="fight-attacker-dice">-</div>
+                    </div>
+                    <div class="fight-dice-box">
+                        <div class="fight-dice-name" id="fight-defender-name">Försvarare</div>
+                        <div class="fight-dice-value" id="fight-defender-dice">-</div>
+                    </div>
+                </div>
+                <div class="order-notice" id="fight-status-label" style="margin-bottom:0;">RULLAR KNOGJÄRNEN...</div>
+                <button class="popup-btn" id="fight-close-btn" onclick="closeFightModal()" style="display:none;">Avsluta duell</button>
+            </div>
+        </div>
+    </div>
+
     <div class="overlay" id="rules-overlay">
         <div class="popup popup-large">
             <h1 style="color:#2b6cb0; text-align:center; margin-bottom:15px; letter-spacing: 2px;">THE NOIR SYNDICATE — REGLER</h1>
-           
+          
             <h2>Spelplan & Setup (Kortlayout)</h2>
             <p>Bygg upp spelplanen på bordet med vanliga spelkort enligt bilden nedan. Om bilden saknas, kom ihåg grundmönstret: Ess i hörnen, Kungar på kanterna, gator där emellan och samtliga Knekter (poliser) startande på polisstationen i absolut centrum.</p>
 
@@ -544,32 +581,24 @@
                 <img src="setup.PNG" alt="Spelplan Setup">
             </div>
 
+            <h2>Rörelseregler & Positioner</h2>
+            <p><strong>Gatuslagsmål vid krock:</strong> Det får egentligen inte stå två spelare på samma ruta. Om din droska landar på en ruta där en motståndare redan står, triggas ett <strong>Gatuslagsmål</strong> direkt! Klicka på knappen i ditt hörn och utmana motståndaren.</p>
+
             <h2>Spelidé & Mål</h2>
-            <p>Du leder ett brottssyndikat. Ditt mål är att hämta laster med svarta pengar ($100 i taget) från din <strong>Boss (Kung)</strong>, smuggla dem genom stadens farliga gator i <strong>Fickan</strong>, och säkra dem på ditt <strong>Högkvarter (Ess)</strong>. Den förste spelaren som har lyckats <strong>Säkra $200</strong> på sitt Ess vinner spelet.</p>
-           
-            <h2>Spelets Upplägg & Start</h2>
-            <p>Varje spelare startar med <strong>$300 i Banken</strong> (valvet hos Bossen), <strong>$20 i Fickan</strong>, och <strong>$0 Säkrat</strong>. Din droska/pjäs startar på ditt eget Ess-kvarter.</p>
-           
+            <p>Du leder ett brottssyndikat. Ditt mål är att hämta laster med svarta pengar ($100 i taget) från din <strong>Boss (Kung)</strong>, smuggla dem genom stadens farliga gator i <strong>Fickan</strong>, och säkra dem på ditt <strong>Högkvarter (Ess)</strong>. Den förste spelaren som har lyckats <strong>Säkra $200</strong> på ditt Ess vinner spelet.</p>
+          
             <h2>Turens Gång</h2>
             <ul>
                 <li><strong>Slå tärningen:</strong> Klicka på tärningen i mitten. Den visar hur många steg du får flytta din droska. Du flyttar ortogonalt (framåt, bakåt, i sidled – ej diagonalt).</li>
                 <li><strong>Händelsechans (35%):</strong> Om tärningsslaget triggar ett Noir-kort dyker en händelse upp. <strong>Viktigt:</strong> Utför händelsens instruktion omedelbart <em>innan</em> du flyttar din pjäs på brädet!</li>
             </ul>
 
-            <h2>Ekonomi & Aktioner i Control Room</h2>
-            <p>Appen hanterar din ekonomi. Du kan göra följande när som helst under din tur:</p>
+            <h2>Regler för Gatuslagsmål 💥</h2>
             <ul>
-                <li><strong>Hämta $100:</strong> Om din pjäs står på eller passerar din <strong>Boss (Kung)</strong> kan du hämta en last. $100 dras från din Bank och flyttas till Fickan. Du kan bara bära <em>en</em> last åt gången (max $120 totalt i fickan).</li>
-                <li><strong>Säkra Ess:</strong> Om du står på ditt <strong>Ess (Högkvarter)</strong> kan du klicka på "Säkra Ess". Alla dina fickpengar utöver startkapitalet ($20) låses in säkert. Det är dessa pengar som räknas mot vinsten!</li>
-                <li><strong>Överför pengar:</strong> Om du landar på en motståndares kvarter måste du betala hyra/muta. Klicka på knappen och välj mottagare. Om du får slut på fickpengar går du i personlig konkurs och din pjäs flyttas direkt tillbaka till ditt start-Ess med $20 i fickan.</li>
-            </ul>
-
-            <h2>Polisen & Gisslan (Knekten)</h2>
-            <p>Knekten i din kortfärg representerar din personliga poliskonstapel som du styr över för att störa motståndarna. Om en motståndares pjäs landar på samma ruta som din polis (eller om din polis flyttas till en motståndare via ett Noir-kort), blir motståndaren tagen som gisslan!</p>
-            <ul>
-                <li>Klicka på <strong>🚨 Haffad</strong> under det drabbade gänget.</li>
-                <li>Välj vilket gäng som äger polisen som utförde gripandet.</li>
-                <li>Alla offrets fickpengar över grundbeloppet ($20) beslagtas och sätts direkt in i det gripande gängets **Bank**! Offrets pjäs skickas omedelbart tillbaka till häktet (motståndarens Boss-ruta).För att fly från häktet behöver man slå en fyra eller högre.</li>
+                <li>Båda spelarna slår varsin digital tärning via appen.</li>
+                <li><strong>Vinst:</strong> Vinnaren stjäl 10 dollar direkt från förlorarens ficka.</li>
+                <li><strong>Straff:</strong> Förloraren måste omedelbart flytta sin fysiska pjäs på brädet till valfritt <strong>Ess</strong> eller <strong>Kung</strong>.</li>
+                <li><strong>Oavgjort:</strong> Om ni slår lika vinner den som blev attackerad (försvararen)!</li>
             </ul>
 
             <button class="popup-btn" onclick="closeRulesModal()">Stäng och återgå till spelet</button>
@@ -598,6 +627,7 @@
 
         const dicePatterns = { 1: [5], 2: [3, 7], 3: [3, 5, 7], 4: [1, 3, 7, 9], 5: [1, 3, 5, 7, 9], 6: [1, 3, 4, 6, 7, 9] };
         let isRolling = false; let activePayerId = null; let activeArrestedId = null;
+        let activeAttackerId = null; let isFighting = false;
 
         function startGame(mode) {
             if (mode === 'iphone') {
@@ -612,7 +642,7 @@
         function switchTab(id) {
             document.querySelectorAll('.player-corner').forEach(el => el.classList.remove('active-tab'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-           
+          
             document.getElementById(`p${id}`).classList.add('active-tab');
             if(document.querySelector(`.tab-btn[data-tab="${id}"]`)) {
                 document.querySelector(`.tab-btn[data-tab="${id}"]`).classList.add('active');
@@ -622,7 +652,7 @@
         function updateUI() {
             for (let id in players) {
                 document.getElementById(`p${id}-bank`).innerText = `$${players[id].bank}`;
-                document.getElementById(`p${id}-pocket`).innerText = `$${players[id].pocket}`;
+                document.getElementById(`p` + id + `-pocket`).innerText = `$${players[id].pocket}`;
                 document.getElementById(`p${id}-secured`).innerText = `$${players[id].secured}`;
             }
         }
@@ -664,6 +694,94 @@
                 alert(`${victim.name} haffad av ${cop.name}! Beslagtog $${loot}.`);
             } else { alert(`${victim.name} skickas till häktet.`); }
             closePoliceModal(); updateUI();
+        }
+
+        // LOGIK FÖR MANUELLT GATUSLAGSMÅL
+        function openFightModal(id) {
+            if (isFighting) return;
+            activeAttackerId = id;
+            const grid = document.getElementById("fight-targets"); grid.innerHTML = "";
+           
+            document.getElementById("fight-setup-view").style.display = "block";
+            document.getElementById("fight-rolling-view").style.display = "none";
+            document.getElementById("fight-close-btn").style.display = "none";
+           
+            for (let pId in players) {
+                if (pId != id) {
+                    let btn = document.createElement("button"); btn.className = "police-btn";
+                    btn.innerText = `🥊 Utmana ${players[pId].name}`;
+                    btn.onclick = function() { startStreetFight(pId); };
+                    grid.appendChild(btn);
+                }
+            }
+            document.getElementById("fight-overlay").classList.add("active");
+        }
+
+        function closeFightModal() {
+            if (isFighting) return;
+            document.getElementById("fight-overlay").classList.remove("active");
+        }
+
+        function startStreetFight(defenderId) {
+            isFighting = true;
+            document.getElementById("fight-setup-view").style.display = "none";
+            document.getElementById("fight-rolling-view").style.display = "block";
+           
+            document.getElementById("fight-attacker-name").innerText = `👊 ${players[activeAttackerId].name} (Anfallare)`;
+            document.getElementById("fight-defender-name").innerText = `🛡️ ${players[defenderId].name} (Försvarare)`;
+           
+            let counter = 0;
+            const statusLabel = document.getElementById("fight-status-label");
+            statusLabel.className = "order-notice";
+            statusLabel.innerText = "KASTAR TÄRNINGARNA...";
+
+            const interval = setInterval(() => {
+                document.getElementById("fight-attacker-dice").innerText = Math.floor(Math.random() * 6) + 1;
+                document.getElementById("fight-defender-dice").innerText = Math.floor(Math.random() * 6) + 1;
+                counter++;
+               
+                if (counter > 12) {
+                    clearInterval(interval);
+                   
+                    let attVal = Math.floor(Math.random() * 6) + 1;
+                    let defVal = Math.floor(Math.random() * 6) + 1;
+                   
+                    document.getElementById("fight-attacker-dice").innerText = attVal;
+                    document.getElementById("fight-defender-dice").innerText = defVal;
+                   
+                    let winnerId, loserId, drawGame = false;
+                   
+                    if (attVal > defVal) {
+                        winnerId = activeAttackerId;
+                        loserId = defenderId;
+                    } else if (defVal > attVal) {
+                        winnerId = defenderId;
+                        loserId = activeAttackerId;
+                    } else {
+                        // Vid oavgjort vinner försvararen
+                        winnerId = defenderId;
+                        loserId = activeAttackerId;
+                        drawGame = true;
+                    }
+                   
+                    // Genomför rån på 10 dollar
+                    let cashStolen = 10;
+                    if (players[loserId].pocket < 10) cashStolen = players[loserId].pocket; // Ta det som finns
+                   
+                    players[loserId].pocket -= cashStolen;
+                    players[winnerId].pocket += cashStolen;
+                    updateUI();
+                   
+                    if (drawGame) {
+                        statusLabel.innerText = `OAVGJORT! ${players[winnerId].name} försvarade rutan! Tar $${cashStolen} och skickar bort anfallaren.`;
+                    } else {
+                        statusLabel.innerText = `VINNARE: ${players[winnerId].name}! Tar $${cashStolen} från förloraren som flyttas till valfritt Ess/Kung.`;
+                    }
+                   
+                    isFighting = false;
+                    document.getElementById("fight-close-btn").style.display = "block";
+                }
+            }, 70);
         }
 
         function openPayModal(id) {
