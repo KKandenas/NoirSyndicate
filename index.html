@@ -7,8 +7,7 @@
     <style>
         :root {
             --bg-color: #050505;
-            /* Gjort spelarhörnen mer transparenta (0.6 i stället för 0.85) för tydligare glaseffekt */
-            --card-bg: rgba(18, 18, 18, 0.6); 
+            --card-bg: rgba(18, 18, 18, 0.7); /* Lite mer transparent för snyggare glaseffekt */
             --text-color: #e5e5e5;
             --text-muted: #888;
             --border-color: #222;
@@ -37,7 +36,7 @@
             padding: 0; /* Tar bort padding från body för fullskärms overlay */
         }
 
-        /* Ny container som lägger din bakgrundsbild längst bak */
+        /* Ny container för bakgrundsbilden */
         .background-container {
             position: fixed;
             top: 0;
@@ -50,14 +49,14 @@
             z-index: -2; /* Placerar bilden längst bak */
         }
 
-        /* Ny container som lägger en mörk, transparent skugga (overlay) ovanpå bilden */
+        /* Ny container för den transparenta toningen (overlay) */
         .overlay-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(5, 5, 5, 0.55); /* Lagom mörkt för att bilden ska synas men texten vara tydlig */
+            background-color: rgba(5, 5, 5, 0.6); /* Ljusare toning för tydligare bakgrund */
             z-index: -1; /* Placerar toningen ovanpå bilden */
         }
 
@@ -72,7 +71,7 @@
             overflow: hidden;
         }
 
-        /* VÄLKOMSTSIDA (SPLASH SCREEN) */
+        /* VÄLKOMSTSIDA (SPLASH SCREEN) -CHICAGO 1920-TAL */
         .welcome-screen {
             position: fixed;
             top: 0;
@@ -172,8 +171,7 @@
             justify-content: space-between;
             box-shadow: 0 8px 25px rgba(0,0,0,0.85);
             position: relative;
-            /* Ökad suddighet och separerat lager gör effekten tydlig */
-            backdrop-filter: blur(10px) saturate(180%); 
+            backdrop-filter: blur(8px); /* Ökad suddighet för tydligare glaseffekt */
         }
 
         .player-corner::before {
@@ -184,7 +182,7 @@
             border-radius: 8px 8px 0 0;
         }
 
-        /* KORRIGERAT POSITIONSSCHEMA (Svart till vänster, Rött till höger) */
+        /* KORRIGERAT POSITIONSSCHEMA */
         #p1 { --gang-color: var(--spades-color);   grid-area: 1 / 1; } /* Spader uppe vänster */
         #p4 { --gang-color: var(--diamonds-color); grid-area: 1 / 3; } /* Ruter uppe höger */
         #p3 { --gang-color: var(--clovers-color);  grid-area: 3 / 1; } /* Klöver nere vänster */
@@ -399,7 +397,7 @@
         </div>
 
         <div class="side-bar-left">THE NOIR SYNDICATE</div>
-        <div class="side-bar-right">BOARD HUB v1.15</div>
+        <div class="side-bar-right">BOARD HUB v1.13</div>
 
         <div class="center-console">
             <div id="dice-container" onclick="rollDice()">1</div>
@@ -494,7 +492,7 @@
                 <h2>🚨 Polisen (Knektarna) & Fängelset</h2>
                 <p>När händelsekort aktiveras rör sig stadens poliser (Knektarna) ut i rutnätet:</p>
                 <ul>
-                    <li><strong>Ockupation:</strong> När en Knekt flyttar in på planen placeras den fysiskt ovanpå det kort den landar på och <strong>ersätter kortets funktion helt</strong> so länge den står kvar.</li>
+                    <li><strong>Ockupation:</strong> När en Knekt flyttar in på planen placeras den fysiskt ovanpå det kort den landar på och <strong>ersätter kortets funktion helt</strong> så länge den står kvar.</li>
                     <li><strong>Frizon / Fälla:</strong> Att landa på sin <em>egen</em> gängknekt är helt säkert och fungerar som ett <strong>gratisställe</strong>. Om du däremot landar på (eller blir träffad av) en <em>motståndares</em> Knekt blir du omedelbart gripen!</li>
                     <li><strong>Straff vid gripande:</strong> Du blir av med alla insamlade smuggelpengar på fickan (allt över startkapitalet $20). Dessa pengar beslagtas och <strong>tillfaller direkt gängbanken hos den spelare vars polis utförde gripandet</strong>. Din pjäs flyttas sedan till den motståndarens Boss-ruta (Fängelset). Slå 4+ för att bryta dig ut vid nästa tur.</li>
                 </ul>
@@ -511,7 +509,6 @@
             </div>
         </div>
     </div> <script>
-        // SPELARDATA SYNKAD MED NYA MATRIXEN
         let players = {
             1: { name: "Nightspades (♠)", bank: 300, pocket: 20, secured: 0 },
             2: { name: "Crimson Hearts (♥)", bank: 300, pocket: 20, secured: 0 },
@@ -636,7 +633,7 @@
             }
             players[activePayerId].pocket -= amount;
             players[targetId].pocket += amount;
-                updateUI();
+            updateUI();
             closePayModal();
         }
 
