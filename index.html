@@ -7,7 +7,7 @@
     <style>
         :root {
             --bg-color: #050505;
-            --card-bg: rgba(18, 18, 18, 0.85);
+            --card-bg: rgba(18, 18, 18, 0.7); /* Lite mer transparent för snyggare glaseffekt */
             --text-color: #e5e5e5;
             --text-muted: #888;
             --border-color: #222;
@@ -29,23 +29,49 @@
 
         body {
             background-color: var(--bg-color);
-            /* Bakgrundsbild för spelplanen med mörk toning för perfekt kontrast */
-            background-image: linear-gradient(rgba(5, 5, 5, 0.65), rgba(5, 5, 5, 0.85)), url('bakgrund.PNG');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
             color: var(--text-color);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             height: 100vh;
             overflow: hidden;
+            padding: 0; /* Tar bort padding från body för fullskärms overlay */
+        }
+
+        /* Ny container för bakgrundsbilden */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('bakgrund.PNG');
+            background-size: cover;
+            background-position: center;
+            z-index: -2; /* Placerar bilden längst bak */
+        }
+
+        /* Ny container för den transparenta toningen (overlay) */
+        .overlay-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(5, 5, 5, 0.6); /* Ljusare toning för tydligare bakgrund */
+            z-index: -1; /* Placerar toningen ovanpå bilden */
+        }
+
+        /* Container för själva spelplanen, med padding */
+        .game-container {
             display: grid;
             grid-template-rows: 240px 1fr 240px;
             grid-template-columns: 320px 1fr 320px;
             padding: 15px;
             gap: 15px;
+            height: 100vh;
+            overflow: hidden;
         }
 
-        /* VÄLKOMSTSIDA (SPLASH SCREEN) */
+        /* VÄLKOMSTSIDA (SPLASH SCREEN) -CHICAGO 1920-TAL */
         .welcome-screen {
             position: fixed;
             top: 0;
@@ -134,7 +160,7 @@
             filter: brightness(0.9);
         }
 
-        /* Spelarhörn */
+        /* Spelarhörn - med förbättrad glaseffekt */
         .player-corner {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -145,7 +171,7 @@
             justify-content: space-between;
             box-shadow: 0 8px 25px rgba(0,0,0,0.85);
             position: relative;
-            backdrop-filter: blur(4px);
+            backdrop-filter: blur(8px); /* Ökad suddighet för tydligare glaseffekt */
         }
 
         .player-corner::before {
@@ -319,167 +345,170 @@
 </head>
 <body>
 
-    <div class="welcome-screen" id="welcome-screen">
-        <div class="welcome-title">THE NOIR SYNDICATE</div>
-        <div class="welcome-subtitle">Fyra syndikat. En stad. Inga vittnen.</div>
-        <div class="welcome-card">
-            <div class="orientation-notice">
-                🔄 <span>OBS: Detta digitala kontrollrum kräver liggande läge (Landscape) för optimal spelupplevelse på plattan.</span>
+    <div class="background-container"></div>
+    <div class="overlay-container"></div>
+
+    <div class="game-container">
+        <div class="welcome-screen" id="welcome-screen">
+            <div class="welcome-title">THE NOIR SYNDICATE</div>
+            <div class="welcome-subtitle">Fyra syndikat. En stad. Inga vittnen.</div>
+            <div class="welcome-card">
+                <div class="orientation-notice">
+                    🔄 <span>OBS: Detta digitala kontrollrum kräver liggande läge (Landscape) för optimal spelupplevelse på plattan.</span>
+                </div>
+                <button class="btn-start" onclick="startGame()">Inta position & starta spelet</button>
             </div>
-            <button class="btn-start" onclick="startGame()">Inta position & starta spelet</button>
         </div>
-    </div>
 
-    <div class="player-corner" id="p1">
-        <div class="gang-header">
-            <div class="gang-title">♠ Nightspades</div>
-            <div class="deck-suit suit-black">Svart svit</div>
-        </div>
-        <div class="stats-grid">
-            <div class="stat-box"><div class="stat-label">Bank</div><div class="stat-value" id="p1-bank">$300</div></div>
-            <div class="stat-box"><div class="stat-label">Fickan</div><div class="stat-value" id="p1-pocket">$20</div></div>
-            <div class="stat-box"><div class="stat-label">Säkrat</div><div class="stat-value" id="p1-secured" style="color:var(--spades-color)">$0</div></div>
-        </div>
-        <div class="gang-actions">
-            <button onclick="takeLoad(1)" class="btn-success">Hämta $100</button>
-            <button onclick="secureCash(1)">Säkra Ess</button>
-            <button onclick="arrestPlayer(1)" class="btn-danger">Häktad (Polis)</button>
-            <button onclick="openPayModal(1)" class="btn-pay">Skicka pengar ➔</button>
-        </div>
-    </div>
-
-    <div class="player-corner" id="p4">
-        <div class="gang-header">
-            <div class="gang-title">♦ Diamond Syndicate</div>
-            <div class="deck-suit suit-red">Röd svit</div>
-        </div>
-        <div class="stats-grid">
-            <div class="stat-box"><div class="stat-label">Bank</div><div class="stat-value" id="p4-bank">$300</div></div>
-            <div class="stat-box"><div class="stat-label">Fickan</div><div class="stat-value" id="p4-pocket">$20</div></div>
-            <div class="stat-box"><div class="stat-label">Säkrat</div><div class="stat-value" id="p4-secured" style="color:var(--diamonds-color)">$0</div></div>
-        </div>
-        <div class="gang-actions">
-            <button onclick="takeLoad(4)" class="btn-success">Hämta $100</button>
-            <button onclick="secureCash(4)">Säkra Ess</button>
-            <button onclick="arrestPlayer(4)" class="btn-danger">Häktad (Polis)</button>
-            <button onclick="openPayModal(4)" class="btn-pay">Skicka pengar ➔</button>
-        </div>
-    </div>
-
-    <div class="side-bar-left">THE NOIR SYNDICATE</div>
-    <div class="side-bar-right">BOARD HUB v1.13</div>
-
-    <div class="center-console">
-        <div id="dice-container" onclick="rollDice()">1</div>
-        <div style="display:flex; flex-direction:column; gap:10px; width: 100%; max-width: 180px;">
-            <button onclick="openRulesModal()" style="background:#0f0f0f; border:1px solid #1a1a1a; font-size:12px; padding:8px 0; color:#8a99ad;">📜 Kompletta Regler</button>
-            <button onclick="resetGame()" style="background:#0f0f0f; border:1px solid #1a1a1a; font-size:12px; padding:8px 0; color:#4a5568;">Nollställ Spel</button>
-        </div>
-    </div>
-
-    <div class="player-corner" id="p3">
-        <div class="gang-header">
-            <div class="gang-title">♣ Iron Clovers</div>
-            <div class="deck-suit suit-black">Svart svit</div>
-        </div>
-        <div class="stats-grid">
-            <div class="stat-box"><div class="stat-label">Bank</div><div class="stat-value" id="p3-bank">$300</div></div>
-            <div class="stat-box"><div class="stat-label">Fickan</div><div class="stat-value" id="p3-pocket">$20</div></div>
-            <div class="stat-box"><div class="stat-label">Säkrat</div><div class="stat-value" id="p3-secured" style="color:var(--clovers-color)">$0</div></div>
-        </div>
-        <div class="gang-actions">
-            <button onclick="takeLoad(3)" class="btn-success">Hämta $100</button>
-            <button onclick="secureCash(3)">Säkra Ess</button>
-            <button onclick="arrestPlayer(3)" class="btn-danger">Häktad (Polis)</button>
-            <button onclick="openPayModal(3)" class="btn-pay">Skicka pengar ➔</button>
-        </div>
-    </div>
-
-    <div class="player-corner" id="p2">
-        <div class="gang-header">
-            <div class="gang-title">♥ Crimson Hearts</div>
-            <div class="deck-suit suit-red">Röd svit</div>
-        </div>
-        <div class="stats-grid">
-            <div class="stat-box"><div class="stat-label">Bank</div><div class="stat-value" id="p2-bank">$300</div></div>
-            <div class="stat-box"><div class="stat-label">Fickan</div><div class="stat-value" id="p2-pocket">$20</div></div>
-            <div class="stat-box"><div class="stat-label">Säkrat</div><div class="stat-value" id="p2-secured" style="color:var(--hearts-color)">$0</div></div>
-        </div>
-        <div class="gang-actions">
-            <button onclick="takeLoad(2)" class="btn-success">Hämta $100</button>
-            <button onclick="secureCash(2)">Säkra Ess</button>
-            <button onclick="arrestPlayer(2)" class="btn-danger">Häktad (Polis)</button>
-            <button onclick="openPayModal(2)" class="btn-pay">Skicka pengar ➔</button>
-        </div>
-    </div>
-
-    <div class="overlay" id="event-overlay"><div class="popup"><div class="popup-dice-badge" id="event-dice-badge"></div><div class="popup-title" id="event-title"></div><div class="popup-desc" id="event-desc"></div><button class="popup-btn" onclick="closePopup()">Uppfattat</button></div></div>
-    
-    <div class="overlay" id="pay-overlay"><div class="popup" style="border-color:#ecc94b;"><div class="popup-title" style="color:#ecc94b;" id="pay-title">Skicka pengar</div><div class="pay-grid"><div><label for="pay-target">Mottagare</label><select id="pay-target"></select></div><div><label for="pay-amount">Belopp ($)</label><input type="number" id="pay-amount" value="10" min="1"></div></div><div style="display:flex; gap:10px;"><button onclick="executePayment()" class="btn-success" style="padding:10px; width:50%;">Bekräfta</button><button onclick="closePayModal()" style="background:#1a1a1a; padding:10px; width:50%;">Avbryt</button></div></div></div>
-
-    <div class="overlay" id="police-overlay"><div class="popup" style="border-color:#e53e3e;"><div class="popup-title" style="color:#e53e3e;">Vem gjorde gripandet?</div><p style="font-size:13px; color:#a0aec0; margin-bottom:10px;">Smuggelpengarna på fickan tillfaller den polisens gängbank.</p><div class="police-selector-grid" id="police-targets"></div><button onclick="closePoliceModal()" style="background:#1a1a1a; padding:10px; width:100%; margin-top:10px;">Avbryt</button></div></div>
-
-    <div class="overlay" id="rules-overlay">
-        <div class="popup popup-large">
-            <h1 style="color:#2b6cb0; text-align:center; font-size:26px; letter-spacing:2px; margin-bottom:5px;">THE NOIR SYNDICATE</h1>
-            <p style="text-align:center; color:#666; font-style:italic; margin-bottom:20px;">Officiellt Spelkoncept - Fyra fristående gäng (Alla mot alla)</p>
-            
-            <h2>🕵️‍♂️ Översikt & Handling</h2>
-            <p>Fyra rivaliserande syndikat kämpar om makten på gatorna. Din uppgift som gängledare är att smuggla kapital från din Boss (Kungarna) och säkra pengarna i ditt högkvarter (Essen) – allt medan polisen (Knektarna) patrullerar i skuggorna.</p>
-            
-            <h2>🗺️ Spelplanens Layout (48 Kort)</h2>
-            <p style="margin-bottom: 15px;">Blanda kortleken och placera ut korten dolda (upp och ner) på bordet enligt schemat nedan. Essen, Kungarna och Knektarna har fasta startpositioner:</p>
-
-            <div style="text-align: center; margin: 20px 0;">
-                <img src="setup.PNG" alt="Spelplanens utplacering" style="max-width: 100%; height: auto; border-radius: 6px; border: 1px solid #262626; box-shadow: 0 10px 30px rgba(0,0,0,0.6);">
+        <div class="player-corner" id="p1">
+            <div class="gang-header">
+                <div class="gang-title">♠ Nightspades</div>
+                <div class="deck-suit suit-black">Svart svit</div>
             </div>
-
-            <ul>
-                <li><strong>Hörnen (Essen):</strong> Respektive gängs egna Huvudkvarter/Safe House.</li>
-                <li><strong>Diagonalt innanför (Kungarna):</strong> Bossen (håller ditt gängs unika kassavalv).</li>
-                <li><strong>Mitten (Knektarna):</strong> Polisen startar i mitten, men rör sig ut på spelplanen under spelets gång.</li>
-                <li><strong>Övriga kort (2-10 och Damer):</strong> Blandas och läggs dolda (upp och ner).</li>
-            </ul>
-
-            <h2>🎨 Kortlekens Sviter & Rivalitet (4 Lag)</h2>
-            <p>Spelet har fyra unika gäng baserade på kortlekens sviter:</p>
-            <ul>
-                <li><strong>♠ Nightspades</strong> (Svart färg/svit)</li>
-                <li><strong>♣ Iron Clovers</strong> (Svart färg/svit)</li>
-                <li><strong>♥ Crimson Hearts</strong> (Röd färg/svit)</li>
-                <li><strong>♦ Diamond Syndicate</strong> (Röd färg/svit)</li>
-                <li><strong>Betalningsregel:</strong> När du landar på ett uppvänt kort som matchar din <em>egen</em> gängfärg/svit är det helt gratis. Landar du däremot på ett kort som tillhör något av de andra tre rivaliserande gängen, must du omedelbart betala kortets värde (t.ex. en 5:a = $5) till den aktuella spelaren via appen.</li>
-                <li><strong>Damerna (Barerna):</strong> Alla gäng går in gratis på Damerna, men man tvingas <strong>stå över nästa omgång</strong>.</li>
-            </ul>
-
-            <h2>🎲 Rörelseregler</h2>
-            <ul>
-                <li>Man slår tärningen på iPaden och flyttar det exakta antalet steg (endast horisontellt och vertikalt, <strong>inga diagonala steg</strong>).</li>
-                <li>Du får inte gå tillbaka till samma ruta under samma drag.</li>
-                <li>När du landar på ditt dolda kort vänds det upp permanent.</li>
-            </ul>
-
-            <h2>🚨 Polisen (Knektarna) & Fängelset</h2>
-            <p>När händelsekort aktiveras rör sig stadens poliser (Knektarna) ut i rutnätet:</p>
-            <ul>
-                <li><strong>Ockupation:</strong> När en Knekt flyttar in på planen placeras den fysiskt ovanpå det kort den landar på och <strong>ersätter kortets funktion helt</strong> så länge den står kvar.</li>
-                <li><strong>Frizon / Fälla:</strong> Att landa på sin <em>egen</em> gängknekt är helt säkert och fungerar som ett <strong>gratisställe</strong>. Om du däremot landar på (eller blir träffad av) en <em>motståndares</em> Knekt blir du omedelbart gripen!</li>
-                <li><strong>Straff vid gripande:</strong> Du blir av med alla insamlade smuggelpengar på fickan (allt över startkapitalet $20). Dessa pengar beslagtas och <strong>tillfaller direkt gängbanken hos den spelare vars polis utförde gripandet</strong>. Din pjäs flyttas sedan till den motståndarens Boss-ruta (Fängelset). Slå 4+ för att bryta dig ut vid nästa tur.</li>
-            </ul>
-
-            <h2>💰 Ekonomi & Seger</h2>
-            <ul>
-                <li><strong>Startkapital:</strong> Varje spelare har $20 på fickan och $300 i sin Bank (hos sin Boss).</li>
-                <li><strong>Smuggling:</strong> När du besöker din Boss plockar du ut $100 till fickan. Ditt mål är att ta dig till ditt eget Ess och trycka på "Säkra Ess".</li>
-                <li><strong>Konkurs:</strong> Om dina fickpengar tar slut på grund av motståndaravgifter går du i personlig konkurs. Du nollställs omedelbart till $20 och flyttas direkt tillbaka till ditt eget Ess (Huvudkvarter).</li>
-                <li><strong>Vinst:</strong> Först till <strong>$200 säkrade i sitt Ess</strong> vinner spelet!</li>
-            </ul>
-
-            <button class="popup-btn" onclick="closeRulesModal()" style="margin-top:15px;">Tillbaka till spelet</button>
+            <div class="stats-grid">
+                <div class="stat-box"><div class="stat-label">Bank</div><div class="stat-value" id="p1-bank">$300</div></div>
+                <div class="stat-box"><div class="stat-label">Fickan</div><div class="stat-value" id="p1-pocket">$20</div></div>
+                <div class="stat-box"><div class="stat-label">Säkrat</div><div class="stat-value" id="p1-secured" style="color:var(--spades-color)">$0</div></div>
+            </div>
+            <div class="gang-actions">
+                <button onclick="takeLoad(1)" class="btn-success">Hämta $100</button>
+                <button onclick="secureCash(1)">Säkra Ess</button>
+                <button onclick="arrestPlayer(1)" class="btn-danger">Häktad (Polis)</button>
+                <button onclick="openPayModal(1)" class="btn-pay">Skicka pengar ➔</button>
+            </div>
         </div>
-    </div>
 
-    <script>
+        <div class="player-corner" id="p4">
+            <div class="gang-header">
+                <div class="gang-title">♦ Diamond Syndicate</div>
+                <div class="deck-suit suit-red">Röd svit</div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-box"><div class="stat-label">Bank</div><div class="stat-value" id="p4-bank">$300</div></div>
+                <div class="stat-box"><div class="stat-label">Fickan</div><div class="stat-value" id="p4-pocket">$20</div></div>
+                <div class="stat-box"><div class="stat-label">Säkrat</div><div class="stat-value" id="p4-secured" style="color:var(--diamonds-color)">$0</div></div>
+            </div>
+            <div class="gang-actions">
+                <button onclick="takeLoad(4)" class="btn-success">Hämta $100</button>
+                <button onclick="secureCash(4)">Säkra Ess</button>
+                <button onclick="arrestPlayer(4)" class="btn-danger">Häktad (Polis)</button>
+                <button onclick="openPayModal(4)" class="btn-pay">Skicka pengar ➔</button>
+            </div>
+        </div>
+
+        <div class="side-bar-left">THE NOIR SYNDICATE</div>
+        <div class="side-bar-right">BOARD HUB v1.13</div>
+
+        <div class="center-console">
+            <div id="dice-container" onclick="rollDice()">1</div>
+            <div style="display:flex; flex-direction:column; gap:10px; width: 100%; max-width: 180px;">
+                <button onclick="openRulesModal()" style="background:#0f0f0f; border:1px solid #1a1a1a; font-size:12px; padding:8px 0; color:#8a99ad;">📜 Kompletta Regler</button>
+                <button onclick="resetGame()" style="background:#0f0f0f; border:1px solid #1a1a1a; font-size:12px; padding:8px 0; color:#4a5568;">Nollställ Spel</button>
+            </div>
+        </div>
+
+        <div class="player-corner" id="p3">
+            <div class="gang-header">
+                <div class="gang-title">♣ Iron Clovers</div>
+                <div class="deck-suit suit-black">Svart svit</div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-box"><div class="stat-label">Bank</div><div class="stat-value" id="p3-bank">$300</div></div>
+                <div class="stat-box"><div class="stat-label">Fickan</div><div class="stat-value" id="p3-pocket">$20</div></div>
+                <div class="stat-box"><div class="stat-label">Säkrat</div><div class="stat-value" id="p3-secured" style="color:var(--clovers-color)">$0</div></div>
+            </div>
+            <div class="gang-actions">
+                <button onclick="takeLoad(3)" class="btn-success">Hämta $100</button>
+                <button onclick="secureCash(3)">Säkra Ess</button>
+                <button onclick="arrestPlayer(3)" class="btn-danger">Häktad (Polis)</button>
+                <button onclick="openPayModal(3)" class="btn-pay">Skicka pengar ➔</button>
+            </div>
+        </div>
+
+        <div class="player-corner" id="p2">
+            <div class="gang-header">
+                <div class="gang-title">♥ Crimson Hearts</div>
+                <div class="deck-suit suit-red">Röd svit</div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-box"><div class="stat-label">Bank</div><div class="stat-value" id="p2-bank">$300</div></div>
+                <div class="stat-box"><div class="stat-label">Fickan</div><div class="stat-value" id="p2-pocket">$20</div></div>
+                <div class="stat-box"><div class="stat-label">Säkrat</div><div class="stat-value" id="p2-secured" style="color:var(--hearts-color)">$0</div></div>
+            </div>
+            <div class="gang-actions">
+                <button onclick="takeLoad(2)" class="btn-success">Hämta $100</button>
+                <button onclick="secureCash(2)">Säkra Ess</button>
+                <button onclick="arrestPlayer(2)" class="btn-danger">Häktad (Polis)</button>
+                <button onclick="openPayModal(2)" class="btn-pay">Skicka pengar ➔</button>
+            </div>
+        </div>
+
+        <div class="overlay" id="event-overlay"><div class="popup"><div class="popup-dice-badge" id="event-dice-badge"></div><div class="popup-title" id="event-title"></div><div class="popup-desc" id="event-desc"></div><button class="popup-btn" onclick="closePopup()">Uppfattat</button></div></div>
+        
+        <div class="overlay" id="pay-overlay"><div class="popup" style="border-color:#ecc94b;"><div class="popup-title" style="color:#ecc94b;" id="pay-title">Skicka pengar</div><div class="pay-grid"><div><label for="pay-target">Mottagare</label><select id="pay-target"></select></div><div><label for="pay-amount">Belopp ($)</label><input type="number" id="pay-amount" value="10" min="1"></div></div><div style="display:flex; gap:10px;"><button onclick="executePayment()" class="btn-success" style="padding:10px; width:50%;">Bekräfta</button><button onclick="closePayModal()" style="background:#1a1a1a; padding:10px; width:50%;">Avbryt</button></div></div></div>
+
+        <div class="overlay" id="police-overlay"><div class="popup" style="border-color:#e53e3e;"><div class="popup-title" style="color:#e53e3e;">Vem gjorde gripandet?</div><p style="font-size:13px; color:#a0aec0; margin-bottom:10px;">Smuggelpengarna på fickan tillfaller den polisens gängbank.</p><div class="police-selector-grid" id="police-targets"></div><button onclick="closePoliceModal()" style="background:#1a1a1a; padding:10px; width:100%; margin-top:10px;">Avbryt</button></div></div>
+
+        <div class="overlay" id="rules-overlay">
+            <div class="popup popup-large">
+                <h1 style="color:#2b6cb0; text-align:center; font-size:26px; letter-spacing:2px; margin-bottom:5px;">THE NOIR SYNDICATE</h1>
+                <p style="text-align:center; color:#666; font-style:italic; margin-bottom:20px;">Officiellt Spelkoncept - Fyra fristående gäng (Alla mot alla)</p>
+                
+                <h2>🕵️‍♂️ Översikt & Handling</h2>
+                <p>Fyra rivaliserande syndikat kämpar om makten på gatorna. Din uppgift som gängledare är att smuggla kapital från din Boss (Kungarna) och säkra pengarna i ditt högkvarter (Essen) – allt medan polisen (Knektarna) patrullerar i skuggorna.</p>
+                
+                <h2>🗺️ Spelplanens Layout (48 Kort)</h2>
+                <p style="margin-bottom: 15px;">Blanda kortleken och placera ut korten dolda (upp och ner) på bordet enligt schemat nedan. Essen, Kungarna och Knektarna har fasta startpositioner:</p>
+
+                <div style="text-align: center; margin: 20px 0;">
+                    <img src="setup.PNG" alt="Spelplanens utplacering" style="max-width: 100%; height: auto; border-radius: 6px; border: 1px solid #262626; box-shadow: 0 10px 30px rgba(0,0,0,0.6);">
+                </div>
+
+                <ul>
+                    <li><strong>Hörnen (Essen):</strong> Respektive gängs egna Huvudkvarter/Safe House.</li>
+                    <li><strong>Diagonalt innanför (Kungarna):</strong> Bossen (håller ditt gängs unika kassavalv).</li>
+                    <li><strong>Mitten (Knektarna):</strong> Polisen startar i mitten, men rör sig ut på spelplanen under spelets gång.</li>
+                    <li><strong>Övriga kort (2-10 och Damer):</strong> Blandas och läggs dolda (upp och ner).</li>
+                </ul>
+
+                <h2>🎨 Kortlekens Sviter & Rivalitet (4 Lag)</h2>
+                <p>Spelet har fyra unika gäng baserade på kortlekens sviter:</p>
+                <ul>
+                    <li><strong>♠ Nightspades</strong> (Svart färg/svit)</li>
+                    <li><strong>♣ Iron Clovers</strong> (Svart färg/svit)</li>
+                    <li><strong>♥ Crimson Hearts</strong> (Röd färg/svit)</li>
+                    <li><strong>♦ Diamond Syndicate</strong> (Röd färg/svit)</li>
+                    <li><strong>Betalningsregel:</strong> När du landar på ett uppvänt kort som matchar din <em>egen</em> gängfärg/svit är det helt gratis. Landar du däremot på ett kort som tillhör något av de andra tre rivaliserande gängen, måste du omedelbart betala kortets värde (t.ex. en 5:a = $5) till den aktuella spelaren via appen.</li>
+                    <li><strong>Damerna (Barerna):</strong> Alla gäng går in gratis på Damerna, men man tvingas <strong>stå över nästa omgång</strong>.</li>
+                </ul>
+
+                <h2>🎲 Rörelseregler</h2>
+                <ul>
+                    <li>Man slår tärningen på iPaden och flyttar det exakta antalet steg (endast horisontellt och vertikalt, <strong>inga diagonala steg</strong>).</li>
+                    <li>Du får inte gå tillbaka till samma ruta under samma drag.</li>
+                    <li>När du landar på ditt dolda kort vänds det upp permanent.</li>
+                </ul>
+
+                <h2>🚨 Polisen (Knektarna) & Fängelset</h2>
+                <p>När händelsekort aktiveras rör sig stadens poliser (Knektarna) ut i rutnätet:</p>
+                <ul>
+                    <li><strong>Ockupation:</strong> När en Knekt flyttar in på planen placeras den fysiskt ovanpå det kort den landar på och <strong>ersätter kortets funktion helt</strong> så länge den står kvar.</li>
+                    <li><strong>Frizon / Fälla:</strong> Att landa på sin <em>egen</em> gängknekt är helt säkert och fungerar som ett <strong>gratisställe</strong>. Om du däremot landar på (eller blir träffad av) en <em>motståndares</em> Knekt blir du omedelbart gripen!</li>
+                    <li><strong>Straff vid gripande:</strong> Du blir av med alla insamlade smuggelpengar på fickan (allt över startkapitalet $20). Dessa pengar beslagtas och <strong>tillfaller direkt gängbanken hos den spelare vars polis utförde gripandet</strong>. Din pjäs flyttas sedan till den motståndarens Boss-ruta (Fängelset). Slå 4+ för att bryta dig ut vid nästa tur.</li>
+                </ul>
+
+                <h2>💰 Ekonomi & Seger</h2>
+                <ul>
+                    <li><strong>Startkapital:</strong> Varje spelare har $20 på fickan och $300 i sin Bank (hos sin Boss).</li>
+                    <li><strong>Smuggling:</strong> När du besöker din Boss plockar du ut $100 till fickan. Ditt mål är att ta dig till ditt eget Ess och trycka på "Säkra Ess".</li>
+                    <li><strong>Konkurs:</strong> Om dina fickpengar tar slut på grund av motståndaravgifter går du i personlig konkurs. Du nollställs omedelbart till $20 och flyttas direkt tillbaka till ditt eget Ess (Huvudkvarter).</li>
+                    <li><strong>Vinst:</strong> Först till <strong>$200 säkrade i sitt Ess</strong> vinner spelet!</li>
+                </ul>
+
+                <button class="popup-btn" onclick="closeRulesModal()" style="margin-top:15px;">Tillbaka till spelet</button>
+            </div>
+        </div>
+    </div> <script>
         let players = {
             1: { name: "Nightspades (♠)", bank: 300, pocket: 20, secured: 0 },
             2: { name: "Crimson Hearts (♥)", bank: 300, pocket: 20, secured: 0 },
