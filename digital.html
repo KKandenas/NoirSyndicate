@@ -53,6 +53,7 @@
             cursor: pointer; text-transform: uppercase; letter-spacing: 1px;
         }
         button:active { transform: scale(0.98); }
+        button:disabled { background: #222 !important; color: #555 !important; cursor: not-allowed; border: 1px solid #333; }
         .btn-secondary { background: #222; border: 1px solid #333; color: #aaa; }
         .btn-success { background: #15803d; }
         .btn-action { background: #b45309; margin-top: 5px; }
@@ -119,7 +120,6 @@
 
         .tile-title { text-transform: uppercase; font-size: 7.5px; letter-spacing: 0.3px; text-align: center; line-height: 1.1; z-index: 2; }
         
-        /* REJÄLT STÖRRE DOLDA MARKERINGAR */
         .secret-overlay {
             position: absolute;
             top: 2px; left: 2px; right: 2px; bottom: 2px;
@@ -137,7 +137,6 @@
         .overlay-stash { background: rgba(22, 163, 74, 0.4); border: 2px solid #16a34a; color: #ddd; }
         .overlay-text { font-size: 8px; text-transform: uppercase; margin-top: 1px; opacity: 0.9; }
 
-        /* MYCKET STÖRRE MARKÖRER MED SYMBOLER */
         .presence-container { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; width: 100%; z-index: 3; }
         
         .player-token {
@@ -157,11 +156,10 @@
         }
         .token-symbol { font-size: 9px; margin-bottom: -1px; }
 
-        /* Färgteman för gängen */
-        .token-spades { background: #2563eb; border-color: #60a5fa; }   /* Blå Spader */
-        .token-hearts { background: #dc2626; border-color: #fca5a5; }   /* Röd Hjärter */
-        .token-clovers { background: #16a34a; border-color: #4ade80; }  /* Grön Klöver */
-        .token-diamonds { background: #d97706; border-color: #fcd34d; } /* Gul/Orange Ruter */
+        .token-spades { background: #2563eb; border-color: #60a5fa; }
+        .token-hearts { background: #dc2626; border-color: #fca5a5; }
+        .token-clovers { background: #16a34a; border-color: #4ade80; }
+        .token-diamonds { background: #d97706; border-color: #fcd34d; }
 
         .zoom-controls { display: flex; gap: 10px; justify-content: center; }
         .zoom-controls button { width: 60px; padding: 5px; font-size: 12px; }
@@ -181,6 +179,11 @@
         .hud-item { background: #1f1f1f; padding: 4px 6px; border-radius: 4px; border-left: 3px solid #555; }
         .hud-cash { border-left-color: #16a34a; }
         .hud-booze { border-left-color: #7c3aed; }
+        .turn-indicator {
+            background: #2b1d0c; border: 1px solid #b45309; color: #f59e0b;
+            text-align: center; padding: 6px; font-weight: bold; font-size: 12px; border-radius: 6px;
+        }
+        .turn-active { background: #14532d; border-color: #22c55e; color: #22c55e; animation: pulse 1.5s infinite; }
 
         /* CONTROLS AREA */
         .control-panel {
@@ -234,6 +237,9 @@
         let myPlayerId = null;
         let isLeader = false;
         let currentZoom = 0.68;
+        let globalPlayersList = {}; // Håller koll på alla i rummet
+
+        const MAX_BOOZE = 3; // Max bärkapacitet sprit
 
         const allSyndicates = [
             { id: "spades", name: "♠ Nightspades", startX: 0, startY: 0 },
@@ -291,9 +297,9 @@
             myPlayerId = "player_" + Date.now();
             isLeader = true;
 
-            set(ref(db, 'rooms/' + code), { status: "lobby", createdAt: Date.now() }).then(() => {
+            set(ref(db, 'rooms/' + code), { status: "lobby", currentTurn: myPlayerId, createdAt: Date.now() }).then(() => {
                 set(ref(db, `rooms/${code}/players/${myPlayerId}`), {
-                    name: "Boss", syndicate: "♠ Nightspades", x: 0, y: 0, booze: 0, cash: 0, bank: 0, isLeader: true
+                    name: "Boss", syndicate: "♠ Nightspades", x: 0, y: 0, booze: 0, cash: 0, bank: 0, ap: 3, isLeader: true
                 });
                 document.getElementById("display-code").innerText = code;
                 document.getElementById("start-game-btn").style.display = "block";
@@ -310,28 +316,19 @@
 
             if (!codeInput || !nameInput) return alert("Fyll i ditt namn och rumskod!");
 
-            // Hämta rummet för att kolla vilka gäng som är upptagna
             get(ref(db, `rooms/${codeInput}`)).then((snapshot) => {
                 if (!snapshot.exists()) return alert("Rummet finns inte!");
 
                 const roomData = snapshot.val();
                 const occupiedSyndicates = [];
-                
                 if (roomData.players) {
                     for (let pId in roomData.players) {
                         occupiedSyndicates.push(roomData.players[pId].syndicate);
                     }
                 }
 
-                // Filtrera fram helt lediga gäng
                 let available = allSyndicates.filter(s => !occupiedSyndicates.includes(s.name));
-                
-                // Om alla 4 är upptagna (fler än 4 spelare), tillåt dubbletter
-                if (available.length === 0) {
-                    available = allSyndicates;
-                }
-
-                // Slumpa ett av de lediga gängen
+                if (available.length === 0) available = allSyndicates;
                 const chosenSyndicate = available[Math.floor(Math.random() * available.length)];
 
                 currentRoomCode = codeInput;
@@ -339,14 +336,8 @@
                 isLeader = false;
 
                 set(ref(db, `rooms/${codeInput}/players/${myPlayerId}`), {
-                    name: nameInput,
-                    syndicate: chosenSyndicate.name,
-                    x: chosenSyndicate.startX,
-                    y: chosenSyndicate.startY,
-                    booze: 0,
-                    cash: 0,
-                    bank: 0,
-                    isLeader: false
+                    name: nameInput, syndicate: chosenSyndicate.name, x: chosenSyndicate.startX, y: chosenSyndicate.startY,
+                    booze: 0, cash: 0, bank: 0, ap: 3, isLeader: false
                 });
 
                 document.getElementById("display-code").innerText = codeInput;
@@ -361,14 +352,14 @@
                 const data = snapshot.val();
                 if (!data) return;
 
+                globalPlayersList = data.players || {};
+
                 const listEl = document.getElementById("player-list-box");
                 if (listEl) {
                     listEl.innerHTML = "";
-                    if (data.players) {
-                        for (let id in data.players) {
-                            const p = data.players[id];
-                            listEl.innerHTML += `<div class="player-item"><span>👤 ${p.name}</span><span style="color:#ecc94b;">${p.syndicate}</span></div>`;
-                        }
+                    for (let id in globalPlayersList) {
+                        const p = globalPlayersList[id];
+                        listEl.innerHTML += `<div class="player-item"><span>👤 ${p.name}</span><span style="color:#ecc94b;">${p.syndicate}</span></div>`;
                     }
                 }
 
@@ -377,43 +368,97 @@
                     renderCityMap(data.players, data.secrets);
                     
                     const me = data.players[myPlayerId];
+                    const activeTurnId = data.currentTurn;
+                    
                     if (me) {
+                        const isMyTurn = (activeTurnId === myPlayerId);
+                        
+                        // Uppdatera HUD
                         document.getElementById("hud-gang").innerText = me.syndicate;
-                        document.getElementById("hud-booze").innerText = `📦 Sprit: ${me.booze} st`;
+                        document.getElementById("hud-booze").innerText = `📦 Sprit: ${me.booze}/${MAX_BOOZE}`;
                         document.getElementById("hud-cash").innerText = `💵 Fickan: $${me.cash}`;
                         document.getElementById("hud-bank").innerText = `🏦 Säkrat: $${me.bank}`;
+                        
+                        const turnIndicator = document.getElementById("turn-indicator");
+                        if (isMyTurn) {
+                            turnIndicator.innerText = `DIN TUR! Du har ${me.ap} AP kvar`;
+                            turnIndicator.className = "turn-indicator turn-active";
+                            toggleControls(true);
+                        } else {
+                            const activePlayerName = globalPlayersList[activeTurnId] ? globalPlayersList[activeTurnId].name : "Någon";
+                            turnIndicator.innerText = `Väntar på ${activePlayerName}...`;
+                            turnIndicator.className = "turn-indicator";
+                            toggleControls(false);
+                        }
 
+                        // HANTERA UTVALDA AKTIONER
                         const actionBtn = document.getElementById("action-btn");
-                        if (me.x === 2 && me.y === 0) {
+                        
+                        // Kontrollera om det finns någon annan spelare på samma ruta för att RÅNA/SÖKA
+                        let opponentOnTile = false;
+                        for (let pId in data.players) {
+                            if (pId !== myPlayerId && data.players[pId].x === me.x && data.players[pId].y === me.y) {
+                                opponentOnTile = true;
+                                break;
+                            }
+                        }
+
+                        if (isMyTurn && me.x === 2 && me.y === 0) {
                             actionBtn.style.display = "block";
-                            actionBtn.innerText = "⚓ Hämta gratis Sprit";
+                            actionBtn.innerText = "⚓ Hämta gratis Sprit (1 AP)";
+                            actionBtn.onclick = () => triggerTileAction();
+                        } else if (isMyTurn && opponentOnTile) {
+                            actionBtn.style.display = "block";
+                            actionBtn.innerText = "🔎💰 Sök / Råna ruta (1 AP)";
+                            actionBtn.onclick = () => searchAndRobAction(me.x, me.y);
                         } else {
                             actionBtn.style.display = "none";
                         }
 
+                        // AUTOMATISKT SÄLJA/GÖMMA
                         if (data.secrets && data.secrets[myPlayerId]) {
                             const mySec = data.secrets[myPlayerId];
-                            
                             if (me.x === mySec.club.x && me.y === mySec.club.y && me.booze > 0) {
                                 let cashEarned = me.booze * 500;
                                 alert(`🍸 Välkommen till din Svartklubb! Du sålde ${me.booze} st spritflaskor och fick $${cashEarned}!`);
-                                update(ref(db, `rooms/${currentRoomCode}/players/${myPlayerId}`), {
-                                    booze: 0,
-                                    cash: me.cash + cashEarned
-                                });
+                                update(ref(db, `rooms/${currentRoomCode}/players/${myPlayerId}`), { booze: 0, cash: me.cash + cashEarned });
                             }
-
                             if (me.x === mySec.stash.x && me.y === mySec.stash.y && me.cash > 0) {
                                 alert(`💰 Gömma besökt! Du tryggade $${me.cash} i väggen.`);
-                                update(ref(db, `rooms/${currentRoomCode}/players/${myPlayerId}`), {
-                                    cash: 0,
-                                    bank: me.bank + me.cash
-                                });
+                                update(ref(db, `rooms/${currentRoomCode}/players/${myPlayerId}`), { cash: 0, bank: me.bank + me.cash });
                             }
                         }
                     }
                 }
             });
+        }
+
+        function toggleControls(enable) {
+            document.querySelectorAll('.dpad-btn').forEach(btn => btn.disabled = !enable);
+        }
+
+        function useActionPoint(me, callback) {
+            let nextAp = me.ap - 1;
+            if (nextAp <= 0) {
+                // Slut på AP, skicka turen vidare direkt efter uppdateringen
+                callback(0);
+                passTurnToNext();
+            } else {
+                callback(nextAp);
+            }
+        }
+
+        function passTurnToNext() {
+            const playerIds = Object.keys(globalPlayersList);
+            let currentIndex = playerIds.indexOf(myPlayerId);
+            let nextIndex = (currentIndex + 1) % playerIds.length;
+            let nextPlayerId = playerIds[nextIndex];
+
+            // Återställ AP för nästa person i kön till 3 AP
+            const updates = {};
+            updates[`rooms/${currentRoomCode}/currentTurn`] = nextPlayerId;
+            updates[`rooms/${currentRoomCode}/players/${nextPlayerId}/ap`] = 3;
+            update(ref(db), updates);
         }
 
         function renderCityMap(players, secrets) {
@@ -428,18 +473,10 @@
                 if (secrets && secrets[myPlayerId]) {
                     const mySecrets = secrets[myPlayerId];
                     if (mySecrets.club && mySecrets.club.x === tile.x && mySecrets.club.y === tile.y) {
-                        secretHTML = `
-                            <div class="secret-overlay overlay-club">
-                                <span>🍸</span>
-                                <span class="overlay-text">Klubb</span>
-                            </div>`;
+                        secretHTML = `<div class="secret-overlay overlay-club"><span>🍸</span><span class="overlay-text">Klubb</span></div>`;
                     }
                     if (mySecrets.stash && mySecrets.stash.x === tile.x && mySecrets.stash.y === tile.y) {
-                        secretHTML = `
-                            <div class="secret-overlay overlay-stash">
-                                <span>💰</span>
-                                <span class="overlay-text">Gömma</span>
-                            </div>`;
+                        secretHTML = `<div class="secret-overlay overlay-stash"><span>💰</span><span class="overlay-text">Gömma</span></div>`;
                     }
                 }
 
@@ -448,8 +485,7 @@
                     for (let id in players) {
                         const p = players[id];
                         if (p.x === tile.x && p.y === tile.y) {
-                            let tokenClass = "token-spades";
-                            let symbol = "♠";
+                            let tokenClass = "token-spades"; let symbol = "♠";
                             if (p.syndicate.includes("Crimson")) { tokenClass = "token-hearts"; symbol = "♥"; }
                             if (p.syndicate.includes("Clovers")) { tokenClass = "token-clovers"; symbol = "♣"; }
                             if (p.syndicate.includes("Diamond")) { tokenClass = "token-diamonds"; symbol = "♦"; }
@@ -463,11 +499,7 @@
                     }
                 }
 
-                tileDiv.innerHTML = `
-                    <div class="tile-title">${tile.name}</div>
-                    ${secretHTML}
-                    <div class="presence-container">${presenceHTML}</div>
-                `;
+                tileDiv.innerHTML = `<div class="tile-title">${tile.name}</div>${secretHTML}<div class="presence-container">${presenceHTML}</div>`;
                 boardEl.appendChild(tileDiv);
             });
             boardEl.style.transform = `scale(${currentZoom})`;
@@ -493,39 +525,114 @@
         };
 
         window.movePlayer = function(dx, dy) {
-            onValue(ref(db, `rooms/${currentRoomCode}/players/${myPlayerId}`), (snapshot) => {
-                const currentPos = snapshot.val();
-                if (!currentPos) return;
+            onValue(ref(db, `rooms/${currentRoomCode}`), (snapshot) => {
+                const room = snapshot.val();
+                if (room.currentTurn !== myPlayerId) return;
 
-                let newX = Math.max(0, Math.min(4, currentPos.x + dx));
-                let newY = Math.max(0, Math.min(4, currentPos.y + dy));
+                const me = room.players[myPlayerId];
+                let newX = Math.max(0, Math.min(4, me.x + dx));
+                let newY = Math.max(0, Math.min(4, me.y + dy));
 
-                let updatedBooze = currentPos.booze;
+                // Kontrollera om förflyttning faktiskt sker (inte gå in i väggen)
+                if (newX === me.x && newY === me.y) return;
+
+                let updatedBooze = me.booze;
                 if (newX === 2 && newY === 2) {
                     if (updatedBooze > 0) {
-                        alert("🚨 PÅDRAG! Polisen stormade dig vid stationen och beslagtog all din sprit!");
+                        alert("🚨 POLISRAZZIA! Du sprang rakt in på polisstationen. De beslagtog dina " + updatedBooze + " spritflaskor!");
                         updatedBooze = 0;
                     } else {
-                        alert("🚨 Du smyger nervöst förbi Polisstationen... Inget olagligt på dig denna gång.");
+                        alert("🚨 Du smyger nervöst förbi Polisstationen... Inget olagligt på dig.");
                     }
                 }
 
-                update(ref(db, `rooms/${currentRoomCode}/players/${myPlayerId}`), {
-                    x: newX, y: newY, booze: updatedBooze
+                useActionPoint(me, (nextAp) => {
+                    update(ref(db, `rooms/${currentRoomCode}/players/${myPlayerId}`), {
+                        x: newX, y: newY, booze: updatedBooze, ap: nextAp
+                    });
                 });
             }, { onlyOnce: true });
         };
 
+        // HÄMTA SPRIT (HAMNEN)
         window.triggerTileAction = function() {
             onValue(ref(db, `rooms/${currentRoomCode}/players/${myPlayerId}`), (snapshot) => {
                 const me = snapshot.val();
-                if (me.x === 2 && me.y === 0) {
-                    update(ref(db, `rooms/${currentRoomCode}/players/${myPlayerId}`), {
-                        booze: me.booze + 1
-                    });
+                if (me.booze >= MAX_BOOZE) {
+                    alert(`📦 Du kan inte bära mer än ${MAX_BOOZE} flaskor sprit samtidigt!`);
+                    return;
                 }
+
+                useActionPoint(me, (nextAp) => {
+                    update(ref(db, `rooms/${currentRoomCode}/players/${myPlayerId}`), {
+                        booze: me.booze + 1, ap: nextAp
+                    });
+                });
             }, { onlyOnce: true });
         };
+
+        // SÖK / RÅNA AKTION
+        function searchAndRobAction(tileX, tileY) {
+            get(ref(db, `rooms/${currentRoomCode}`)).then((snapshot) => {
+                const room = snapshot.val();
+                const me = room.players[myPlayerId];
+                const secrets = room.secrets || {};
+                const players = room.players;
+
+                let actionReport = "";
+                const updates = {};
+
+                // 1. Sök efter motståndarklubbar på rutan
+                for (let targetId in players) {
+                    if (targetId !== myPlayerId) {
+                        const targetSecret = secrets[targetId];
+                        if (targetSecret && targetSecret.club && targetSecret.club.x === tileX && targetSecret.club.y === tileY) {
+                            
+                            // Hittat klubb! Polisen slår till
+                            actionReport += `🔥 RAZZIA! Du hittade ${players[targetId].name}s hemliga svartklubb på rutan! Polisen stormar stället. De förlorar all sin sprit, och klubben tvingas flytta till en ny hemlig plats!\n`;
+                            
+                            // Nolla deras sprit
+                            updates[`rooms/${currentRoomCode}/players/${targetId}/booze`] = 0;
+                            
+                            // Slumpa ny position till deras klubb
+                            const getRandomStreetTile = () => {
+                                const validTiles = cityMapData.filter(t => t.type.includes("street") && !(t.x === 2 && t.y === 0) && !(t.x === 2 && t.y === 2));
+                                return validTiles[Math.floor(Math.random() * validTiles.length)];
+                            };
+                            let newClub = getRandomStreetTile();
+                            updates[`rooms/${currentRoomCode}/secrets/${targetId}/club`] = { x: newClub.x, y: newClub.y };
+                        }
+                    }
+                }
+
+                // 2. Råna folk på rutan (halva deras Cash)
+                let totalStolenCash = 0;
+                for (let targetId in players) {
+                    if (targetId !== myPlayerId && players[targetId].x === tileX && players[targetId].y === tileY) {
+                        const victimCash = players[targetId].cash || 0;
+                        if (victimCash > 0) {
+                            let stolen = Math.floor(victimCash / 2);
+                            totalStolenCash += stolen;
+                            updates[`rooms/${currentRoomCode}/players/${targetId}/cash`] = victimCash - stolen;
+                            actionReport += `💰 RÅN! Du spänner ögonen i ${players[targetId].name} och rånar dem på $${stolen}!\n`;
+                        }
+                    }
+                }
+
+                if (actionReport === "") {
+                    actionReport = "🔎 Du söker igenom gränden och kollar efter misstänkta affärer, men hittar ingenting av värde här.";
+                }
+
+                alert(actionReport);
+
+                // Dra AP och spara
+                useActionPoint(me, (nextAp) => {
+                    updates[`rooms/${currentRoomCode}/players/${myPlayerId}/cash`] = me.cash + totalStolenCash;
+                    updates[`rooms/${currentRoomCode}/players/${myPlayerId}/ap`] = nextAp;
+                    update(ref(db), updates);
+                });
+            });
+        }
 
         window.onGoBack = function() { showScreen("start-screen"); };
         showScreen("start-screen");
@@ -560,10 +667,13 @@
 
         <!-- SPELSKÄRM -->
         <div class="screen" id="game-screen">
+            <!-- TUR-INDIKATOR -->
+            <div id="turn-indicator" class="turn-indicator">Laddar turen...</div>
+
             <!-- HUD -->
             <div class="hud-grid">
                 <div class="hud-item" style="border-left-color: #ecc94b; font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><span id="hud-gang">...</span></div>
-                <div class="hud-item hud-booze" id="hud-booze">📦 Sprit: 0</div>
+                <div class="hud-item hud-booze" id="hud-booze">📦 Sprit: 0/3</div>
                 <div class="hud-item hud-cash" id="hud-cash">💵 Fickan: $0</div>
             </div>
             <div class="hud-grid" style="margin-top: -7px;">
@@ -589,7 +699,7 @@
                 </div>
                 
                 <div class="action-container">
-                    <button id="action-btn" onclick="triggerTileAction()" class="btn-action" style="display:none;">Agera</button>
+                    <button id="action-btn" class="btn-action" style="display:none;">Agera</button>
                 </div>
             </div>
         </div>
