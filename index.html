@@ -447,6 +447,7 @@
     <div class="background-container"></div>
     <div class="overlay-container"></div>
 
+    <!-- LIVE LANGUAGE SELECTOR ON BOARD -->
     <div class="live-lang-selector">
         <button class="btn-lang active" id="live-lang-sv" onclick="setLanguage('sv')">SV</button>
         <button class="btn-lang" id="live-lang-en" onclick="setLanguage('en')">EN</button>
@@ -456,6 +457,7 @@
         <div class="welcome-title">THE NOIR SYNDICATE</div>
         <div class="welcome-subtitle">Control Room</div>
         <div class="welcome-card">
+            <!-- Language toggle on welcome screen -->
             <div class="lang-toggle-container">
                 <button class="btn-lang active" id="welcome-lang-sv" onclick="setLanguage('sv')">Svenska</button>
                 <button class="btn-lang" id="welcome-lang-en" onclick="setLanguage('en')">English</button>
@@ -522,7 +524,7 @@
             </div>
             <div style="display:flex; gap:8px; width: 100%; max-width: 240px; justify-content: center; flex-wrap: wrap;">
                 <button onclick="openRulesModal()" style="font-size:11px; padding:6px 12px; background:rgba(0,0,0,0.6);" data-key="btn-rules">📜 Regler</button>
-                <button onclick="openAdjustModal()" style="font-size:11px; padding:6px 12px; background:rgba(0,0,0,0.6); color:#ecc94b;" data-key="btn-adjust">🛠️ Justera</button>
+                <button onclick="openAdjustModal()" style="font-size:11px; padding:6px 12px; background:rgba(0,0,0,0.6); color:#666;" data-key="btn-adjust">🛠️ Justera</button>
                 <button onclick="resetGame()" style="font-size:11px; padding:6px 12px; background:rgba(0,0,0,0.6); color:#666;" data-key="btn-reset">Reset</button>
             </div>
         </div>
@@ -576,10 +578,10 @@
     <div class="overlay" id="event-overlay">
         <div class="popup">
             <div class="popup-dice-badge" id="event-dice-badge"></div>
-            <div class="order-notice" data-key="event-notice">⚠️ Utför händelsen först — flytta pjäsen sen!</div>
+            <div class="order-notice" id="event-notice-banner" data-key="event-notice">⚠️ Utför händelsen först — flytta pjäsen sen!</div>
             <div class="popup-title" id="event-title"></div>
             <div class="popup-desc" id="event-desc"></div>
-            <button class="popup-btn" onclick="closePopup()" data-key="btn-ok">Uppfattat</button>
+            <button class="popup-btn" onclick="closePopup()" id="event-ok-btn" data-key="btn-ok">Uppfattat</button>
         </div>
     </div>
  
@@ -637,6 +639,7 @@
         </div>
     </div>
 
+    <!-- VALUE ADJUSTMENT MODAL -->
     <div class="overlay" id="adjust-overlay">
         <div class="popup" style="border-color:#ecc94b; max-width: 400px;">
             <div class="popup-title" style="color:#ecc94b;" data-key="mod-title">Justera spelarvärden</div>
@@ -648,15 +651,15 @@
             </div>
             <div class="pay-grid" style="grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px;">
                 <div>
-                    <label for="mod-bank" data-key="stat-bank">🏦 Bank</label>
+                    <label for="mod-bank" id="lbl-mod-bank">🏦 Bank</label>
                     <input type="number" id="mod-bank" value="300">
                 </div>
                 <div>
-                    <label for="mod-pocket" data-key="stat-pocket">💼 Fickan</label>
+                    <label for="mod-pocket" id="lbl-mod-pocket">💼 Fickan</label>
                     <input type="number" id="mod-pocket" value="20">
                 </div>
                 <div>
-                    <label for="mod-secured" data-key="stat-secured">🔒 Säkrat</label>
+                    <label for="mod-secured" id="lbl-mod-secured">🔒 Säkrat</label>
                     <input type="number" id="mod-secured" value="0">
                 </div>
             </div>
@@ -669,12 +672,13 @@
 
     <div class="overlay" id="rules-overlay">
         <div class="popup popup-large" id="rules-content-area">
-            </div>
+            <!-- Dynamically populated rules -->
+        </div>
     </div>
 
     <script>
         let currentLang = 'sv';
-        let currentDiceResult = null; // Sparar senaste slaget vid språkbyte
+        let currentDiceResult = null;
 
         const i18n = {
             sv: {
@@ -723,7 +727,7 @@
                 alertReset: "Nollställa spelet?",
                 fightChallenge: "🥊 Utmana ",
                 payPayer: " betalar",
-                fightLogDrawBankrupt: "OAVGJORT! But attacker {loser} har inte råd att betala skadan. KONKURS! Flyttas till sitt Ess med $20 i fickan.",
+                fightLogDrawBankrupt: "OAVGJORT! Men anfallaren {loser} har inte råd att betala skadan. KONKURS! Flyttas till sitt Ess med $20 i fickan.",
                 fightLogWinnerBankrupt: "VINNARE: {winner}! Förloraren {loser} har inte råd att betala. KONKURS! Flyttas till sitt Ess med $20 i fickan.",
                 fightLogDraw: "OAVGJORT! {winner} försvarade rutan! Tar $10 och skickar bort anfallaren.",
                 fightLogWinner: "VINNARE: {winner}! Tar $10 från förloraren som flyttas till valfritt Ess/Kung.",
@@ -845,7 +849,7 @@
             document.getElementById('live-lang-sv').classList.toggle('active', lang === 'sv');
             document.getElementById('live-lang-en').classList.toggle('active', lang === 'en');
            
-            // Translate static nodes
+            // Translate all elements with data-key
             document.querySelectorAll('[data-key]').forEach(el => {
                 const key = el.getAttribute('data-key');
                 if (i18n[lang][key]) el.innerText = i18n[lang][key];
@@ -855,6 +859,11 @@
             for (let id in gangNames) {
                 document.getElementById(`p${id}-gang-title`).innerText = gangNames[id][lang];
             }
+
+            // Sync structural labels inside adjusting module
+            document.getElementById('lbl-mod-bank').innerText = i18n[lang].statBank;
+            document.getElementById('lbl-mod-pocket').innerText = i18n[lang].statPocket;
+            document.getElementById('lbl-mod-secured').innerText = i18n[lang].statSecured;
 
             // Update Dice Label immediately
             const label = document.getElementById("dice-label");
@@ -866,7 +875,7 @@
                 }
             }
 
-            // Welcome texts specifically
+            // Welcome screen translations
             document.getElementById('welcome-prompt').innerText = i18n[lang].welcomePrompt;
             document.getElementById('btn-mode-ipad').innerText = i18n[lang].modeIpad;
             document.getElementById('btn-mode-iphone').innerText = i18n[lang].modeIphone;
@@ -1217,10 +1226,10 @@
                 area.innerHTML = `
                     <h1 style="color:#2b6cb0; text-align:center; margin-bottom:15px; letter-spacing: 2px;">THE NOIR SYNDICATE — REGLER</h1>
                     <h2>Spelplan & Setup (Kortlayout)</h2>
-                    <p>Bygg upp spelplanen på bordet med vanliga spelkort enligt bilden nedan. Om bilden saknas, kom ihåg grundmönstret: Ess i hörnen, Kungar på kanterna, gator där emellan och samtliga Knekter (poliser) startande på polisstationen i absolut centrum. Varje spelare placerar sin droska/markör på seu sitt Ess.</p>
+                    <p>Bygg upp spelplanen på bordet med vanliga spelkort enligt bilden nedan. Om bilden saknas, kom ihåg grundmönstret: Ess i hörnen, Kungar på kanterna, gator där emellan och samtliga Knekter (poliser) startande på polisstationen i absolut centrum. Varje spelare placerar sin droska/markör på sitt Ess.</p>
                     <div class="setup-image-container"><img src="setup.PNG" alt="Setup"></div>
                     <h2>Spelidét & Mål</h2>
-                    <p>Du leder ett brottssyndikat. Ditt mål är att hämta laster med svantar pengar ($100 i taget) från din <strong>Boss (Kung)</strong>, smuggla dem genom stadens farliga gator i <strong>Fickan</strong> och säkra dem på ditt <strong>Högkvarter (Ess)</strong>. Den förste spelaren som har lyckats <strong>Säkra $200</strong> på sitt Ess vinner spelet.</p>
+                    <p>Du leder ett brottssyndikat. Ditt mål är att hämta laster med svanta pengar ($100 i taget) från din <strong>Boss (Kung)</strong>, smuggla dem genom stadens farliga gator i <strong>Fickan</strong> och säkra dem på ditt <strong>Högkvarter (Ess)</strong>. Den förste spelaren som har lyckats <strong>Säkra $200</strong> på sitt Ess vinner spelet.</p>
                     <h2>Turens Gång</h2>
                     <ul>
                         <li><strong>Slå tärningen:</strong> Klicka på tärningen i mitten. Den visar hur många steg du får flytta din droska (framåt/sidled – ej diagonalt eller bakåt). Du måste flytta exakt det antal steg tärningen visar.</li>
