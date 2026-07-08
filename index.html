@@ -444,63 +444,84 @@
 
     <div class="welcome-screen" id="welcome-screen">
         <div class="welcome-title">THE NOIR SYNDICATE</div>
-        <div class="welcome-subtitle" id="welcome-subtitle">Kontrollrum</div>
+        <div class="welcome-subtitle" id="welcome-subtitle" data-key="welcomeSubtitle">Kontrollrum</div>
         <div class="welcome-card">
             <div class="lang-toggle-container">
                 <button class="btn-lang active" id="welcome-lang-sv" onclick="setLanguage('sv')">Svenska</button>
                 <button class="btn-lang" id="welcome-lang-en" onclick="setLanguage('en')">English</button>
             </div>
-            <p style="font-size:13px; color:#aaa; margin-bottom:15px;" id="welcome-prompt">Välj vilken enhet du vill spela på ikväll:</p>
+            <p style="font-size:13px; color:#aaa; margin-bottom:15px;" id="welcome-prompt" data-key="welcomePrompt">Välj vilken enhet du vill spela på ikväll:</p>
             <div class="device-selector">
-                <button class="btn-device" id="btn-mode-ipad" onclick="startGame('ipad')">💻 iPad (Liggande Bräde)</button>
-                <button class="btn-device" id="btn-mode-iphone" onclick="startGame('iphone')">📱 iPhone (Stående Flikar)</button>
+                <button class="btn-device" id="btn-mode-ipad" onclick="startGame('ipad')" data-key="modeIpad">💻 iPad (Liggande Bräde)</button>
+                <button class="btn-device" id="btn-mode-iphone" onclick="startGame('iphone')" data-key="modeIphone">📱 iPhone (Stående Flikar)</button>
             </div>
         </div>
     </div>
 
     <div class="game-container">
      
+        <!-- Spelare 1: Spader -->
         <div class="player-corner active-tab" id="p1">
             <div class="gang-header">
                 <div class="gang-title" id="p1-gang-title">♠ Nightspades</div>
-                <div class="deck-suit suit-black" data-key="suit-spades">Spader</div>
+                <div class="deck-suit suit-black" data-key="suitSpades">Spader</div>
             </div>
             <div class="stats-grid">
-                <div class="stat-box"><div class="stat-label" data-key="stat-bank">🏦 Bank</div><div class="stat-value" id="p1-bank">$300</div></div>
-                <div class="stat-box pocket-box"><div class="stat-label" data-key="stat-pocket">💼 Fickan</div><div class="stat-value" id="p1-pocket">$20</div></div>
-                <div class="stat-box"><div class="stat-label" data-key="stat-secured">🔒 Säkrat</div><div class="stat-value" id="p1-secured" style="color:var(--spades-color)">$0</div></div>
+                <div class="stat-box">
+                    <div class="stat-label" data-key="statBank">🏦 Bank</div>
+                    <div class="stat-value" id="p1-bank">$300</div>
+                </div>
+                <div class="stat-box pocket-box">
+                    <div class="stat-label" data-key="statPocket">💼 Fickan</div>
+                    <div class="stat-value" id="p1-pocket">$20</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label" data-key="statSecured">🔒 Säkrat</div>
+                    <div class="stat-value" id="p1-secured" style="color:var(--spades-color)">$0</div>
+                </div>
             </div>
             <div class="gang-actions">
-                <button onclick="takeLoad(1)" class="btn-success" data-key="act-load">💰 Hämta $100</button>
-                <button onclick="secureCash(1)" class="btn-secure" data-key="act-secure">👑 Säkra Ess</button>
-                <button onclick="arrestPlayer(1)" class="btn-danger" data-key="act-arrest">🚨 Haffad</button>
-                <button onclick="openFightModal(1)" class="btn-fight" data-key="act-fight">💥 Slagsmål</button>
-                <button onclick="openPayModal(1)" class="btn-pay" data-key="act-pay">💸 Överför pengar ➔</button>
+                <button onclick="takeLoad(1)" class="btn-success">💰 <span data-key="actLoad">Hämta $100</span></button>
+                <button onclick="secureCash(1)" class="btn-secure">👑 <span data-key="actSecure">Säkra Ess</span></button>
+                <button onclick="arrestPlayer(1)" class="btn-danger">🚨 <span data-key="actArrest">Haffad</span></button>
+                <button onclick="openFightModal(1)" class="btn-fight">💥 <span data-key="actFight">Slagsmål</span></button>
+                <button onclick="openPayModal(1)" class="btn-pay">💸 <span data-key="actPay">Överför pengar ➔</span></button>
             </div>
         </div>
 
+        <!-- Spelare 4: Ruter -->
         <div class="player-corner" id="p4">
             <div class="gang-header">
                 <div class="gang-title" id="p4-gang-title">♦ Diamond</div>
-                <div class="deck-suit suit-red" data-key="suit-diamonds">Ruter</div>
+                <div class="deck-suit suit-red" data-key="suitDiamonds">Ruter</div>
             </div>
             <div class="stats-grid">
-                <div class="stat-box"><div class="stat-label" data-key="stat-bank">🏦 Bank</div><div class="stat-value" id="p4-bank">$300</div></div>
-                <div class="stat-box pocket-box"><div class="stat-label" data-key="stat-pocket">💼 Fickan</div><div class="stat-value" id="p4-pocket">$20</div></div>
-                <div class="stat-box"><div class="stat-label" data-key="stat-secured">🔒 Säkrat</div><div class="stat-value" id="p4-secured" style="color:var(--diamonds-color)">$0</div></div>
+                <div class="stat-box">
+                    <div class="stat-label" data-key="statBank">🏦 Bank</div>
+                    <div class="stat-value" id="p4-bank">$300</div>
+                </div>
+                <div class="stat-box pocket-box">
+                    <div class="stat-label" data-key="statPocket">💼 Fickan</div>
+                    <div class="stat-value" id="p4-pocket">$20</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label" data-key="statSecured">🔒 Säkrat</div>
+                    <div class="stat-value" id="p4-secured" style="color:var(--diamonds-color)">$0</div>
+                </div>
             </div>
             <div class="gang-actions">
-                <button onclick="takeLoad(4)" class="btn-success" data-key="act-load">💰 Hämta $100</button>
-                <button onclick="secureCash(4)" class="btn-secure" data-key="act-secure">👑 Säkra Ess</button>
-                <button onclick="arrestPlayer(4)" class="btn-danger" data-key="act-arrest">🚨 Haffad</button>
-                <button onclick="openFightModal(4)" class="btn-fight" data-key="act-fight">💥 Slagsmål</button>
-                <button onclick="openPayModal(4)" class="btn-pay" data-key="act-pay">💸 Överför pengar ➔</button>
+                <button onclick="takeLoad(4)" class="btn-success">💰 <span data-key="actLoad">Hämta $100</span></button>
+                <button onclick="secureCash(4)" class="btn-secure">👑 <span data-key="actSecure">Säkra Ess</span></button>
+                <button onclick="arrestPlayer(4)" class="btn-danger">🚨 <span data-key="actArrest">Haffad</span></button>
+                <button onclick="openFightModal(4)" class="btn-fight">💥 <span data-key="actFight">Slagsmål</span></button>
+                <button onclick="openPayModal(4)" class="btn-pay">💸 <span data-key="actPay">Överför pengar ➔</span></button>
             </div>
         </div>
 
         <div class="side-bar-left">THE NOIR SYNDICATE</div>
         <div class="side-bar-right">BOARD HUB v1.7</div>
 
+        <!-- Mittkonsol / Tärning -->
         <div class="center-console">
             <div class="dice-wrapper">
                 <div id="dice-container" onclick="rollDice()">
@@ -508,107 +529,129 @@
                     <div class="dot" id="d4"></div><div class="dot" id="d5"></div><div class="dot" id="d6"></div>
                     <div class="dot" id="d7"></div><div class="dot" id="d8"></div><div class="dot" id="d9"></div>
                 </div>
-                <div class="dice-label pulse-text" id="dice-label" data-key="dice-click">KLICKA FÖR ATT SLÅ</div>
+                <div class="dice-label pulse-text" id="dice-label" data-key="diceClick">KLICKA FÖR ATT SLÅ</div>
             </div>
             <div style="display:flex; gap:8px; width: 100%; max-width: 240px; justify-content: center; flex-wrap: wrap;">
-                <button onclick="openRulesModal()" style="font-size:11px; padding:6px 12px; background:rgba(0,0,0,0.6);" data-key="btn-rules">📜 Regler</button>
-                <button onclick="openAdjustModal()" style="font-size:11px; padding:6px 12px; background:rgba(0,0,0,0.6); color:#666;" data-key="btn-adjust">🛠️ Justera</button>
-                <button onclick="resetGame()" style="font-size:11px; padding:6px 12px; background:rgba(0,0,0,0.6); color:#666;" data-key="btn-reset">Återställ</button>
+                <button onclick="openRulesModal()" style="font-size:11px; padding:6px 12px; background:rgba(0,0,0,0.6);" data-key="btnRules">📜 Regler</button>
+                <button onclick="openAdjustModal()" style="font-size:11px; padding:6px 12px; background:rgba(0,0,0,0.6); color:#666;" data-key="btnAdjust">🛠️ Justera</button>
+                <button onclick="resetGame()" style="font-size:11px; padding:6px 12px; background:rgba(0,0,0,0.6); color:#666;" data-key="btnReset">Återställ</button>
             </div>
         </div>
 
+        <!-- Spelare 3: Klöver -->
         <div class="player-corner" id="p3">
             <div class="gang-header">
                 <div class="gang-title" id="p3-gang-title">♣ Iron Clovers</div>
-                <div class="deck-suit suit-black" data-key="suit-clovers">Klöver</div>
+                <div class="deck-suit suit-black" data-key="suitClovers">Klöver</div>
             </div>
             <div class="stats-grid">
-                <div class="stat-box"><div class="stat-label" data-key="stat-bank">🏦 Bank</div><div class="stat-value" id="p3-bank">$300</div></div>
-                <div class="stat-box pocket-box"><div class="stat-label" data-key="stat-pocket">💼 Fickan</div><div class="stat-value" id="p3-pocket">$20</div></div>
-                <div class="stat-box"><div class="stat-label" data-key="stat-secured">🔒 Säkrat</div><div class="stat-value" id="p3-secured" style="color:var(--clovers-color)">$0</div></div>
+                <div class="stat-box">
+                    <div class="stat-label" data-key="statBank">🏦 Bank</div>
+                    <div class="stat-value" id="p3-bank">$300</div>
+                </div>
+                <div class="stat-box pocket-box">
+                    <div class="stat-label" data-key="statPocket">💼 Fickan</div>
+                    <div class="stat-value" id="p3-pocket">$20</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label" data-key="statSecured">🔒 Säkrat</div>
+                    <div class="stat-value" id="p3-secured" style="color:var(--clovers-color)">$0</div>
+                </div>
             </div>
             <div class="gang-actions">
-                <button onclick="takeLoad(3)" class="btn-success" data-key="act-load">💰 Hämta $100</button>
-                <button onclick="secureCash(3)" class="btn-secure" data-key="act-secure">👑 Säkra Ess</button>
-                <button onclick="arrestPlayer(3)" class="btn-danger" data-key="act-arrest">🚨 Haffad</button>
-                <button onclick="openFightModal(3)" class="btn-fight" data-key="act-fight">💥 Slagsmål</button>
-                <button onclick="openPayModal(3)" class="btn-pay" data-key="act-pay">💸 Överför pengar ➔</button>
+                <button onclick="takeLoad(3)" class="btn-success">💰 <span data-key="actLoad">Hämta $100</span></button>
+                <button onclick="secureCash(3)" class="btn-secure">👑 <span data-key="actSecure">Säkra Ess</span></button>
+                <button onclick="arrestPlayer(3)" class="btn-danger">🚨 <span data-key="actArrest">Haffad</span></button>
+                <button onclick="openFightModal(3)" class="btn-fight">💥 <span data-key="actFight">Slagsmål</span></button>
+                <button onclick="openPayModal(3)" class="btn-pay">💸 <span data-key="actPay">Överför pengar ➔</span></button>
             </div>
         </div>
 
+        <!-- Spelare 2: Hjärter -->
         <div class="player-corner" id="p2">
             <div class="gang-header">
                 <div class="gang-title" id="p2-gang-title">♥ Crimson</div>
-                <div class="deck-suit suit-red" data-key="suit-hearts">Hjärter</div>
+                <div class="deck-suit suit-red" data-key="suitHearts">Hjärter</div>
             </div>
             <div class="stats-grid">
-                <div class="stat-box"><div class="stat-label" data-key="stat-bank">🏦 Bank</div><div class="stat-value" id="p2-bank">$300</div></div>
-                <div class="stat-box pocket-box"><div class="stat-label" data-key="stat-pocket">💼 Fickan</div><div class="stat-value" id="p2-pocket">$20</div></div>
-                <div class="stat-box"><div class="stat-label" data-key="stat-secured">🔒 Säkrat</div><div class="stat-value" id="p2-secured" style="color:var(--hearts-color)">$0</div></div>
+                <div class="stat-box">
+                    <div class="stat-label" data-key="statBank">🏦 Bank</div>
+                    <div class="stat-value" id="p2-bank">$300</div>
+                </div>
+                <div class="stat-box pocket-box">
+                    <div class="stat-label" data-key="statPocket">💼 Fickan</div>
+                    <div class="stat-value" id="p2-pocket">$20</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label" data-key="statSecured">🔒 Säkrat</div>
+                    <div class="stat-value" id="p2-secured" style="color:var(--hearts-color)">$0</div>
+                </div>
             </div>
             <div class="gang-actions">
-                <button onclick="takeLoad(2)" class="btn-success" data-key="act-load">💰 Hämta $100</button>
-                <button onclick="secureCash(2)" class="btn-secure" data-key="act-secure">👑 Säkra Ess</button>
-                <button onclick="arrestPlayer(2)" class="btn-danger" data-key="act-arrest">🚨 Haffad</button>
-                <button onclick="openFightModal(2)" class="btn-fight" data-key="act-fight">💥 Slagsmål</button>
-                <button onclick="openPayModal(2)" class="btn-pay" data-key="act-pay">💸 Överför pengar ➔</button>
+                <button onclick="takeLoad(2)" class="btn-success">💰 <span data-key="actLoad">Hämta $100</span></button>
+                <button onclick="secureCash(2)" class="btn-secure">👑 <span data-key="actSecure">Säkra Ess</span></button>
+                <button onclick="arrestPlayer(2)" class="btn-danger">🚨 <span data-key="actArrest">Haffad</span></button>
+                <button onclick="openFightModal(2)" class="btn-fight">💥 <span data-key="actFight">Slagsmål</span></button>
+                <button onclick="openPayModal(2)" class="btn-pay">💸 <span data-key="actPay">Överför pengar ➔</span></button>
             </div>
         </div>
     </div>
 
+    <!-- Mobilflikar (iPhone) -->
     <div class="iphone-tabs" id="iphone-tabs">
-        <button class="tab-btn active" data-tab="1" onclick="switchTab(1)"><span id="tab-s1">♠</span><span data-key="suit-spades">Spader</span></button>
-        <button class="tab-btn" data-tab="2" onclick="switchTab(2)"><span id="tab-s2">♥</span><span data-key="suit-hearts">Hjärter</span></button>
-        <button class="tab-btn" data-tab="3" onclick="switchTab(3)"><span id="tab-s3">♣</span><span data-key="suit-clovers">Klöver</span></button>
-        <button class="tab-btn" data-tab="4" onclick="switchTab(4)"><span id="tab-s4">♦</span><span data-key="suit-diamonds">Ruter</span></button>
+        <button class="tab-btn active" data-tab="1" onclick="switchTab(1)"><span id="tab-s1">♠</span><span data-key="suitSpades">Spader</span></button>
+        <button class="tab-btn" data-tab="2" onclick="switchTab(2)"><span id="tab-s2">♥</span><span data-key="suitHearts">Hjärter</span></button>
+        <button class="tab-btn" data-tab="3" onclick="switchTab(3)"><span id="tab-s3">♣</span><span data-key="suitClovers">Klöver</span></button>
+        <button class="tab-btn" data-tab="4" onclick="switchTab(4)"><span id="tab-s4">♦</span><span data-key="suitDiamonds">Ruter</span></button>
     </div>
 
+    <!-- Modaler & Overlays -->
     <div class="overlay" id="event-overlay">
         <div class="popup">
             <div class="popup-dice-badge" id="event-dice-badge"></div>
-            <div class="order-notice" id="event-notice-banner" data-key="event-notice">⚠️ Utför händelsen först — flytta pjäsen sen!</div>
+            <div class="order-notice" id="event-notice-banner" data-key="eventNotice">⚠️ Utför händelsen först — flytta pjäsen sen!</div>
             <div class="popup-title" id="event-title"></div>
             <div class="popup-desc" id="event-desc"></div>
-            <button class="popup-btn" onclick="closePopup()" id="event-ok-btn" data-key="btn-ok">Uppfattat</button>
+            <button class="popup-btn" onclick="closePopup()" id="event-ok-btn" data-key="btnOk">Uppfattat</button>
         </div>
     </div>
  
     <div class="overlay" id="pay-overlay">
         <div class="popup" style="border-color:#ecc94b;">
-            <div class="popup-title" style="color:#ecc94b;" id="pay-title" data-key="pay-header">Skicka pengar</div>
+            <div class="popup-title" style="color:#ecc94b;" id="pay-title" data-key="payHeader">Skicka pengar</div>
             <div class="pay-grid">
                 <div>
-                    <label for="pay-target" data-key="pay-recipient">Mottagare</label>
+                    <label for="pay-target" data-key="payRecipient">Mottagare</label>
                     <select id="pay-target"></select>
                 </div>
                 <div>
-                    <label for="pay-amount" data-key="pay-sum">Belopp ($)</label>
+                    <label for="pay-amount" data-key="paySum">Belopp ($)</label>
                     <input type="number" id="pay-amount" value="10" min="1">
                 </div>
             </div>
             <div style="display:flex; gap:10px;">
-                <button onclick="executePayment()" class="btn-success" style="padding:10px; width:50%;" data-key="btn-confirm">Bekräfta</button>
-                <button onclick="closePayModal()" style="background:#1a1a1a; padding:10px; width:50%;" data-key="btn-cancel">Avbryt</button>
+                <button onclick="executePayment()" class="btn-success" style="padding:10px; width:50%;" data-key="btnConfirm">Bekräfta</button>
+                <button onclick="closePayModal()" style="background:#1a1a1a; padding:10px; width:50%;" data-key="btnCancel">Avbryt</button>
             </div>
         </div>
     </div>
 
     <div class="overlay" id="police-overlay">
         <div class="popup" style="border-color:#e53e3e;">
-            <div class="popup-title" style="color:#e53e3e;" data-key="police-title">Vem gjorde gripandet?</div>
-            <p style="font-size:13px; color:#a0aec0; margin-bottom:10px;" id="police-subtitle" data-key="police-subtitle">Pengarna tillfaller polisen.</p>
+            <div class="popup-title" style="color:#e53e3e;" data-key="policeTitle">Vem gjorde gripandet?</div>
+            <p style="font-size:13px; color:#a0aec0; margin-bottom:10px;" id="police-subtitle" data-key="policeSubtitle">Pengarna tillfaller polisen.</p>
             <div class="police-selector-grid" id="police-targets"></div>
-            <button onclick="closePoliceModal()" style="background:#1a1a1a; padding:10px; width:100%; margin-top:10px;" data-key="btn-cancel">Avbryt</button>
+            <button onclick="closePoliceModal()" style="background:#1a1a1a; padding:10px; width:100%; margin-top:10px;" data-key="btnCancel">Avbryt</button>
         </div>
     </div>
  
     <div class="overlay" id="fight-overlay">
         <div class="popup" style="border-color:#ff7849;">
-            <div class="popup-title" style="color:#ff7849;" data-key="fight-title">Gatuslagsmål!</div>
+            <div class="popup-title" style="color:#ff7849;" data-key="fightTitle">Gatuslagsmål!</div>
             <div id="fight-setup-view">
-                <p style="font-size:13px; color:#a0aec0; margin-bottom:15px;" id="fight-prompt" data-key="fight-prompt">Välj vilken motståndare som står på rutan och ska attackeras:</p>
+                <p style="font-size:13px; color:#a0aec0; margin-bottom:15px;" id="fight-prompt" data-key="fightPrompt">Välj vilken motståndare som står på rutan och ska attackeras:</p>
                 <div class="police-selector-grid" id="fight-targets"></div>
-                <button onclick="closeFightModal()" style="background:#1a1a1a; padding:10px; width:100%; margin-top:12px;" data-key="btn-cancel">Avbryt</button>
+                <button onclick="closeFightModal()" style="background:#1a1a1a; padding:10px; width:100%; margin-top:12px;" data-key="btnCancel">Avbryt</button>
             </div>
             <div id="fight-rolling-view" style="display:none;">
                 <div class="fight-dice-container">
@@ -629,10 +672,10 @@
 
     <div class="overlay" id="adjust-overlay">
         <div class="popup" style="border-color:#ecc94b; max-width: 400px;">
-            <div class="popup-title" style="color:#ecc94b;" data-key="mod-title">Justera spelarvärden</div>
+            <div class="popup-title" style="color:#ecc94b;" data-key="modTitle">Justera spelarvärden</div>
             <div class="pay-grid" style="grid-template-columns: 1fr; gap: 8px;">
                 <div>
-                    <label for="mod-player" data-key="mod-lbl-player">Välj syndikat</label>
+                    <label for="mod-player" data-key="modLblPlayer">Välj syndikat</label>
                     <select id="mod-player" onchange="loadPlayerValuesToModal()"></select>
                 </div>
             </div>
@@ -651,8 +694,8 @@
                 </div>
             </div>
             <div style="display:flex; gap:10px; margin-top: 20px;">
-                <button onclick="saveAdjustments()" class="btn-success" style="padding:10px; width:50%;" data-key="btn-confirm">Bekräfta</button>
-                <button onclick="closeAdjustModal()" style="background:#1a1a1a; padding:10px; width:50%;" data-key="btn-cancel">Avbryt</button>
+                <button onclick="saveAdjustments()" class="btn-success" style="padding:10px; width:50%;" data-key="btnConfirm">Bekräfta</button>
+                <button onclick="closeAdjustModal()" style="background:#1a1a1a; padding:10px; width:50%;" data-key="btnCancel">Avbryt</button>
             </div>
         </div>
     </div>
@@ -678,11 +721,11 @@
                 statBank: "🏦 Bank",
                 statPocket: "💼 Fickan",
                 statSecured: "🔒 Säkrat",
-                actLoad: "💰 Hämta $100",
-                actSecure: "👑 Säkra Ess",
-                actArrest: "🚨 Haffad",
-                actFight: "💥 Slagsmål",
-                actPay: "💸 Överför pengar ➔",
+                actLoad: "Hämta $100",
+                actSecure: "Säkra Ess",
+                actArrest: "Haffad",
+                actFight: "Slagsmål",
+                actPay: "Överför pengar ➔",
                 diceClick: "KLICKA FÖR ATT SLÅ",
                 btnRules: "📜 Regler",
                 btnAdjust: "🛠️ Justera",
@@ -713,7 +756,7 @@
                 alertReset: "Vill du nollställa spelet?",
                 fightChallenge: "🥊 Utmana ",
                 payPayer: " betalar",
-                fightLogDrawBankrupt: "OAVGJORT! Men anfallaren {loser} har inte råd att paya skadan. KONKURS! Flyttas till sitt Ess med $20 i fickan.",
+                fightLogDrawBankrupt: "OAVGJORT! Aber anfallaren {loser} har inte råd att paya skadan. KONKURS! Flyttas till sitt Ess med $20 i fickan.",
                 fightLogWinnerBankrupt: "VINNARE: {winner}! Förloraren {loser} har inte råd att betala. KONKURS! Flyttas till sitt Ess med $20 i fickan.",
                 fightLogDraw: "OAVGJORT! {winner} försvarade rutan! Tar $10 och skickar bort anfallaren.",
                 fightLogWinner: "VINNARE: {winner}! Tar $10 från förloraren som flyttas till valfritt Ess/Kung.",
@@ -733,11 +776,11 @@
                 statBank: "🏦 Bank",
                 statPocket: "💼 Pocket",
                 statSecured: "🔒 Secured",
-                actLoad: "💰 Get $100",
-                actSecure: "👑 Secure Ace",
-                actArrest: "🚨 Busted",
-                actFight: "💥 Street Fight",
-                actPay: "💸 Transfer Cash ➔",
+                actLoad: "Get $100",
+                actSecure: "Secure Ace",
+                actArrest: "Busted",
+                actFight: "Street Fight",
+                actPay: "Transfer Cash ➔",
                 diceClick: "CLICK TO ROLL",
                 btnRules: "📜 Rules",
                 btnAdjust: "🛠️ Adjust",
@@ -795,7 +838,7 @@
                 { title: "🔍 Razzia!", desc: "Polisens strålkastare tänds. Alle dolda kort som ligger direkt intill en valfri polis (Knekt) ska omedelbart vändas upp!" },
                 { title: "📉 Ekonomisk Kris", desc: "Tuffa tider i stan. Under nästa varv kostar det dubbelt så mycket att landa på motståndarnas kvarter." },
                 { title: "🏃 Genväg i gränden", desc: "Du hittar en olåst dörr. Du får dispens att flytta diagonalt under just detta drag om du vill." },
-                { title: "🕵️ Ficktjuv", desc: "Ett snabbt möte i trängseln. Stjäl $10 av fickpengarna från valfri motståndare." }
+                { title: "¼ Ficktjuv", desc: "Ett snabbt möte i trängseln. Stjäl $10 av fickpengarna från valfri motståndare." }
             ],
             en: [
                 { title: "🚨 Foot Patrol", desc: "Move your own cop (Jack) 1 step on the board. If it lands on an opponent, they are sent directly to your jail (Boss)!" },
@@ -836,19 +879,25 @@
             document.getElementById('live-lang-sv').classList.toggle('active', lang === 'sv');
             document.getElementById('live-lang-en').classList.toggle('active', lang === 'en');
            
+            // Översätt alla statiska element
             document.querySelectorAll('[data-key]').forEach(el => {
                 const key = el.getAttribute('data-key');
-                if (i18n[lang][key]) el.innerText = i18n[lang][key];
+                if (i18n[lang][key]) {
+                    el.innerText = i18n[lang][key];
+                }
             });
 
+            // Uppdatera lagtitlar
             for (let id in gangNames) {
                 document.getElementById(`p${id}-gang-title`).innerText = gangNames[id][lang];
             }
 
-            document.getElementById('lbl-mod-bank').innerText = i18n[lang].statBank;
-            document.getElementById('lbl-mod-pocket').innerText = i18n[lang].statPocket;
-            document.getElementById('lbl-mod-secured').innerText = i18n[lang].statSecured;
+            // Uppdatera modallablar för "Justera"
+            document.getElementById('lbl-mod-bank').innerHTML = `🏦 ${i18n[lang].statBank.split(' ')[1] || i18n[lang].statBank}`;
+            document.getElementById('lbl-mod-pocket').innerHTML = `💼 ${i18n[lang].statPocket.split(' ')[1] || i18n[lang].statPocket}`;
+            document.getElementById('lbl-mod-secured').innerHTML = `🔒 ${i18n[lang].statSecured.split(' ')[1] || i18n[lang].statSecured}`;
 
+            // Sätt rätt tärningsetikett
             const label = document.getElementById("dice-label");
             if (!isRolling) {
                 if (currentDiceResult !== null) {
@@ -857,12 +906,8 @@
                     label.innerText = i18n[currentLang].diceClick;
                 }
             }
-
-            document.getElementById('welcome-subtitle').innerText = i18n[lang].welcomeSubtitle;
-            document.getElementById('welcome-prompt').innerText = i18n[lang].welcomePrompt;
-            document.getElementById('btn-mode-ipad').innerText = i18n[lang].modeIpad;
-            document.getElementById('btn-mode-iphone').innerText = i18n[lang].modeIphone;
            
+            // Om en händelse är öppen, översätt den live
             if (document.getElementById("event-overlay").classList.contains("active") && currentActiveEventIndex !== null) {
                 const randomEvent = noirEvents[currentLang][currentActiveEventIndex];
                 document.getElementById("event-dice-badge").innerText = i18n[currentLang].eventBadge.replace('{roll}', currentDiceResult);
@@ -870,10 +915,12 @@
                 document.getElementById("event-desc").innerText = randomEvent.desc;
             }
 
+            // Om överföring är öppen
             if (document.getElementById("pay-overlay").classList.contains("active") && activePayerId !== null) {
                 document.getElementById("pay-title").innerText = gangNames[activePayerId][currentLang] + i18n[currentLang].payPayer;
             }
 
+            // Om fight-vyn är öppen
             if (document.getElementById("fight-overlay").classList.contains("active") && activeAttackerId !== null) {
                 document.getElementById("fight-status-label").innerText = isFighting ? i18n[currentLang].fightRolling : document.getElementById("fight-status-label").innerText;
                 document.getElementById("fight-close-btn").innerText = i18n[currentLang].fightClose;
@@ -1228,7 +1275,7 @@
                 area.innerHTML = `
                     <h1 style="color:#2b6cb0; text-align:center; margin-bottom:15px; letter-spacing: 2px;">THE NOIR SYNDICATE — REGLER</h1>
                     <h2>Spelplan & Setup (Kortlayout)</h2>
-                    <p>Bygg upp spelplanen på bordet med vanliga spelkort enligt bilden nedan. Kom ihåg grundmönstret: Ess i hörnen, Kungar på kanterna, gator där emellan och samtliga Knekter (poliser) startande på polisstationen i absolut centrum. Varje spelare placerar sin droska/markör på sitt Ess.</p>
+                    <p>Bygg upp spelplanen på bordet med vanliga spelkort enligt bilden nedan. Kom ihåg grundmönstret: Ess i hörnen, Kungar på kanterna, gator där emellan och samtliga Knekter (poliser) startande på polisstationen i absolut centrum. Varje spelare placerar sin droska/markör på seu sitt Ess.</p>
                     <div class="setup-image-container"><img src="setup.PNG" alt="Setup"></div>
                     <h2>Spelidé & Mål</h2>
                     <p>Du leder ett brottssyndikat. Ditt mål är att hämta laster med svarta pengar ($100 i taget) från din <strong>Boss (Kung)</strong>, smuggla dem genom stadens farliga gator i <strong>Fickan</strong> och säkra dem på ditt <strong>Högkvarter (Ess)</strong>. Den förste spelaren som har lyckats <strong>Säkra $200</strong> på sitt Ess vinner spelet.</p>
@@ -1239,7 +1286,7 @@
                     </ul>
                     <h2>Rörelseregler & Positioner</h2>
                     <ul>
-                        <li><strong>Gatuslagsmål vid krock:</strong> Om din droska landar på en ruta där en motståndare redan står, triggas ett gatuslagsmål direkt!</li>
+                        <li><strong>Gatuslagsmål vid krock:</strong> Om din droska landar på en rutan där en motståndare redan står, triggas ett gatuslagsmål direkt!</li>
                         <li><strong>Vända kort:</strong> När du landar på ett dolt kort vänds det upp direkt och tull betalas om det inte är egen färg.</li>
                         <li><strong>Stanna på kort:</strong> Om du landar på en motståndares öppna kvarter måste du betala tull till den spelaren (dras från fickan).</li>
                     </ul>
