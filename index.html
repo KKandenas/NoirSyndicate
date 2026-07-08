@@ -1,822 +1,649 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>The Noir Syndicate - Control Room</title>
-<style>
-:root {
---bg-color: #050505;
---card-bg: rgba(15, 15, 15, 0.4);
---text-color: #e5e5e5;
---text-muted: #aaa;
---border-color: rgba(255, 255, 255, 0.1);
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>The Noir Syndicate - Control Room</title>
+    <style>
+        :root {
+            --bg-color: #050505;
+            --card-bg: rgba(15, 15, 15, 0.4);
+            --text-color: #e5e5e5;
+            --text-muted: #aaa;
+            --border-color: rgba(255, 255, 255, 0.1);
+           
+            --spades-color: #3182ce;  
+            --hearts-color: #e53e3e;  
+            --clovers-color: #38a169; 
+            --diamonds-color: #ecc94b;
+        }
 
---spades-color: #3182ce;
---hearts-color: #e53e3e;
---clovers-color: #38a169;
---diamonds-color: #ecc94b;
-}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-user-select: none;
+            user-select: none;
+        }
 
-* {
-box-sizing: border-box;
-margin: 0;
-padding: 0;
--webkit-user-select: none;
-user-select: none;
-}
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            padding: 0;
+        }
 
-body {
-background-color: var(--bg-color);
-color: var(--text-color);
-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-height: 100vh;
-overflow: hidden;
-padding: 0;
-}
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('bakgrund.PNG');
+            background-size: cover;
+            background-position: center;
+            filter: contrast(110%) brightness(95%);
+            z-index: -2;
+        }
 
-.background-container {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background-image: url('bakgrund.PNG');
-background-size: cover;
-background-position: center;
-filter: contrast(110%) brightness(95%);
-z-index: -2;
-}
+        .overlay-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(5, 5, 5, 0.2);
+            z-index: -1;
+        }
 
-.overlay-container {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background-color: rgba(5, 5, 5, 0.2);
-z-index: -1;
-}
+        /* DEFAULT / IPAD LAYOUT (Liggande) */
+        .game-container {
+            display: grid;
+            grid-template-rows: 320px 1fr 320px;
+            grid-template-columns: 380px 1fr 380px;
+            padding: 20px;
+            gap: 20px;
+            height: 100vh;
+            overflow: hidden;
+        }
 
-/* Expanderad spelplan med större hörnplatser */
-.game-container {
-display: grid;
-grid-template-rows: 320px 1fr 320px;
-grid-template-columns: 380px 1fr 380px;
-padding: 20px;
-gap: 20px;
-height: 100vh;
-overflow: hidden;
-}
+        /* VÄLKOMSTSIDA */
+        .welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #050505;
+            background-image: linear-gradient(to bottom, rgba(5, 5, 5, 0.4), rgba(0, 0, 0, 0.85)), url('gangsters.png');
+            background-size: cover;
+            background-position: center 30%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            transition: opacity 0.5s ease, pointer-events 0.5s ease;
+            text-align: center;
+            padding: 20px;
+        }
 
-/* VÄLKOMSTSIDA */
-.welcome-screen {
-position: fixed;
-top: 0;
-left: 0;
-width: 100vw;
-height: 100vh;
-background-color: #050505;
-background-image: linear-gradient(to bottom, rgba(5, 5, 5, 0.4), rgba(0, 0, 0, 0.85)), url('gangsters.png');
-background-size: cover;
-background-position: center 30%;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-z-index: 999;
-transition: opacity 0.5s ease, pointer-events 0.5s ease;
-text-align: center;
-padding: 20px;
-}
+        .welcome-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
 
-.welcome-screen.hidden {
-opacity: 0;
-pointer-events: none;
-}
+        .welcome-title {
+            font-size: 38px;
+            letter-spacing: 6px;
+            color: #fff;
+            text-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
+            margin-bottom: 8px;
+            font-weight: 900;
+        }
 
-.welcome-title {
-font-size: 46px;
-letter-spacing: 8px;
-color: #fff;
-text-shadow: 0 0 30px rgba(0, 0, 0, 0.9), 0 0 15px rgba(255, 255, 255, 0.2);
-margin-bottom: 8px;
-font-weight: 900;
-}
+        .welcome-subtitle {
+            font-size: 11px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 35px;
+        }
 
-.welcome-subtitle {
-font-size: 13px;
-color: #999;
-text-transform: uppercase;
-letter-spacing: 5px;
-margin-bottom: 45px;
-font-style: italic;
-}
+        .welcome-card {
+            background: rgba(10, 10, 10, 0.93);
+            border: 1px solid #1f1f1f;
+            padding: 25px;
+            border-radius: 8px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.95);
+        }
 
-.welcome-card {
-background: rgba(10, 10, 10, 0.93);
-border: 1px solid #1f1f1f;
-padding: 30px;
-border-radius: 6px;
-max-width: 420px;
-box-shadow: 0 25px 60px rgba(0,0,0,0.95);
-}
+        .device-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 15px;
+        }
 
-.orientation-notice {
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 10px;
-color: #ecc94b;
-font-size: 12px;
-font-weight: bold;
-margin-bottom: 25px;
-background: rgba(236, 201, 75, 0.05);
-padding: 12px;
-border-radius: 4px;
-border: 1px solid rgba(236, 201, 75, 0.15);
-line-height: 1.4;
-}
+        .btn-device {
+            background: linear-gradient(135deg, #232323, #151515);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            padding: 16px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn-device:active {
+            border-color: #2b6cb0;
+            background: linear-gradient(135deg, #1a497d, #112d52);
+        }
 
-.btn-start {
-background: linear-gradient(135deg, #2b6cb0, #1a497d);
-color: white;
-font-size: 16px;
-padding: 16px 40px;
-border-radius: 4px;
-border: none;
-font-weight: bold;
-cursor: pointer;
-box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-width: 100%;
-text-transform: uppercase;
-letter-spacing: 2px;
-transition: all 0.2s;
-}
-.btn-start:active {
-transform: scale(0.98);
-filter: brightness(0.9);
-}
+        /* SPELARHÖRN */
+        .player-corner {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+            position: relative;
+            backdrop-filter: blur(12px) brightness(85%);
+            -webkit-backdrop-filter: blur(12px) brightness(85%);
+        }
 
-/* Större och lyxigare spelarhörn */
-.player-corner {
-background-color: var(--card-bg);
-border: 1px solid var(--border-color);
-border-radius: 12px;
-padding: 16px;
-display: flex;
-flex-direction: column;
-justify-content: space-between;
-box-shadow: 0 12px 40px rgba(0,0,0,0.6);
-position: relative;
-backdrop-filter: blur(12px) brightness(85%);
--webkit-backdrop-filter: blur(12px) brightness(85%);
-}
+        .player-corner::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 5px;
+            background-color: var(--gang-color);
+            border-radius: 12px 12px 0 0;
+        }
 
-.player-corner::before {
-content: '';
-position: absolute;
-top: 0; left: 0; width: 100%; height: 5px;
-background-color: var(--gang-color);
-border-radius: 12px 12px 0 0;
-}
+        #p1 { --gang-color: var(--spades-color);   grid-area: 1 / 1; }
+        #p4 { --gang-color: var(--diamonds-color); grid-area: 1 / 3; }
+        #p3 { --gang-color: var(--clovers-color);  grid-area: 3 / 1; }
+        #p2 { --gang-color: var(--hearts-color);   grid-area: 3 / 3; }
 
-#p1 { --gang-color: var(--spades-color); grid-area: 1 / 1; }
-#p4 { --gang-color: var(--diamonds-color); grid-area: 1 / 3; }
-#p3 { --gang-color: var(--clovers-color); grid-area: 3 / 1; }
-#p2 { --gang-color: var(--hearts-color); grid-area: 3 / 3; }
+        .gang-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            padding-bottom: 8px;
+        }
 
-.gang-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-border-bottom: 1px solid rgba(255,255,255,0.08);
-padding-bottom: 8px;
-}
+        .gang-title {
+            font-size: 18px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--gang-color);
+            text-shadow: 0 2px 5px rgba(0,0,0,0.9);
+        }
 
-.gang-title {
-font-size: 18px;
-font-weight: 800;
-text-transform: uppercase;
-letter-spacing: 1px;
-color: var(--gang-color);
-text-shadow: 0 2px 5px rgba(0,0,0,0.9);
-}
+        .deck-suit {
+            font-size: 11px;
+            background: rgba(0,0,0,0.5);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .suit-black { color: #ccc; border: 1px solid rgba(255,255,255,0.1); }
+        .suit-red { color: #f56565; border: 1px solid rgba(245,101,101,0.2); }
 
-.deck-suit {
-font-size: 11px;
-background: rgba(0,0,0,0.5);
-padding: 3px 8px;
-border-radius: 6px;
-font-weight: bold;
-text-transform: uppercase;
-letter-spacing: 1px;
-}
-.suit-black { color: #ccc; border: 1px solid rgba(255,255,255,0.1); }
-.suit-red { color: #f56565; border: 1px solid rgba(245,101,101,0.2); }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 12px 0;
+        }
 
-/* Ny design för ekonomigriden - Mer fokus på fickan */
-.stats-grid {
-display: grid;
-grid-template-columns: repeat(3, 1fr);
-gap: 10px;
-margin: 12px 0;
-}
+        .stat-box {
+            background: rgba(0,0,0,0.45);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 6px;
+            padding: 10px 4px;
+            text-align: center;
+        }
 
-.stat-box {
-background: rgba(0,0,0,0.45);
-border: 1px solid rgba(255,255,255,0.04);
-border-radius: 6px;
-padding: 10px 4px;
-text-align: center;
-display: flex;
-flex-direction: column;
-justify-content: center;
-transition: background 0.2s;
-}
+        .stat-box.pocket-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); }
+        .stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
+        .stat-value { font-size: 20px; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.9); }
+        .stat-box.pocket-box .stat-value { color: #fff; font-size: 22px; }
 
-/* Framhäv fickan (smuggelpengarna) visuellt */
-.stat-box.pocket-box {
-background: rgba(255,255,255,0.05);
-border: 1px solid rgba(255,255,255,0.15);
-}
+        .gang-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
-.stat-label {
-font-size: 10px;
-color: var(--text-muted);
-text-transform: uppercase;
-letter-spacing: 1px;
-margin-bottom: 4px;
-}
+        button {
+            background: rgba(25, 25, 25, 0.75);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 6px;
+            padding: 10px 6px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        button:active { transform: scale(0.97); }
 
-.stat-value {
-font-size: 20px;
-font-weight: 800;
-text-shadow: 0 2px 4px rgba(0,0,0,0.9);
-}
+        .btn-success { background: rgba(22, 54, 38, 0.85); color: #48bb78; border-color: rgba(72,187,120,0.3); }
+        .btn-secure { background: rgba(30, 50, 70, 0.85); color: #63b3ed; border-color: rgba(99,179,237,0.3); }
+        .btn-danger { background: rgba(70, 24, 28, 0.85); color: #f56565; border-color: rgba(245,101,101,0.25); }
+        .btn-pay { background: rgba(45, 38, 18, 0.85); color: #ecc94b; border-color: rgba(236,201,75,0.25); grid-column: span 2; padding: 8px; font-size: 11px; text-transform: uppercase;}
 
-.stat-box.pocket-box .stat-value {
-color: #fff;
-font-size: 22px;
-}
+        .center-console {
+            grid-area: 1 / 2 / 4 / 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 25px;
+        }
 
-/* Handlingsknappar - Tydligare och roligare */
-.gang-actions {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 8px;
-}
+        /* IPHONE SPECIFIK FLIKMENY (Dold som standard på iPad) */
+        .iphone-tabs {
+            display: none;
+            position: fixed;
+            bottom: 0; left: 0; width: 100%;
+            height: 65px;
+            background: #0f0f0f;
+            border-top: 1px solid #222;
+            grid-template-columns: repeat(4, 1fr);
+            z-index: 50;
+        }
 
-button {
-background: rgba(25, 25, 25, 0.75);
-color: white;
-border: 1px solid rgba(255,255,255,0.08);
-border-radius: 6px;
-padding: 10px 6px;
-font-size: 12px;
-font-weight: bold;
-cursor: pointer;
-backdrop-filter: blur(4px);
-transition: all 0.1s ease;
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 5px;
-}
-button:active { transform: scale(0.97); }
+        .tab-btn {
+            background: none; border: none; border-radius: 0;
+            display: flex; flex-direction: column; gap: 2px;
+            font-size: 10px; color: #666; padding: 0; height: 100%;
+        }
+        .tab-btn.active[data-tab="1"] { color: var(--spades-color); background: rgba(49, 130, 206, 0.05); }
+        .tab-btn.active[data-tab="2"] { color: var(--hearts-color); background: rgba(229, 62, 62, 0.05); }
+        .tab-btn.active[data-tab="3"] { color: var(--clovers-color); background: rgba(56, 161, 105, 0.05); }
+        .tab-btn.active[data-tab="4"] { color: var(--diamonds-color); background: rgba(236, 201, 75, 0.05); }
+        .tab-btn span { font-size: 18px; }
 
-.btn-success { background: rgba(22, 54, 38, 0.85); color: #48bb78; border-color: rgba(72,187,120,0.3); }
-.btn-success:active { background: #1a3a2a; }
+        /* TÄRNING */
+        #dice-container {
+            width: 115px; height: 115px; background: #151515;
+            border: 3px solid rgba(255, 255, 255, 0.85); border-radius: 18px; padding: 16px;
+            display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 8px;
+            box-shadow: 0 0 25px rgba(236, 201, 75, 0.15), 0 15px 35px rgba(0,0,0,0.9); cursor: pointer;
+        }
+        .dot { background-color: #ecc94b; border-radius: 50%; width: 100%; height: 100%; box-shadow: inset 0 2px 4px rgba(0,0,0,0.4); visibility: hidden; }
+        .dice-label { font-size: 11px; font-weight: 900; letter-spacing: 3px; color: rgba(255, 255, 255, 0.8); background: rgba(0, 0, 0, 0.7); padding: 6px 16px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); text-transform: uppercase; text-align: center; }
+        .pulse-text { animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.03); } 100% { opacity: 0.6; transform: scale(1); } }
 
-.btn-secure { background: rgba(30, 50, 70, 0.85); color: #63b3ed; border-color: rgba(99,179,237,0.3); }
-.btn-secure:active { background: #1d364d; }
+        .side-bar-left, .side-bar-right { display: flex; color: rgba(255,255,255,0.12); font-size: 12px; letter-spacing: 3px; text-transform: uppercase; font-weight: bold; justify-content: center; align-items: center; }
+        .side-bar-left { grid-area: 2 / 1; } .side-bar-right { grid-area: 2 / 3; }
 
-.btn-danger { background: rgba(70, 24, 28, 0.85); color: #f56565; border-color: rgba(245,101,101,0.25); }
-.btn-danger:active { background: #4a181c; }
+        /* OVERLAYS & POPUPS */
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); display: flex; align-items: center; justify-content: center; z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.15s ease; }
+        .overlay.active { opacity: 1; pointer-events: auto; }
+        .popup { background: #0f0f0f; border: 1px solid #262626; border-radius: 6px; padding: 25px; max-width: 450px; width: 90%; text-align: center; }
+        .order-notice { background: rgba(236, 201, 75, 0.1); border: 1px dashed #ecc94b; color: #ecc94b; font-size: 12px; font-weight: bold; padding: 8px; margin-bottom: 15px; border-radius: 4px; text-transform: uppercase; }
+        .popup-large { max-width: 750px; height: 85vh; overflow-y: auto; text-align: left; padding: 35px; border-color: #2b6cb0; }
+        .popup-large h2 { color: #2b6cb0; text-transform: uppercase; margin: 20px 0 8px 0; font-size: 18px; border-bottom: 1px solid #1a1a1a; padding-bottom: 4px;}
+        .popup-large p, .popup-large li { color: #a0aec0; font-size: 13px; line-height: 1.6; margin-bottom: 8px; }
+        .popup-large ul { padding-left: 15px; }
+        .popup-dice-badge { background: #ecc94b; color: #000; display: inline-block; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: 900; margin-bottom: 10px; text-transform: uppercase; }
+        .popup-title { color: #e53e3e; font-size: 22px; text-transform: uppercase; margin-bottom: 10px; }
+        .popup-desc { font-size: 14px; line-height: 1.5; color: #cbd5e0; margin-bottom: 20px; }
+        .popup-btn { background: #2b6cb0; color: white; font-size: 14px; padding: 12px; border-radius: 4px; width: 100%; font-weight: bold; border: none; }
+        .pay-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; text-align: left; }
+        .pay-grid label { display: block; font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
+        .pay-grid select, .pay-grid input { width: 100%; background: #151515; border: 1px solid #262626; color: white; padding: 8px; border-radius: 4px; font-size: 14px; }
+        .police-selector-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 15px; }
+        .police-btn { text-align: left; padding: 12px; font-size: 13px; }
 
-.btn-pay { background: rgba(45, 38, 18, 0.85); color: #ecc94b; border-color: rgba(236,201,75,0.25); grid-column: span 2; padding: 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;}
-.btn-pay:active { background: #332b14; }
+        /* ========================================================
+           📱 IPHONE-SPECIFIK RENDERING (Drivs via klassen .mode-iphone)
+           ======================================================== */
+        body.mode-iphone .game-container {
+            grid-template-rows: 1fr auto 50px; /* Tärning uppe, aktivt gäng i mitten, knappar nere */
+            grid-template-columns: 1fr;
+            padding: 12px;
+            gap: 12px;
+        }
 
-.center-console {
-grid-area: 1 / 2 / 4 / 3;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-background: rgba(0,0,0,0);
-padding: 20px;
-gap: 25px;
-}
+        body.mode-iphone .side-bar-left,
+        body.mode-iphone .side-bar-right {
+            display: none;
+        }
 
-.dice-wrapper {
-display: flex;
-flex-direction: column;
-align-items: center;
-gap: 15px;
-}
+        body.mode-iphone .center-console {
+            grid-area: 1 / 1;
+            gap: 10px;
+            justify-content: center;
+        }
+       
+        body.mode-iphone #dice-container {
+            width: 100px; height: 100px; padding: 12px;
+        }
 
-/* KLASSISK TÄRNING */
-#dice-container {
-width: 115px;
-height: 115px;
-background: #151515;
-border: 3px solid rgba(255, 255, 255, 0.85);
-border-radius: 18px;
-padding: 16px;
-display: grid;
-grid-template-columns: repeat(3, 1fr);
-grid-template-rows: repeat(3, 1fr);
-gap: 8px;
-box-shadow: 0 0 25px rgba(236, 201, 75, 0.15), 0 15px 35px rgba(0,0,0,0.9);
-cursor: pointer;
-transition: transform 0.1s;
-}
-#dice-container:active { transform: scale(0.95); }
+        body.mode-iphone .player-corner {
+            grid-area: 2 / 1 !important; /* Tvinga ut aktiva hörnet till mitten */
+            display: none; /* Göm alla hörn som standard */
+            height: 250px;
+            padding: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
 
-.dot {
-background-color: #ecc94b;
-border-radius: 50%;
-width: 100%;
-height: 100%;
-box-shadow: inset 0 2px 4px rgba(0,0,0,0.4), 0 1px 2px rgba(255,255,255,0.1);
-visibility: hidden;
-}
+        body.mode-iphone .player-corner.active-tab {
+            display: flex; /* Visa endast det hörn vars flik är aktiv */
+        }
 
-.dice-label {
-font-size: 11px;
-font-weight: 900;
-letter-spacing: 3px;
-color: rgba(255, 255, 255, 0.8);
-background: rgba(0, 0, 0, 0.7);
-padding: 6px 16px;
-border-radius: 20px;
-border: 1px solid rgba(255, 255, 255, 0.1);
-text-transform: uppercase;
-text-align: center;
-}
+        body.mode-iphone .stats-grid {
+            margin: 6px 0;
+            gap: 6px;
+        }
+        body.mode-iphone .stat-value { font-size: 16px; }
+        body.mode-iphone .stat-box.pocket-box .stat-value { font-size: 18px; }
+        body.mode-iphone button { padding: 8px 4px; font-size: 11px; }
 
-.pulse-text {
-animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-0% { opacity: 0.6; transform: scale(1); }
-50% { opacity: 1; transform: scale(1.03); }
-100% { opacity: 0.6; transform: scale(1); }
-}
-
-.side-bar-left { grid-area: 2 / 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(255,255,255,0.12); font-size: 12px; letter-spacing: 3px; text-transform: uppercase; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
-.side-bar-right { grid-area: 2 / 3; display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(255,255,255,0.12); font-size: 12px; letter-spacing: 3px; text-transform: uppercase; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
-
-.overlay {
-position: fixed;
-top: 0; left: 0; width: 100%; height: 100%;
-background: rgba(0,0,0,0.92);
-display: flex;
-align-items: center;
-justify-content: center;
-z-index: 100;
-opacity: 0;
-pointer-events: none;
-transition: opacity 0.15s ease;
-}
-.overlay.active { opacity: 1; pointer-events: auto; }
-
-.popup {
-background: #0f0f0f;
-border: 1px solid #262626;
-border-radius: 6px;
-padding: 25px;
-max-width: 450px;
-width: 90%;
-text-align: center;
-}
-
-.order-notice {
-background: rgba(236, 201, 75, 0.1);
-border: 1px dashed #ecc94b;
-color: #ecc94b;
-font-size: 12px;
-font-weight: bold;
-padding: 8px;
-margin-top: 5px;
-margin-bottom: 15px;
-border-radius: 4px;
-text-transform: uppercase;
-letter-spacing: 0.5px;
-}
-
-.popup-large { max-width: 750px; height: 85vh; overflow-y: auto; text-align: left; padding: 35px; border-color: #2b6cb0; }
-.popup-large h2 { color: #2b6cb0; text-transform: uppercase; margin: 20px 0 8px 0; font-size: 18px; border-bottom: 1px solid #1a1a1a; padding-bottom: 4px;}
-.popup-large p, .popup-large li { color: #a0aec0; font-size: 13px; line-height: 1.6; margin-bottom: 8px; }
-.popup-large ul { padding-left: 15px; }
-
-.popup-dice-badge { background: #ecc94b; color: #000; display: inline-block; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: 900; margin-bottom: 10px; text-transform: uppercase; }
-.popup-title { color: #e53e3e; font-size: 22px; text-transform: uppercase; margin-bottom: 10px; }
-.popup-desc { font-size: 14px; line-height: 1.5; color: #cbd5e0; margin-bottom: 20px; }
-.popup-btn { background: #2b6cb0; color: white; font-size: 14px; padding: 12px; border-radius: 4px; width: 100%; font-weight: bold; border: none; }
-
-.pay-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; text-align: left; }
-.pay-grid label { display: block; font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
-.pay-grid select, .pay-grid input { width: 100%; background: #151515; border: 1px solid #262626; color: white; padding: 8px; border-radius: 4px; font-size: 14px; }
-
-.police-selector-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 15px; }
-.police-btn { text-align: left; padding: 12px; font-size: 13px; }
-</style>
+        body.mode-iphone .iphone-tabs {
+            display: grid; /* Aktivera bottenmenyn på iPhone */
+        }
+    </style>
 </head>
 <body>
 
-<div class="background-container"></div>
-<div class="overlay-container"></div>
+    <div class="background-container"></div>
+    <div class="overlay-container"></div>
 
-<div class="game-container">
-<div class="welcome-screen" id="welcome-screen">
-<div class="welcome-title">THE NOIR SYNDICATE</div>
-<div class="welcome-subtitle">Fyra syndikat. En stad. Inga vittnen.</div>
-<div class="welcome-card">
-<div class="orientation-notice">
-🔄 <span>OBS: Detta spel kräver liggande läge (Landscape) för optimal spelupplevelse på plattan.</span>
-</div>
-<button class="btn-start" onclick="startGame()">Inta position & starta spelet</button>
-</div>
-</div>
+    <!-- ENHETSVAL / VÄLKOMSTSIDA -->
+    <div class="welcome-screen" id="welcome-screen">
+        <div class="welcome-title">THE NOIR SYNDICATE</div>
+        <div class="welcome-subtitle">Control Room</div>
+        <div class="welcome-card">
+            <p style="font-size:13px; color:#aaa; margin-bottom:15px;">Välj vilken enhet du vill spela på ikväll:</p>
+            <div class="device-selector">
+                <button class="btn-device" onclick="startGame('ipad')">💻 iPad (Liggande Bräde)</button>
+                <button class="btn-device" onclick="startGame('iphone')">📱 iPhone (Stående Flikar)</button>
+            </div>
+        </div>
+    </div>
 
-<!-- SPELARE 1: SPADER -->
-<div class="player-corner" id="p1">
-<div class="gang-header">
-<div class="gang-title">♠ Nightspades</div>
-<div class="deck-suit suit-black">Spader</div>
-</div>
-<div class="stats-grid">
-<div class="stat-box"><div class="stat-label">🏦 Valv / Bank</div><div class="stat-value" id="p1-bank">$300</div></div>
-<div class="stat-box pocket-box"><div class="stat-label">💼 Fickan</div><div class="stat-value" id="p1-pocket">$20</div></div>
-<div class="stat-box"><div class="stat-label">🔒 Säkrat (Ess)</div><div class="stat-value" id="p1-secured" style="color:var(--spades-color)">$0</div></div>
-</div>
-<div class="gang-actions">
-<button onclick="takeLoad(1)" class="btn-success">💰 Hämta $100</button>
-<button onclick="secureCash(1)" class="btn-secure">👑 Säkra Ess</button>
-<button onclick="arrestPlayer(1)" class="btn-danger">🚨 Gripgisslan (Polis)</button>
-<button onclick="openPayModal(1)" class="btn-pay">💸 Överför pengar ➔</button>
-</div>
-</div>
+    <!-- HUVUDCONTAINER FÖR SPELET -->
+    <div class="game-container">
+       
+        <!-- SPELARE 1: SPADER -->
+        <div class="player-corner active-tab" id="p1">
+            <div class="gang-header">
+                <div class="gang-title">♠ Nightspades</div>
+                <div class="deck-suit suit-black">Spader</div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-box"><div class="stat-label">🏦 Bank</div><div class="stat-value" id="p1-bank">$300</div></div>
+                <div class="stat-box pocket-box"><div class="stat-label">💼 Fickan</div><div class="stat-value" id="p1-pocket">$20</div></div>
+                <div class="stat-box"><div class="stat-label">🔒 Säkrat</div><div class="stat-value" id="p1-secured" style="color:var(--spades-color)">$0</div></div>
+            </div>
+            <div class="gang-actions">
+                <button onclick="takeLoad(1)" class="btn-success">💰 Hämta $100</button>
+                <button onclick="secureCash(1)" class="btn-secure">👑 Säkra Ess</button>
+                <button onclick="arrestPlayer(1)" class="btn-danger">🚨 Gripgisslan</button>
+                <button onclick="openPayModal(1)" class="btn-pay">💸 Överför pengar ➔</button>
+            </div>
+        </div>
 
-<!-- SPELARE 4: RUTER -->
-<div class="player-corner" id="p4">
-<div class="gang-header">
-<div class="gang-title">♦ Diamond Syndicate</div>
-<div class="deck-suit suit-red">Ruter</div>
-</div>
-<div class="stats-grid">
-<div class="stat-box"><div class="stat-label">🏦 Valv / Bank</div><div class="stat-value" id="p4-bank">$300</div></div>
-<div class="stat-box pocket-box"><div class="stat-label">💼 Fickan</div><div class="stat-value" id="p4-pocket">$20</div></div>
-<div class="stat-box"><div class="stat-label">🔒 Säkrat (Ess)</div><div class="stat-value" id="p4-secured" style="color:var(--diamonds-color)">$0</div></div>
-</div>
-<div class="gang-actions">
-<button onclick="takeLoad(4)" class="btn-success">💰 Hämta $100</button>
-<button onclick="secureCash(4)" class="btn-secure">👑 Säkra Ess</button>
-<button onclick="arrestPlayer(4)" class="btn-danger">🚨 Gripgisslan (Polis)</button>
-<button onclick="openPayModal(4)" class="btn-pay">💸 Överför pengar ➔</button>
-</div>
-</div>
+        <!-- SPELARE 4: RUTER -->
+        <div class="player-corner" id="p4">
+            <div class="gang-header">
+                <div class="gang-title">♦ Diamond</div>
+                <div class="deck-suit suit-red">Ruter</div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-box"><div class="stat-label">🏦 Bank</div><div class="stat-value" id="p4-bank">$300</div></div>
+                <div class="stat-box pocket-box"><div class="stat-label">💼 Fickan</div><div class="stat-value" id="p4-pocket">$20</div></div>
+                <div class="stat-box"><div class="stat-label">🔒 Säkrat</div><div class="stat-value" id="p4-secured" style="color:var(--diamonds-color)">$0</div></div>
+            </div>
+            <div class="gang-actions">
+                <button onclick="takeLoad(4)" class="btn-success">💰 Hämta $100</button>
+                <button onclick="secureCash(4)" class="btn-secure">👑 Säkra Ess</button>
+                <button onclick="arrestPlayer(4)" class="btn-danger">🚨 Gripgisslan</button>
+                <button onclick="openPayModal(4)" class="btn-pay">💸 Överför pengar ➔</button>
+            </div>
+        </div>
 
-<div class="side-bar-left">THE NOIR SYNDICATE</div>
-<div class="side-bar-right">BOARD HUB v1.20</div>
+        <div class="side-bar-left">THE NOIR SYNDICATE</div>
+        <div class="side-bar-right">BOARD HUB v1.3</div>
 
-<!-- MITTENKONSOL MED TÄRNING -->
-<div class="center-console">
-<div class="dice-wrapper">
-<div id="dice-container" onclick="rollDice()">
-<div class="dot" id="d1"></div><div class="dot" id="d2"></div><div class="dot" id="d3"></div>
-<div class="dot" id="d4"></div><div class="dot" id="d5"></div><div class="dot" id="d6"></div>
-<div class="dot" id="d7"></div><div class="dot" id="d8"></div><div class="dot" id="d9"></div>
-</div>
-<div class="dice-label pulse-text" id="dice-label">KLICKA FÖR ATT SLÅ</div>
-</div>
-<div style="display:flex; flex-direction:column; gap:10px; width: 100%; max-width: 180px;">
-<button onclick="openRulesModal()" style="background:rgba(15,15,15,0.8); border:1px solid rgba(255,255,255,0.1); font-size:12px; padding:8px 0; color:#8a99ad; backdrop-filter: blur(4px);">📜 Kompletta Regler</button>
-<button onclick="resetGame()" style="background:rgba(15,15,15,0.8); border:1px solid rgba(255,255,255,0.1); font-size:12px; padding:8px 0; color:#555; backdrop-filter: blur(4px);">Nollställ Spel</button>
-</div>
-</div>
+        <!-- MITTENKONSOL MED TÄRNING -->
+        <div class="center-console">
+            <div class="dice-wrapper">
+                <div id="dice-container" onclick="rollDice()">
+                    <div class="dot" id="d1"></div><div class="dot" id="d2"></div><div class="dot" id="d3"></div>
+                    <div class="dot" id="d4"></div><div class="dot" id="d5"></div><div class="dot" id="d6"></div>
+                    <div class="dot" id="d7"></div><div class="dot" id="d8"></div><div class="dot" id="d9"></div>
+                </div>
+                <div class="dice-label pulse-text" id="dice-label">KLICKA FÖR ATT SLÅ</div>
+            </div>
+            <div style="display:flex; gap:8px; width: 100%; max-width: 240px; justify-content: center;">
+                <button onclick="openRulesModal()" style="font-size:10px; padding:6px 10px; background:rgba(0,0,0,0.6);">📜 Regler</button>
+                <button onclick="resetGame()" style="font-size:10px; padding:6px 10px; background:rgba(0,0,0,0.6); color:#666;">Reset</button>
+            </div>
+        </div>
 
-<!-- SPELARE 3: KLÖVER -->
-<div class="player-corner" id="p3">
-<div class="gang-header">
-<div class="gang-title">♣ Iron Clovers</div>
-<div class="deck-suit suit-black">Klöver</div>
-</div>
-<div class="stats-grid">
-<div class="stat-box"><div class="stat-label">🏦 Valv / Bank</div><div class="stat-value" id="p3-bank">$300</div></div>
-<div class="stat-box pocket-box"><div class="stat-label">💼 Fickan</div><div class="stat-value" id="p3-pocket">$20</div></div>
-<div class="stat-box"><div class="stat-label">🔒 Säkrat (Ess)</div><div class="stat-value" id="p3-secured" style="color:var(--clovers-color)">$0</div></div>
-</div>
-<div class="gang-actions">
-<button onclick="takeLoad(3)" class="btn-success">💰 Hämta $100</button>
-<button onclick="secureCash(3)" class="btn-secure">👑 Säkra Ess</button>
-<button onclick="arrestPlayer(3)" class="btn-danger">🚨 Gripgisslan (Polis)</button>
-<button onclick="openPayModal(3)" class="btn-pay">💸 Överför pengar ➔</button>
-</div>
-</div>
+        <!-- SPELARE 3: KLÖVER -->
+        <div class="player-corner" id="p3">
+            <div class="gang-header">
+                <div class="gang-title">♣ Iron Clovers</div>
+                <div class="deck-suit suit-black">Klöver</div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-box"><div class="stat-label">🏦 Bank</div><div class="stat-value" id="p3-bank">$300</div></div>
+                <div class="stat-box pocket-box"><div class="stat-label">💼 Fickan</div><div class="stat-value" id="p3-pocket">$20</div></div>
+                <div class="stat-box"><div class="stat-label">🔒 Säkrat</div><div class="stat-value" id="p3-secured" style="color:var(--clovers-color)">$0</div></div>
+            </div>
+            <div class="gang-actions">
+                <button onclick="takeLoad(3)" class="btn-success">💰 Hämta $100</button>
+                <button onclick="secureCash(3)" class="btn-secure">👑 Säkra Ess</button>
+                <button onclick="arrestPlayer(3)" class="btn-danger">🚨 Gripgisslan</button>
+                <button onclick="openPayModal(3)" class="btn-pay">💸 Överför pengar ➔</button>
+            </div>
+        </div>
 
-<!-- SPELARE 2: HJÄRTER -->
-<div class="player-corner" id="p2">
-<div class="gang-header">
-<div class="gang-title">♥ Crimson Hearts</div>
-<div class="deck-suit suit-red">Hjärter</div>
-</div>
-<div class="stats-grid">
-<div class="stat-box"><div class="stat-label">🏦 Valv / Bank</div><div class="stat-value" id="p2-bank">$300</div></div>
-<div class="stat-box pocket-box"><div class="stat-label">💼 Fickan</div><div class="stat-value" id="p2-pocket">$20</div></div>
-<div class="stat-box"><div class="stat-label">🔒 Säkrat (Ess)</div><div class="stat-value" id="p2-secured" style="color:var(--hearts-color)">$0</div></div>
-</div>
-<div class="gang-actions">
-<button onclick="takeLoad(2)" class="btn-success">💰 Hämta $100</button>
-<button onclick="secureCash(2)" class="btn-secure">👑 Säkra Ess</button>
-<button onclick="arrestPlayer(2)" class="btn-danger">🚨 Gripgisslan (Polis)</button>
-<button onclick="openPayModal(2)" class="btn-pay">💸 Överför pengar ➔</button>
-</div>
-</div>
+        <!-- SPELARE 2: HJÄRTER -->
+        <div class="player-corner" id="p2">
+            <div class="gang-header">
+                <div class="gang-title">♥ Crimson</div>
+                <div class="deck-suit suit-red">Hjärter</div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-box"><div class="stat-label">🏦 Bank</div><div class="stat-value" id="p2-bank">$300</div></div>
+                <div class="stat-box pocket-box"><div class="stat-label">💼 Fickan</div><div class="stat-value" id="p2-pocket">$20</div></div>
+                <div class="stat-box"><div class="stat-label">🔒 Säkrat</div><div class="stat-value" id="p2-secured" style="color:var(--hearts-color)">$0</div></div>
+            </div>
+            <div class="gang-actions">
+                <button onclick="takeLoad(2)" class="btn-success">💰 Hämta $100</button>
+                <button onclick="secureCash(2)" class="btn-secure">👑 Säkra Ess</button>
+                <button onclick="arrestPlayer(2)" class="btn-danger">🚨 Gripgisslan</button>
+                <button onclick="openPayModal(2)" class="btn-pay">💸 Överför pengar ➔</button>
+            </div>
+        </div>
+    </div>
 
-<!-- MODALER OCH POPUPS -->
-<div class="overlay" id="event-overlay">
-<div class="popup">
-<div class="popup-dice-badge" id="event-dice-badge"></div>
-<div class="order-notice">⚠️ Utför händelsen först — flytta pjäsen sen!</div>
-<div class="popup-title" id="event-title"></div>
-<div class="popup-desc" id="event-desc"></div>
-<button class="popup-btn" onclick="closePopup()">Uppfattat & Flytta pjäsen</button>
-</div>
-</div>
+    <!-- IPHONE BOTTOM TABS MENU -->
+    <div class="iphone-tabs" id="iphone-tabs">
+        <button class="tab-btn active" data-tab="1" onclick="switchTab(1)"><span>♠</span>Spader</button>
+        <button class="tab-btn" data-tab="2" onclick="switchTab(2)"><span>♥</span>Hjärter</button>
+        <button class="tab-btn" data-tab="3" onclick="switchTab(3)"><span>♣</span>Klöver</button>
+        <button class="tab-btn" data-tab="4" onclick="switchTab(4)"><span>♦</span>Ruter</button>
+    </div>
 
-<div class="overlay" id="pay-overlay"><div class="popup" style="border-color:#ecc94b;"><div class="popup-title" style="color:#ecc94b;" id="pay-title">Skicka pengar</div><div class="pay-grid"><div><label for="pay-target">Mottagare</label><select id="pay-target"></select></div><div><label for="pay-amount">Belopp ($)</label><input type="number" id="pay-amount" value="10" min="1"></div></div><div style="display:flex; gap:10px;"><button onclick="executePayment()" class="btn-success" style="padding:10px; width:50%;">Bekräfta</button><button onclick="closePayModal()" style="background:#1a1a1a; padding:10px; width:50%;">Avbryt</button></div></div></div>
+    <!-- MODALER (Gemensamma) -->
+    <div class="overlay" id="event-overlay">
+        <div class="popup">
+            <div class="popup-dice-badge" id="event-dice-badge"></div>
+            <div class="order-notice">⚠️ Utför händelsen först — flytta pjäsen sen!</div>
+            <div class="popup-title" id="event-title"></div>
+            <div class="popup-desc" id="event-desc"></div>
+            <button class="popup-btn" onclick="closePopup()">Uppfattat</button>
+        </div>
+    </div>
+   
+    <div class="overlay" id="pay-overlay"><div class="popup" style="border-color:#ecc94b;"><div class="popup-title" style="color:#ecc94b;" id="pay-title">Skicka pengar</div><div class="pay-grid"><div><label for="pay-target">Mottagare</label><select id="pay-target"></select></div><div><label for="pay-amount">Belopp ($)</label><input type="number" id="pay-amount" value="10" min="1"></div></div><div style="display:flex; gap:10px;"><button onclick="executePayment()" class="btn-success" style="padding:10px; width:50%;">Bekräfta</button><button onclick="closePayModal()" style="background:#1a1a1a; padding:10px; width:50%;">Avbryt</button></div></div></div>
+    <div class="overlay" id="police-overlay"><div class="popup" style="border-color:#e53e3e;"><div class="popup-title" style="color:#e53e3e;">Vem gjorde gripandet?</div><p style="font-size:13px; color:#a0aec0; margin-bottom:10px;">Pengarna tillfaller polisen.</p><div class="police-selector-grid" id="police-targets"></div><button onclick="closePoliceModal()" style="background:#1a1a1a; padding:10px; width:100%; margin-top:10px;">Avbryt</button></div></div>
+    <div class="overlay" id="rules-overlay"><div class="popup popup-large"><h1 style="color:#2b6cb0; text-align:center; margin-bottom:15px;">REGLER</h1><p>Se fullständigt regelhäfte på iPad-versionen eller pappersutskriften. Målet är att smuggla $200 från din kung till ditt Ess.</p><button class="popup-btn" onclick="closeRulesModal()">Stäng</button></div></div>
 
-<div class="overlay" id="police-overlay"><div class="popup" style="border-color:#e53e3e;"><div class="popup-title" style="color:#e53e3e;">Vem gjorde gripandet?</div><p style="font-size:13px; color:#a0aec0; margin-bottom:10px;">Smuggelpengarna på fickan tillfaller den polisens gängbank.</p><div class="police-selector-grid" id="police-targets"></div><button onclick="closePoliceModal()" style="background:#1a1a1a; padding:10px; width:100%; margin-top:10px;">Avbryt</button></div></div>
+    <script>
+        let players = {
+            1: { name: "Nightspades (♠)", bank: 300, pocket: 20, secured: 0 },
+            2: { name: "Crimson Hearts (♥)", bank: 300, pocket: 20, secured: 0 },
+            3: { name: "Iron Clovers (♣)", bank: 300, pocket: 20, secured: 0 },
+            4: { name: "Diamond Syndicate (♦)", bank: 300, pocket: 20, secured: 0 }
+        };
 
-<div class="overlay" id="rules-overlay">
-<div class="popup popup-large">
-<h1 style="color:#2b6cb0; text-align:center; font-size:26px; letter-spacing:2px; margin-bottom:5px;">THE NOIR SYNDICATE</h1>
-<p style="text-align:center; color:#666; font-style:italic; margin-bottom:20px;">Officiellt Spelkoncept - Fyra fristående gäng (Alla mot alla)</p>
+        const noirEvents = [
+            { title: "🚨 Patrullering", desc: "Du får flytta din egen polis (Knekt) 1 steg på brädet. Hamnar den på en motståndare åker denne direkt till din Boss (i häktet)!" },
+            { title: "🚨 Utryckning", desc: "Brådskande larm! Du får flytta din egen polis (Knekt) 2 steg in på spelplanen." },
+            { title: "💵 Mutor inom polisen", desc: "Du har köpt en konstabel. Du får flytta ut valfri motståndares polis (Knekt) till sin ursprungliga startplats i mitten." },
+            { title: "📂 Insiderjobb", desc: "Kartorna ritas om. Du får byta plats på två valfria kort av din egen färg ute på spelplanen." },
+            { title: "💥 Gatustrid", desc: "Skuggspel i gränderna! Du får byta plats med ett av dina egna kort och en motståndares kort (dock ej kort där det står en polis)." },
+            { title: "🔍 Razzia!", desc: "Polisens strålkastare tänds. Alla dolda kort som ligger direkt intill en valfri polis (Knekt) ska omedelbart vändas upp!" },
+            { title: "📉 Ekonomisk Kris", desc: "Tuffa tider i stan. Under nästa varv kostar det dubbelt så mycket att landa på motståndarnas kvarter." },
+            { title: "🏃 Genväg i gränden", desc: "Du hittar en olåst dörr. Du får dispens att flytta diagonalt under just detta drag om du vill." },
+            { title: "🕵️ Ficktjuv", desc: "Ett snabbt möte i trängseln. Stjäl $10 av fickpengarna från valfri motståndare." }
+        ];
 
-<h2>🕵️‍♂️ Översikt & Handling</h2>
-<p>Fyra rivaliserande syndikat kämpar om makten på gatorna. Din uppgift som gängledare är att smuggla kapital från din Boss (Kungarna) och säkra pengarna i ditt högkvarter (Essen) – allt medan polisen (Knektarna) patrullerar i skuggorna.</p>
+        const dicePatterns = { 1: [5], 2: [3, 7], 3: [3, 5, 7], 4: [1, 3, 7, 9], 5: [1, 3, 5, 7, 9], 6: [1, 3, 4, 6, 7, 9] };
+        let isRolling = false; let activePayerId = null; let activeArrestedId = null;
 
-<h2>🗺️ Spelplanens Layout (48 Kort)</h2>
-<p style="margin-bottom: 15px;">Blanda kortleken och placera ut korten dolda (upp och ner) på bordet enligt schemat nedan. Essen, Kungarna och Knektarna har fasta startpositioner:</p>
+        function startGame(mode) {
+            if (mode === 'iphone') {
+                document.body.classList.add('mode-iphone');
+                switchTab(1); // Starta på Spader-fliken på telefonen
+            } else {
+                document.body.classList.remove('mode-iphone');
+            }
+            document.getElementById("welcome-screen").classList.add("hidden");
+        }
 
-<div style="text-align: center; margin: 20px 0;">
-<img src="setup.PNG" alt="Spelplanens utplacering" style="max-width: 100%; height: auto; border-radius: 6px; border: 1px solid #262626; box-shadow: 0 10px 30px rgba(0,0,0,0.6);">
-</div>
+        function switchTab(id) {
+            // Göm alla hörn och avaktivera flikknappar
+            document.querySelectorAll('.player-corner').forEach(el => el.classList.remove('active-tab'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+           
+            // Aktivera rätt hörn och flik
+            document.getElementById(`p${id}`).classList.add('active-tab');
+            document.querySelector(`.tab-btn[data-tab="${id}"]`).classList.add('active');
+        }
 
-<h2>🎨 Kortlekens Sviter & Rivalitet (4 Lag)</h2>
-<p>Spelet har fyra unika gäng baserade på kortlekens sviter:</p>
-<ul>
-<li><strong>♠ Nightspades</strong> (Svart färg/svit)</li>
-<li><strong>♣ Iron Clovers</strong> (Svart färg/svit)</li>
-<li><strong>♥ Crimson Hearts</strong> (Röd färg/svit)</li>
-<li><strong>♦ Diamond Syndicate</strong> (Röd färg/svit)</li>
-<li><strong>Betalningsregel:</strong> När du landar på ett uppvänt kort som matchar din <em>egen</em> gängfärg/svit är det helt gratis. Landar du däremot på ett kort som tillhör något av de andra tre rivaliserande gängen, måste du omedelbart betala kortets värde (t.ex. en 5:a = $5) till den aktuella spelaren via appen.</li>
-<li><strong>Damerna (Barerna):</strong> Alla gäng går in gratis på Damerna, men man tvingas <strong>stå över nästa omgång</strong>.</li>
-</ul>
+        function updateUI() {
+            for (let id in players) {
+                document.getElementById(`p${id}-bank`).innerText = `$${players[id].bank}`;
+                document.getElementById(`p${id}-pocket`).innerText = `$${players[id].pocket}`;
+                document.getElementById(`p${id}-secured`).innerText = `$${players[id].secured}`;
+            }
+        }
 
-<h2>🎲 Rörelseregler</h2>
-<ul>
-<li>Man slår tärningen på iPaden och flyttar det exakta antalet steg (endast horisontellt och vertikalt, <strong>inga diagonala steg</strong>).</li>
-<li>Du får inte gå tillbaka till samma ruta under samma drag.</li>
-<li>När du landar på ditt dolda kort vänds det upp permanent.</li>
-</ul>
+        function drawDiceDots(number) {
+            for (let i = 1; i <= 9; i++) document.getElementById(`d${i}`).style.visibility = 'hidden';
+            dicePatterns[number].forEach(dotId => document.getElementById(`d${dotId}`).style.visibility = 'visible');
+        }
 
-<h2>🚨 Polisen (Knektarna) & Fängelset</h2>
-<p>När händelsekort aktiveras rör sig stadens poliser (Knektarna) ut i rutnätet:</p>
-<ul>
-<li><strong>Ockupation:</strong> När en Knekt flyttar in på planen placeras den fysiskt ovanpå det kort den landar på och <strong>ersätter kortets funktion helt</strong> så länge den står kvar.</li>
-<li><strong>Frizon / Fälla:</strong> Att landa på sin <em>egen</em> gängknekt är helt säkert och fungerar som ett <strong>gratisställe</strong>. Om du däremot landar på (eller blir träffad av) en <em>motståndares</em> Knekt blir du omedelbart gripen!</li>
-<li><strong>Straff vid gripande:</strong> Du blir av med alla insamlade smuggelpengar på fickan (allt över startkapitalet $20). These pengar beslagtas och <strong>tillfaller direkt gängbanken hos den spelare vars polis utförde gripandet</strong>. Din pjäs flyttas sedan till den motståndarens Boss-ruta (Fängelset). Slå 4+ för att bryta dig ut vid nästa tur.</li>
-</ul>
+        function takeLoad(id) {
+            if (players[id].bank >= 100) { players[id].bank -= 100; players[id].pocket += 100; updateUI(); }
+            else { alert("Bossens valv är tomt!"); }
+        }
 
-<h2>💰 Ekonomi & Seger</h2>
-<ul>
-<li><strong>Startkapital:</strong> Varje spelare har $20 på fickan och $300 i sin Bank (hos sin Boss).</li>
-<li><strong>Smuggling:</strong> När du besöker din Boss plockar du ut $100 till fickan. Ditt mål är att ta dig till ditt eget Ess och trycka på "Säkra Ess".</li>
-<li><strong>Konkurs:</strong> Om dina fickpengar tar slut på grund av motståndaravgifter går du i personlig konkurs. Du nollställs omedelbart till $20 och flyttas direkt tillbaka till ditt eget Ess (Huvudkvarter).</li>
-<li><strong>Vinst:</strong> Först till <strong>$200 säkrade i sitt Ess</strong> vinner spelet!</li>
-</ul>
+        function secureCash(id) {
+            if (players[id].pocket > 20) {
+                let toSecure = players[id].pocket - 20;
+                players[id].secured += toSecure; players[id].pocket = 20; updateUI();
+                if (players[id].secured >= 200) setTimeout(() => { alert(`BOSS! ${players[id].name} kontrollerar staden!`); }, 100);
+            } else { alert("Inga pengar att säkra!"); }
+        }
 
-<button class="popup-btn" onclick="closeRulesModal()" style="margin-top:15px;">Tillbaka till spelet</button>
-</div>
-</div>
-</div>
+        function arrestPlayer(id) {
+            activeArrestedId = id; const grid = document.getElementById("police-targets"); grid.innerHTML = "";
+            for (let pId in players) {
+                if (pId != id) {
+                    let btn = document.createElement("button"); btn.className = "police-btn";
+                    btn.innerText = `👮‍♂️ ${players[pId].name}`; btn.onclick = function() { executeArrest(pId); };
+                    grid.appendChild(btn);
+                }
+            }
+            document.getElementById("police-overlay").classList.add("active");
+        }
+        function closePoliceModal() { document.getElementById("police-overlay").classList.remove("active"); }
+        function executeArrest(policeGangId) {
+            let victim = players[activeArrestedId]; let cop = players[policeGangId];
+            if (victim.pocket > 20) {
+                let loot = victim.pocket - 20; cop.bank += loot; victim.pocket = 20;
+                alert(`${victim.name} haffad av ${cop.name}! Beslagtog $${loot}.`);
+            } else { alert(`${victim.name} skickas till häktet.`); }
+            closePoliceModal(); updateUI();
+        }
 
-<script>
-let players = {
-1: { name: "Nightspades (♠)", bank: 300, pocket: 20, secured: 0 },
-2: { name: "Crimson Hearts (♥)", bank: 300, pocket: 20, secured: 0 },
-3: { name: "Iron Clovers (♣)", bank: 300, pocket: 20, secured: 0 },
-4: { name: "Diamond Syndicate (♦)", bank: 300, pocket: 20, secured: 0 }
-};
+        function openPayModal(id) {
+            activePayerId = id; document.getElementById("pay-title").innerText = `${players[id].name} betalar`;
+            const select = document.getElementById("pay-target"); select.innerHTML = "";
+            for (let pId in players) { if (pId != id) { let opt = document.createElement("option"); opt.value = pId; opt.innerText = players[pId].name; select.appendChild(opt); } }
+            document.getElementById("pay-overlay").classList.add("active");
+        }
+        function closePayModal() { document.getElementById("pay-overlay").classList.remove("active"); }
+        function executePayment() {
+            const targetId = document.getElementById("pay-target").value; const amount = parseInt(document.getElementById("pay-amount").value);
+            if (isNaN(amount) || amount <= 0) return;
+            if (players[activePayerId].pocket < amount) { alert("Konkurs! Nollställs till $20 på ditt Ess."); players[activePayerId].pocket = 20; closePayModal(); updateUI(); return; }
+            players[activePayerId].pocket -= amount; players[targetId].pocket += amount; updateUI(); closePayModal();
+        }
 
-const noirEvents = [
-{ title: "🚨 Patrullering", desc: "Du får flytta din egen polis (Knekt) 1 steg på brädet. Hamnar den på en motståndare åker denne direkt till din Boss (i häktet)!" },
-{ title: "🚨 Utryckning", desc: "Brådskande larm! Du får flytta din egen polis (Knekt) 2 steg in på spelplanen." },
-{ title: "💵 Mutor inom polisen", desc: "Du har köpt en konstabel. Du får flytta ut valfri motståndares polis (Knekt) till sin ursprungliga startplats i mitten." },
-{ title: "📂 Insiderjobb", desc: "Kartorna ritas om. Du får byta plats på två valfria kort av din egen färg ute på spelplanen." },
-{ title: "💥 Gatustrid", desc: "Skuggspel i gränderna! Du får byta plats med ett av dina egna kort och en motståndares kort (dock ej kort där det står en polis)." },
-{ title: "🔍 Razzia!", desc: "Polisens strålkastare tänds. Alla dolda kort som ligger direkt intill en valfri polis (Knekt) ska omedelbart vändas upp!" },
-{ title: "📉 Ekonomisk Kris", desc: "Tuffa tider i stan. Under nästa varv kostar det dubbelt så mycket att landa på motståndarnas kvarter." },
-{ title: "🏃 Genväg i gränden", desc: "Du hittar en olåst dörr. Du får dispens att flytta diagonalt under just detta drag om du vill." },
-{ title: "🕵️ Ficktjuv", desc: "Ett snabbt möte i trängseln. Stjäl $10 av fickpengarna från valfri motståndare." }
-];
+        function rollDice() {
+            if (isRolling) return; isRolling = true;
+            const label = document.getElementById("dice-label"); label.classList.remove("pulse-text");
+            let counter = 0;
+            const interval = setInterval(() => {
+                let currentVal = Math.floor(Math.random() * 6) + 1; drawDiceDots(currentVal); label.innerText = `RULLAR...`; counter++;
+                if (counter > 8) {
+                    clearInterval(interval); const finalResult = Math.floor(Math.random() * 6) + 1; drawDiceDots(finalResult);
+                    label.innerText = `SLOG: ${finalResult}`;
+                    setTimeout(() => { if (!isRolling) { label.innerText = "KLICKA FÖR ATT SLÅ"; label.classList.add("pulse-text"); } }, 3000);
+                    isRolling = false; if (Math.random() < 0.35) { triggerEvent(finalResult); }
+                }
+            }, 65);
+        }
 
-const dicePatterns = {
-1: [5],
-2: [3, 7],
-3: [3, 5, 7],
-4: [1, 3, 7, 9],
-5: [1, 3, 5, 7, 9],
-6: [1, 3, 4, 6, 7, 9]
-};
+        function triggerEvent(diceRoll) {
+            const randomEvent = noirEvents[Math.floor(Math.random() * noirEvents.length)];
+            document.getElementById("event-dice-badge").innerText = `SLOG EN ${diceRoll}:A 🎲`;
+            document.getElementById("event-title").innerText = randomEvent.title;
+            document.getElementById("event-desc").innerText = randomEvent.desc;
+            document.getElementById("event-overlay").classList.add("active");
+        }
+        function closePopup() { document.getElementById("event-overlay").classList.remove("active"); }
+        function openRulesModal() { document.getElementById("rules-overlay").classList.add("active"); }
+        function closeRulesModal() { document.getElementById("rules-overlay").classList.remove("active"); }
 
-let activePayerId = null;
-let activeArrestedId = null;
-let isRolling = false;
+        function resetGame() {
+            if (confirm("Nollställa spelet?")) {
+                players = { 1: { name: "Nightspades (♠)", bank: 300, pocket: 20, secured: 0 }, 2: { name: "Crimson Hearts (♥)", bank: 300, pocket: 20, secured: 0 }, 3: { name: "Iron Clovers (♣)", bank: 300, pocket: 20, secured: 0 }, 4: { name: "Diamond Syndicate (♦)", bank: 300, pocket: 20, secured: 0 } };
+                drawDiceDots(1); const label = document.getElementById("dice-label"); label.innerText = "KLICKA FÖR ATT SLÅ"; label.classList.add("pulse-text"); updateUI();
+            }
+        }
 
-function startGame() {
-document.getElementById("welcome-screen").classList.add("hidden");
-}
-
-function updateUI() {
-for (let id in players) {
-document.getElementById(`p${id}-bank`).innerText = `$${players[id].bank}`;
-document.getElementById(`p${id}-pocket`).innerText = `$${players[id].pocket}`;
-document.getElementById(`p${id}-secured`).innerText = `$${players[id].secured}`;
-}
-}
-
-function drawDiceDots(number) {
-for (let i = 1; i <= 9; i++) {
-document.getElementById(`d${i}`).style.visibility = 'hidden';
-}
-const pattern = dicePatterns[number];
-pattern.forEach(dotId => {
-document.getElementById(`d${dotId}`).style.visibility = 'visible';
-});
-}
-
-function takeLoad(id) {
-if (players[id].bank >= 100) {
-players[id].bank -= 100;
-players[id].pocket += 100;
-updateUI();
-} else { alert("Bossens valv är tomt!"); }
-}
-
-function secureCash(id) {
-if (players[id].pocket > 20) {
-let toSecure = players[id].pocket - 20;
-players[id].secured += toSecure;
-players[id].pocket = 20;
-updateUI();
-if (players[id].secured >= 200) {
-// ÄNDRAD TILL BOSS! istället för KNEPTIN!
-setTimeout(() => { alert(`BOSS! ${players[id].name} kontrollerar staden!`); }, 100);
-}
-} else { alert("Du har inga smuggelpengar utöver dina basfickpengar ($20) att säkra!"); }
-}
-
-function arrestPlayer(id) {
-activeArrestedId = id;
-const grid = document.getElementById("police-targets");
-grid.innerHTML = "";
-
-for (let pId in players) {
-if (pId != id) {
-let btn = document.createElement("button");
-btn.className = "police-btn";
-btn.innerText = `👮‍♂️ ${players[pId].name}`;
-btn.onclick = function() { executeArrest(pId); };
-grid.appendChild(btn);
-}
-}
-document.getElementById("police-overlay").classList.add("active");
-}
-
-function closePoliceModal() { document.getElementById("police-overlay").classList.remove("active"); }
-
-function executeArrest(policeGangId) {
-let victim = players[activeArrestedId];
-let cop = players[policeGangId];
-
-if (victim.pocket > 20) {
-let loot = victim.pocket - 20;
-cop.bank += loot;
-victim.pocket = 20;
-alert(`${victim.name} blev haffad av ${cop.name}! Polisen beslagtog $${loot} och skickade dem till sin gängbank.`);
-} else {
-alert(`${victim.name} hade inga smuggelpengar på fickan. Skickas direkt till häktet hos ${cop.name}.`);
-}
-
-closePoliceModal();
-updateUI();
-}
-
-function openPayModal(id) {
-activePayerId = id;
-document.getElementById("pay-title").innerText = `${players[id].name} betalar`;
-const select = document.getElementById("pay-target");
-select.innerHTML = "";
-for (let pId in players) {
-if (pId != id) {
-let opt = document.createElement("option");
-opt.value = pId;
-opt.innerText = players[pId].name;
-select.appendChild(opt);
-}
-}
-document.getElementById("pay-overlay").classList.add("active");
-}
-
-function closePayModal() { document.getElementById("pay-overlay").classList.remove("active"); }
-
-function executePayment() {
-const targetId = document.getElementById("pay-target").value;
-const amount = parseInt(document.getElementById("pay-amount").value);
-if (isNaN(amount) || amount <= 0) return;
-
-if (players[activePayerId].pocket < amount) {
-alert("Konkurs! Inte tillräckligt på fickan. Du flyttas till ditt Ess med $20.");
-players[activePayerId].pocket = 20;
-closePayModal();
-updateUI();
-return;
-}
-players[activePayerId].pocket -= amount;
-players[targetId].pocket += amount;
-updateUI();
-closePayModal();
-}
-
-function rollDice() {
-if (isRolling) return;
-isRolling = true;
-
-const label = document.getElementById("dice-label");
-label.classList.remove("pulse-text");
-
-let counter = 0;
-const interval = setInterval(() => {
-let currentVal = Math.floor(Math.random() * 6) + 1;
-drawDiceDots(currentVal);
-label.innerText = `RULLAR...`;
-counter++;
-
-if (counter > 8) {
-clearInterval(interval);
-const finalResult = Math.floor(Math.random() * 6) + 1;
-drawDiceDots(finalResult);
-
-label.innerText = `SLOG: ${finalResult}`;
-
-setTimeout(() => {
-if (!isRolling) {
-label.innerText = "KLICKA FÖR ATT SLÅ";
-label.classList.add("pulse-text");
-}
-}, 3000);
-
-isRolling = false;
-if (Math.random() < 0.35) { triggerEvent(finalResult); }
-}
-}, 65);
-}
-
-function triggerEvent(diceRoll) {
-const randomEvent = noirEvents[Math.floor(Math.random() * noirEvents.length)];
-document.getElementById("event-dice-badge").innerText = `SLOG EN ${diceRoll}:A 🎲`;
-document.getElementById("event-title").innerText = randomEvent.title;
-document.getElementById("event-desc").innerText = randomEvent.desc;
-document.getElementById("event-overlay").classList.add("active");
-}
-
-function closePopup() { document.getElementById("event-overlay").classList.remove("active"); }
-function openRulesModal() { document.getElementById("rules-overlay").classList.add("active"); }
-function closeRulesModal() { document.getElementById("rules-overlay").classList.remove("active"); }
-
-function resetGame() {
-if (confirm("Vill du nollställa spelet?")) {
-players = {
-1: { name: "Nightspades (♠)", bank: 300, pocket: 20, secured: 0 },
-2: { name: "Crimson Hearts (♥)", bank: 300, pocket: 20, secured: 0 },
-3: { name: "Iron Clovers (♣)", bank: 300, pocket: 20, secured: 0 },
-4: { name: "Diamond Syndicate (♦)", bank: 300, pocket: 20, secured: 0 }
-};
-drawDiceDots(1);
-const label = document.getElementById("dice-label");
-label.innerText = "KLICKA FÖR ATT SLÅ";
-label.classList.add("pulse-text");
-updateUI();
-}
-}
-
-drawDiceDots(1);
-updateUI();
-</script>
+        drawDiceDots(1); updateUI();
+    </script>
 </body>
 </html>
