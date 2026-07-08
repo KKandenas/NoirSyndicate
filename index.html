@@ -51,7 +51,7 @@
             /* Ny bild: Två skumma figurer i hatt och rock på en mörk gata */
             background-image: linear-gradient(to bottom, rgba(5, 5, 5, 0.5), rgba(0, 0, 0, 0.9)), url('gangsters.png');
             background-size: cover;
-            background-position: center 30%; /* Justerad för att centrera figurerna bra på skärmen */
+            background-position: center 30%;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -62,7 +62,6 @@
             padding: 20px;
         }
 
-
         .welcome-screen.hidden {
             opacity: 0;
             pointer-events: none;
@@ -72,7 +71,6 @@
             font-size: 46px;
             letter-spacing: 8px;
             color: #fff;
-            /* Rökig, varm skuggeffekt istället för modern neon */
             text-shadow: 0 0 30px rgba(0, 0, 0, 0.9), 0 0 15px rgba(255, 255, 255, 0.2);
             margin-bottom: 8px;
             font-weight: 900;
@@ -91,7 +89,7 @@
             background: rgba(10, 10, 10, 0.93);
             border: 1px solid #1f1f1f;
             padding: 30px;
-            border-radius: 6px; /* Lite skarpare, mer klassiskt snitt */
+            border-radius: 6px;
             max-width: 420px;
             box-shadow: 0 25px 60px rgba(0,0,0,0.95);
         }
@@ -369,7 +367,7 @@
     </div>
 
     <div class="side-bar-left">THE NOIR SYNDICATE</div>
-    <div class="side-bar-right">BOARD HUB v1.11</div>
+    <div class="side-bar-right">BOARD HUB v1.12</div>
 
     <!-- CENTERKONSOL -->
     <div class="center-console">
@@ -434,10 +432,16 @@
             <p style="text-align:center; color:#666; font-style:italic; margin-bottom:20px;">Officiellt Spelkoncept - Fyra fristående gäng (Alla mot alla)</p>
             
             <h2>🕵️‍♂️ Översikt & Handling</h2>
-            <p>Fyra rivaliserande syndikat kämpar om makten på gatorna. Din uppgift som gängledare är att smuggla kapital från din Boss (Kungarna) och säkra pengarna i ditt högkvarter (Essen) – allt medan polisen (Knektarna) patrullerar i skuggorna. Spelet spelas som en stenhård uppgörelse där alla kämpar mot alla.</p>
+            <p>Fyra rivaliserande syndikat kämpar om makten på gatorna. Din uppgift som gängledare är att smuggla kapital från din Boss (Kungarna) och säkra pengarna i ditt högkvarter (Essen) – allt medan polisen (Knektarna) patrullerar i skuggorna.</p>
             
             <h2>🗺️ Spelplanens Layout (48 Kort)</h2>
-            <p>Kortleken blandas och placeras ut i ett dolt <strong>6x8-rutnät</strong> på bordet med följande fasta placeringar:</p>
+            <p style="margin-bottom: 15px;">Blanda kortleken och placera ut korten dolda (upp och ner) på bordet enligt schemat nedan. Essen, Kungarna och Knektarna har fasta startpositioner:</p>
+
+            <!-- DIN NYA SETUP-BILD INLAGD HÄR -->
+            <div style="text-align: center; margin: 20px 0;">
+                <img src="setup.PNG" alt="Spelplanens utplacering" style="max-width: 100%; height: auto; border-radius: 6px; border: 1px solid #262626; box-shadow: 0 10px 30px rgba(0,0,0,0.6);">
+            </div>
+
             <ul>
                 <li><strong>Hörnen (Essen):</strong> Respektive gängs egna Huvudkvarter/Safe House.</li>
                 <li><strong>Diagonalt innanför (Kungarna):</strong> Bossen (håller ditt gängs unika kassavalv).</li>
@@ -452,7 +456,7 @@
                 <li><strong>♣ Iron Clovers</strong> (Svart färg/svit)</li>
                 <li><strong>♥ Crimson Hearts</strong> (Röd färg/svit)</li>
                 <li><strong>♦ Diamond Syndicate</strong> (Röd färg/svit)</li>
-                <li><strong>Betalningsregel:</strong> När du landar på ett uppvänt kort som matchar din <em>egen</em> gängfärg/svit är det helt gratis. Landar du däremot på ett kort som tillhör något av de andra tre rivaliserande gängen, must du omedelbart betala kortets värde (t.ex. en 5:a = $5) till den aktuella spelaren via appen.</li>
+                <li><strong>Betalningsregel:</strong> När du landar på ett uppvänt kort som matchar din <em>egen</em> gängfärg/svit är det helt gratis. Landar du däremot på ett kort som tillhör något av de andra tre rivaliserande gängen, måste du omedelbart betala kortets värde (t.ex. en 5:a = $5) till den aktuella spelaren via appen.</li>
                 <li><strong>Damerna (Barerna):</strong> Alla gäng går in gratis på Damerna, men man tvingas <strong>stå över nästa omgång</strong>.</li>
             </ul>
 
@@ -460,7 +464,7 @@
             <ul>
                 <li>Man slår tärningen på iPaden och flyttar det exakta antalet steg (endast horisontellt och vertikalt, <strong>inga diagonala steg</strong>).</li>
                 <li>Du får inte gå tillbaka till samma ruta under samma drag.</li>
-                <li>När du landar på ett dolt kort vänds det upp permanent.</li>
+                <li>När du landar på ditt dolda kort vänds det upp permanent.</li>
             </ul>
 
             <h2>🚨 Polisen (Knektarna) & Fängelset</h2>
@@ -476,7 +480,7 @@
                 <li><strong>Startkapital:</strong> Varje spelare har $20 på fickan och $300 i sin Bank (hos sin Boss).</li>
                 <li><strong>Smuggling:</strong> När du besöker din Boss plockar du ut $100 till fickan. Ditt mål är att ta dig till ditt eget Ess och trycka på "Säkra Ess".</li>
                 <li><strong>Konkurs:</strong> Om dina fickpengar tar slut på grund av motståndaravgifter går du i personlig konkurs. Du nollställs omedelbart till $20 och flyttas direkt tillbaka till ditt eget Ess (Huvudkvarter).</li>
-                <li><strong>Vinst:</strong> Först till <strong>$200 säkrade i subdivisionen/sitt Ess</strong> vinner spelet!</li>
+                <li><strong>Vinst:</strong> Först till <strong>$200 säkrade i sitt Ess</strong> vinner spelet!</li>
             </ul>
 
             <button class="popup-btn" onclick="closeRulesModal()" style="margin-top:15px;">Tillbaka till spelet</button>
