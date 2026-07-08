@@ -7,15 +7,15 @@
     <style>
         :root {
             --bg-color: #050505;
-            --card-bg: rgba(18, 18, 18, 0.7); /* Lite mer transparent för snyggare glaseffekt */
+            --card-bg: rgba(15, 15, 15, 0.4); /* Mycket mer transparent för maximal glaseffekt */
             --text-color: #e5e5e5;
-            --text-muted: #888;
-            --border-color: #222;
+            --text-muted: #aaa; /* Lite ljusare text för bättre läsbarhet mot bakgrunden */
+            --border-color: rgba(255, 255, 255, 0.1); /* Ljusare kanter för glaskänslan */
             
             /* Fyra unika gängfärger anpassade för 20-talstema */
-            --spades-color: #2b6cb0;   
-            --hearts-color: #c53030;   
-            --clovers-color: #2f855a;  
+            --spades-color: #3182ce;   
+            --hearts-color: #e53e3e;   
+            --clovers-color: #38a169;  
             --diamonds-color: #ecc94b; 
         }
 
@@ -33,10 +33,10 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             height: 100vh;
             overflow: hidden;
-            padding: 0; /* Tar bort padding från body för fullskärms overlay */
+            padding: 0;
         }
 
-        /* Ny container för bakgrundsbilden */
+        /* Container för bakgrundsbilden - ökad kontrast och ljusstyrka */
         .background-container {
             position: fixed;
             top: 0;
@@ -46,21 +46,22 @@
             background-image: url('bakgrund.PNG');
             background-size: cover;
             background-position: center;
-            z-index: -2; /* Placerar bilden längst bak */
+            filter: contrast(110%) brightness(95%); /* Gör bilden lite skarpare och finare */
+            z-index: -2;
         }
 
-        /* Ny container för den transparenta toningen (overlay) */
+        /* Minimal toning (0.2 istället för 0.6) så att bakgrundsbilden syns klart och tydligt */
         .overlay-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(5, 5, 5, 0.6); /* Ljusare toning för tydligare bakgrund */
-            z-index: -1; /* Placerar toningen ovanpå bilden */
+            background-color: rgba(5, 5, 5, 0.2); 
+            z-index: -1;
         }
 
-        /* Container för själva spelplanen, med padding */
+        /* Container för själva spelplanen */
         .game-container {
             display: grid;
             grid-template-rows: 240px 1fr 240px;
@@ -71,7 +72,7 @@
             overflow: hidden;
         }
 
-        /* VÄLKOMSTSIDA (SPLASH SCREEN) -CHICAGO 1920-TAL */
+        /* VÄLKOMSTSIDA (SPLASH SCREEN) */
         .welcome-screen {
             position: fixed;
             top: 0;
@@ -79,7 +80,7 @@
             width: 100vw;
             height: 100vh;
             background-color: #050505;
-            background-image: linear-gradient(to bottom, rgba(5, 5, 5, 0.5), rgba(0, 0, 0, 0.9)), url('gangsters.png');
+            background-image: linear-gradient(to bottom, rgba(5, 5, 5, 0.4), rgba(0, 0, 0, 0.85)), url('gangsters.png');
             background-size: cover;
             background-position: center 30%;
             display: flex;
@@ -160,7 +161,7 @@
             filter: brightness(0.9);
         }
 
-        /* Spelarhörn - med förbättrad glaseffekt */
+        /* Spelarhörn - med frostad glaseffekt mot bakgrundsbilden */
         .player-corner {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -169,9 +170,10 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.85);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
             position: relative;
-            backdrop-filter: blur(8px); /* Ökad suddighet för tydligare glaseffekt */
+            backdrop-filter: blur(12px) brightness(85%); /* Skapar snygg kontrast mot bakgrunden */
+            -webkit-backdrop-filter: blur(12px) brightness(85%);
         }
 
         .player-corner::before {
@@ -183,16 +185,16 @@
         }
 
         /* KORRIGERAT POSITIONSSCHEMA */
-        #p1 { --gang-color: var(--spades-color);   grid-area: 1 / 1; } /* Spader uppe vänster */
-        #p4 { --gang-color: var(--diamonds-color); grid-area: 1 / 3; } /* Ruter uppe höger */
-        #p3 { --gang-color: var(--clovers-color);  grid-area: 3 / 1; } /* Klöver nere vänster */
-        #p2 { --gang-color: var(--hearts-color);   grid-area: 3 / 3; } /* Hjärter nere höger */
+        #p1 { --gang-color: var(--spades-color);   grid-area: 1 / 1; }
+        #p4 { --gang-color: var(--diamonds-color); grid-area: 1 / 3; }
+        #p3 { --gang-color: var(--clovers-color);  grid-area: 3 / 1; }
+        #p2 { --gang-color: var(--hearts-color);   grid-area: 3 / 3; }
 
         .gang-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
             padding-bottom: 4px;
         }
 
@@ -202,18 +204,19 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             color: var(--gang-color);
+            text-shadow: 0 1px 4px rgba(0,0,0,0.8);
         }
 
         .deck-suit {
             font-size: 9px;
-            background: #151515;
+            background: rgba(0,0,0,0.6);
             padding: 2px 6px;
             border-radius: 4px;
             font-weight: bold;
             text-transform: uppercase;
         }
-        .suit-black { color: #888; border: 1px solid #252525; }
-        .suit-red { color: #e53e3e; border: 1px solid #3b1010; }
+        .suit-black { color: #ccc; border: 1px solid rgba(255,255,255,0.1); }
+        .suit-red { color: #f56565; border: 1px solid rgba(245,101,101,0.2); }
 
         .stats-grid {
             display: grid;
@@ -223,8 +226,8 @@
         }
 
         .stat-box {
-            background: rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.02);
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.05);
             border-radius: 4px;
             padding: 6px 2px;
             text-align: center;
@@ -240,6 +243,7 @@
         .stat-value {
             font-size: 16px;
             font-weight: bold;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.9);
         }
 
         .gang-actions {
@@ -249,23 +253,24 @@
         }
 
         button {
-            background: #161616;
+            background: rgba(20, 20, 20, 0.75);
             color: white;
-            border: 1px solid #282828;
+            border: 1px solid rgba(255,255,255,0.1);
             border-radius: 4px;
             padding: 8px 4px;
             font-size: 11px;
             font-weight: bold;
             cursor: pointer;
+            backdrop-filter: blur(4px);
             transition: background 0.1s;
         }
-        button:active { background: #262626; }
+        button:active { background: rgba(50, 50, 50, 0.9); }
 
-        .btn-success { background: #12281e; color: #38a169; border-color: #1a3a2a; }
+        .btn-success { background: rgba(18, 40, 30, 0.85); color: #48bb78; border-color: rgba(72,187,120,0.3); }
         .btn-success:active { background: #1a3a2a; }
-        .btn-danger { background: #3c161a; color: #e53e3e; border-color: #521e24; }
+        .btn-danger { background: rgba(60, 22, 26, 0.85); color: #f56565; border-color: rgba(245,101,101,0.3); }
         .btn-danger:active { background: #521e24; }
-        .btn-pay { background: #28210f; color: #ecc94b; border-color: #382e15; grid-column: span 2; }
+        .btn-pay { background: rgba(40, 33, 15, 0.85); color: #ecc94b; border-color: rgba(236,201,75,0.3); grid-column: span 2; }
         .btn-pay:active { background: #382e15; }
 
         /* Centerkonsol */
@@ -275,7 +280,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: rgba(0,0,0,0.1);
+            background: rgba(0,0,0,0);
             padding: 20px;
             gap: 25px;
         }
@@ -297,8 +302,8 @@
         }
         #dice-container:active { transform: scale(0.95); }
 
-        .side-bar-left { grid-area: 2 / 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(255,255,255,0.07); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; }
-        .side-bar-right { grid-area: 2 / 3; display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(255,255,255,0.07); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; }
+        .side-bar-left { grid-area: 2 / 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(255,255,255,0.15); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+        .side-bar-right { grid-area: 2 / 3; display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(255,255,255,0.15); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
 
         /* Overlays & Popups */
         .overlay {
@@ -402,8 +407,8 @@
         <div class="center-console">
             <div id="dice-container" onclick="rollDice()">1</div>
             <div style="display:flex; flex-direction:column; gap:10px; width: 100%; max-width: 180px;">
-                <button onclick="openRulesModal()" style="background:#0f0f0f; border:1px solid #1a1a1a; font-size:12px; padding:8px 0; color:#8a99ad;">📜 Kompletta Regler</button>
-                <button onclick="resetGame()" style="background:#0f0f0f; border:1px solid #1a1a1a; font-size:12px; padding:8px 0; color:#4a5568;">Nollställ Spel</button>
+                <button onclick="openRulesModal()" style="background:rgba(15,15,15,0.8); border:1px solid rgba(255,255,255,0.1); font-size:12px; padding:8px 0; color:#8a99ad; backdrop-filter: blur(4px);">📜 Kompletta Regler</button>
+                <button onclick="resetGame()" style="background:rgba(15,15,15,0.8); border:1px solid rgba(255,255,255,0.1); font-size:12px; padding:8px 0; color:#555; backdrop-filter: blur(4px);">Nollställ Spel</button>
             </div>
         </div>
 
@@ -464,13 +469,6 @@
                     <img src="setup.PNG" alt="Spelplanens utplacering" style="max-width: 100%; height: auto; border-radius: 6px; border: 1px solid #262626; box-shadow: 0 10px 30px rgba(0,0,0,0.6);">
                 </div>
 
-                <ul>
-                    <li><strong>Hörnen (Essen):</strong> Respektive gängs egna Huvudkvarter/Safe House.</li>
-                    <li><strong>Diagonalt innanför (Kungarna):</strong> Bossen (håller ditt gängs unika kassavalv).</li>
-                    <li><strong>Mitten (Knektarna):</strong> Polisen startar i mitten, men rör sig ut på spelplanen under spelets gång.</li>
-                    <li><strong>Övriga kort (2-10 och Damer):</strong> Blandas och läggs dolda (upp och ner).</li>
-                </ul>
-
                 <h2>🎨 Kortlekens Sviter & Rivalitet (4 Lag)</h2>
                 <p>Spelet har fyra unika gäng baserade på kortlekens sviter:</p>
                 <ul>
@@ -508,7 +506,9 @@
                 <button class="popup-btn" onclick="closeRulesModal()" style="margin-top:15px;">Tillbaka till spelet</button>
             </div>
         </div>
-    </div> <script>
+    </div> 
+    
+    <script>
         let players = {
             1: { name: "Nightspades (♠)", bank: 300, pocket: 20, secured: 0 },
             2: { name: "Crimson Hearts (♥)", bank: 300, pocket: 20, secured: 0 },
@@ -525,7 +525,7 @@
             { title: "🔍 Razzia!", desc: "Polisens strålkastare tänds. Alla dolda kort som ligger direkt intill en valfri polis (Knekt) ska omedelbart vändas upp!" },
             { title: "📉 Ekonomisk Kris", desc: "Tuffa tider i stan. Under nästa varv kostar det dubbelt så mycket att landa på motståndarnas kvarter." },
             { title: "🏃 Genväg i gränden", desc: "Du hittar en olåst dörr. Du får dispens att flytta diagonalt under just detta drag om du vill." },
-            { title: "🕵️ Ficktjuv", desc: "Ett snabbt möte i trängseln. Stjäl 10$ av fickpengarna från valfri motståndare." }
+            { title: "🕵️ Ficktjuv", desc: "Ett snabbt möte i trängseln. Stjäl $10 av fickpengarna från valfri motståndare." }
         ];
 
         let activePayerId = null;
