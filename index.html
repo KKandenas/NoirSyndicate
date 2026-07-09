@@ -190,6 +190,15 @@
             font-size: 10px;
         }
 
+        /* Dölj alla spelarpaneler i iPhone-läge */
+body.mode-iphone .player-corner {
+    display: none;
+}
+
+/* Visa endast den aktiva fliken */
+body.mode-iphone .player-corner.active-tab {
+    display: flex;
+}
         .player-corner {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
